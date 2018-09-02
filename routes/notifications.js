@@ -2,16 +2,6 @@ var express = require('express');
 var router = express.Router();
 var db = require('../lib/db.js');
 var async = require('async'); 
-// GET /students list
-router.get('/', function (req, res, next) {
-	console.log('GET /students');
-	res.json('');
-});
-// GET /students/:id
-router.get('/:id', function (req, res, next) {
-	console.log('GET /students/:id');
-	res.json('');
-});
 // POST /students
 router.post('/', function (req, res, next) {
     var teacherID = -1;
@@ -36,26 +26,21 @@ router.post('/', function (req, res, next) {
 			        callback(error, result);
 			    });
 			}, function (callback) {
-			    var recipients = [];
-			    console.log("teacher "+teacherID);
+			    console.log(`teacher ${teacherID}`);
 			    if (teacherID !== -1) {
-			        var student_query = `select * from students where isSuspended != 1 && (teacherid = ${teacherID} || email in ('${students}'))`;
-			        console.log("select statement: " + student_query);
+			        var student_query = `select email from students where isSuspended != 1 && (teacherid = ${teacherID} || email in ('${students}'))`;
+			        console.log(`select statement: ${student_query}`);
 			        var newTeacher = db.query(student_query, function (error, result) {
 			            if (error)
 			                console.error(error.message); // if error occured during connection 
 			            else {
 			                // rows: {"fieldCount":0,"affectedRows":1,"insertId":2,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
-			                console.log("results: " + JSON.stringify(result));
-			                if (result.length > 0) {
+			                if (result.length > 0)
 			                    console.log(result.length + ' students: ' + JSON.stringify(result));
-			                    result.map(function (item) {
-			                        recipients.push(item.email);
-			                    });
-			                } else
+			                else
 			                    console.error(`No recipients for the notification from ${req.body.teacher} ID ${teacherID}`);
 			            }
-			            callback(error, recipients);
+			            callback(error, result);
 			        });
 			    } else
 			        callback(null, null);
@@ -72,19 +57,9 @@ router.post('/', function (req, res, next) {
 		        // 0: result from the first serial function
 		        // 1: results from the second serial function
 		        console.log("runs successfully! with " + results.length + " results: " + JSON.stringify(results));
-		        res.json((results.length > 0) ? { recipients: results[1] } : { recipients: [] });
+		        res.json((results.length > 0) ? { recipients: results[1].map(i => i.email) } : { recipients: [] });
 		    }
 		});
 	}
-});
-// PUT /todos/:id
-router.put('/:id', function (req, res, next) {
-	console.log('PUT /students/:id');
-	res.json('');
-});
-// DELETE /todos/:id
-router.delete('/:id', function (req, res, next) {
-	console.log('DELETE /students/:id');
-	res.json('');
 });
 module.exports = router;

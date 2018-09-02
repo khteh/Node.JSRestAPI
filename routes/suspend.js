@@ -2,16 +2,6 @@ var express = require('express');
 var router = express.Router();
 var db = require('../lib/db.js');
 var async = require('async'); 
-// GET /students list
-router.get('/', function (req, res, next) {
-	console.log('GET /students');
-	res.json('');
-});
-// GET /students/:id
-router.get('/:id', function (req, res, next) {
-	console.log('GET /students/:id');
-	res.json('');
-});
 // POST /students
 router.post('/', function (req, res, next) {
     var studentID = -1;
@@ -65,15 +55,5 @@ router.post('/', function (req, res, next) {
             }
 		});
 	}
-});
-// PUT /todos/:id
-router.put('/:id', function (req, res, next) {
-	console.log('PUT /students/:id');
-	res.json('');
-});
-// DELETE /todos/:id
-router.delete('/:id', function (req, res, next) {
-	console.log('DELETE /students/:id');
-	res.json('');
 });
 module.exports = router;

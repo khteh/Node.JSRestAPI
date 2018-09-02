@@ -13,45 +13,38 @@ router.get('/', function (req, res, next) {
         async.series([
 			function (callback) {
 			    var teachers = query.teacher.join('\',\'');
-			    console.log("teachers: " + teachers);
+			    console.log(`teachers: ${teachers}`);
 			    var teacher_query = `select id from teachers where email in ('${teachers}')`;
-			    console.log("teacher_query: " + teacher_query);
+			    console.log(`teacher_query: ${teacher_query}`);
 			    db.query(teacher_query, function (error, result) {
 			        if (error)
 			            console.error(error.message);
 			        else if (result.length > 0) {
-			            var ids = [];
 			            console.log("teacher_query result: " + JSON.stringify(result));
-			            result.map(function (item) {
-			                ids.push(item.id);
-			            });
+			            var ids = result.map(i => i.id);
 			            teacherids = ids.join('\',\'');
-			            console.log("Get teacher: " + teacherids);
+			            console.log(`Teachers: ${teacherids}`);
 			        } else
-			            console.log("No teacher " + teachers);
+			            console.log(`No teacher ${teachers}`);
 			        callback(error, result);
 			    });
 			},
             function (callback) {
-                var students = [];
-			    console.log("teacherids " + teacherids);
+                console.log(`teacherids ${teacherids}`);
 			    if (teacherids.length > 0) {
-			        var students_query = `select * from students where teacherid in ('${teacherids}')`;
-			        console.log("students_query: " + students_query);
+			        var students_query = `select email from students where teacherid in ('${teacherids}')`;
+			        console.log(`students_query: ${students_query}`);
 			        var newTeacher = db.query(students_query, function (error, result) {
 			            if (error)
 			                console.error(error.message); // if error occured during connection 
 			            else {
 			                // rows: {"fieldCount":0,"affectedRows":1,"insertId":2,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
-			                if (result.length > 0) {
+			                if (result.length > 0)
 			                    console.log(result.length + ' students: ' + JSON.stringify(result));
-			                    result.map(function (item) {
-			                        students.push(item.email);
-			                    });
-			                } else
-			                    console.error("Failed inserting new teacher. " + result.message);
+			                else
+			                    console.error("No students found!");
 			            }
-			            callback(error, students);
+			            callback(error, result);
 			        });
 			    } else
 			        callback(null, null);
@@ -68,7 +61,7 @@ router.get('/', function (req, res, next) {
                 // 0: result from the first serial function
                 // 1: results from the second serial function
                 console.log("runs successfully! with " + results.length + " results: " + JSON.stringify(results));
-                res.json((results.length > 0) ? { students: results[1]} : {students: []});
+                res.json((results.length > 0) ? { students: results[1].map(i => i.email)} : {students: []});
             }
         }
         );
