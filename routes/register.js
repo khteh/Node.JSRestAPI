@@ -15,7 +15,7 @@ router.get('/:id', function (req, res, next) {
 // POST /students
 router.post('/', function (req, res, next) {
     var teacherID = -1;
-	console.log("POST /students req: "+JSON.stringify(req.body));
+    console.log("POST /api/register req: " + JSON.stringify(req.body));
 	if (req.body.students !== undefined && req.body.teacher !== undefined && req.body.students.length > 0) {
 		async.series([
 			function (callback) {
@@ -42,8 +42,8 @@ router.post('/', function (req, res, next) {
 			            else {
 			                // rows: {"fieldCount":0,"affectedRows":1,"insertId":2,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
 			                if (result.affectedRows === 1) {
-			                    console.log('Teacher ' + req.body.teacher + ' inserted successfully. iD: ');
 			                    teacherID = result.insertId;
+			                    console.log('Teacher ' + req.body.teacher + ' inserted successfully. ID: '+teacherID);
 			                } else
 			                    console.error("Failed inserting new teacher. " + result.message);
 			            }
