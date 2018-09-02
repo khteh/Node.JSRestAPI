@@ -29,7 +29,7 @@ router.get('/', function (req, res, next) {
 			            console.log("Get teacher: " + teacherids);
 			        } else
 			            console.log("No teacher " + teachers);
-			        callback(null, result);
+			        callback(error, result);
 			    });
 			},
             function (callback) {
@@ -51,7 +51,7 @@ router.get('/', function (req, res, next) {
 			                } else
 			                    console.error("Failed inserting new teacher. " + result.message);
 			            }
-			            callback(null, students);
+			            callback(error, students);
 			        });
 			    } else
 			        callback(null, null);
@@ -59,19 +59,16 @@ router.get('/', function (req, res, next) {
         ], function (err, results) {
             if (err) {
                 console.error("Error: " + JSON.stringify(err));
-                callback(true, null);
+                res.status(err.status || 500);
             } else if (typeof results === 'undefined' || results === null || !results.length) {
                 console.error("Failed with null/empty result!");
-                callback(true, null);
+                res.status(err.status || 500);
             } else {
-                console.log("commonstudents results: "+JSON.stringify(results));
                 // Index of results:
                 // 0: result from the first serial function
                 // 1: results from the second serial function
-                console.log("runs successfully! with " + results.length + " results!");
-                //callback(true, results[1]);
-                var result = { students: results[1]};
-                res.json(result);
+                console.log("runs successfully! with " + results.length + " results: " + JSON.stringify(results));
+                res.json((results.length > 0) ? { students: results[1]} : {students: []});
             }
         }
         );

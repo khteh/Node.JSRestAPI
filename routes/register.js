@@ -29,7 +29,7 @@ router.post('/', function (req, res, next) {
 			            //console.log('rows: '+rows+);
 			        } else
 			            console.log("No teacher "+req.body.teacher);
-			        callback(null, result);
+			        callback(error, result);
 			    });
 			}, function (callback) {
 			    console.log("teacher "+teacherID);
@@ -47,7 +47,7 @@ router.post('/', function (req, res, next) {
 			                } else
 			                    console.error("Failed inserting new teacher. " + result.message);
 			            }
-			            callback(null, result);
+			            callback(error, result);
 			        });
 			    } else
 			        callback(null, null);
@@ -63,17 +63,17 @@ router.post('/', function (req, res, next) {
 			                    console.error(error.message);
 			                else if (result.length > 0) {
 			                    studentID = result[0].id;
-			                    console.log("Get student: " + studentID);
+			                    console.log(`Exiting student: ${studentID}`);
 			                    //console.log('rows: '+rows+);
 			                } else
-			                    console.log("No student " + student);
-			                callback(null, result);
+			                    console.log(`New student: ${student}`);
+			                callback(error, result);
 			            });
 			        }, function (callback) {
-                        if (studentID === -1) {
+			            if (studentID === -1) {
 			                var insert = `INSERT INTO students (email, teacherid) VALUES ('${student}', ${teacherID})`;
 			                console.log("insert statement: " + insert);
-			                var newStudent = db.query(insert, function (error, rows, fields) {
+			                var newStudent = db.query(insert, function (error, results) {
 			                    if (error) {
 			                        console.error(error.message); // if error occured during connection 
 			                        //context.fail('Error executing database query to Insert the booking');
@@ -81,48 +81,45 @@ router.post('/', function (req, res, next) {
 			                        console.log('Student ' + student + ' inserted successfully ');
 			                        //context.done(null, 'Student record inserted successfully ' + student);	    				
 			                    }
+			                    callback(error, results);
 			                });
-			            } //if
+			            } else//if
+			                console.log(`Skip existing student ${studentID}`);
+			            callback(null, null);
 			           } //function
-			        ], function (err) {
+			        ], function (err, result) {
 			            // if any of the file processing produced an error, err would equal that error
-			            if (err) {
+			            if (err)
 			                // One of the iterations produced an error.
 			                // All processing will now stop.
 			                console.error('A student failed to process');
-			            } else {
-			                console.log('All students have been processed successfully');
-			            }
+			            callback(err, result);
 			        });
-			    }, function (err) {
+			    }, function (err, result) {
 			        // if any of the file processing produced an error, err would equal that error
-			        if( err ) {
+			        if (err)
 			            // One of the iterations produced an error.
 			            // All processing will now stop.
 			            console.error('A student failed to process');
-			        } else {
+			        else
 			            console.log('All students have been processed successfully');
-			        }
+			        callback(err, result);
 			    });
 			}
 		], function(err, results) {
             if (err) {
-			    console.error("Error: "+JSON.stringify(err));
-                callback(true, null);
-			} else if (typeof results === 'undefined' || results === null || !results.length) {
-			    console.error("Failed with null/empty result!");
-				callback(true, null);
+                console.error("Error: " + JSON.stringify(err));
+                res.status(err.status || 500);
+                res.json('Internal server error');
             } else {
 			    // Index of results:
 				// 0: result from the first serial function
-				// 1: results from the second serial function
-				console.log("runs successfully! with "+results[1].length+" results!");
-				console.log("results: "+JSON.stringify(results[1]));
-				callback(true, results[1]);
+                // 1: results from the second serial function
+                //console.log("register result: " + JSON.stringify(results));
+                res.status(204).end();
             }
 		});
 	}
-	res.json('');
 });
 // PUT /todos/:id
 router.put('/:id', function (req, res, next) {
