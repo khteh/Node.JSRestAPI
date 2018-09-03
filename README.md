@@ -16,7 +16,7 @@ CREATE TABLE `teachers` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ```
 ```bash
-* CREATE TABLE `students` (
+CREATE TABLE `students` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(320) NOT NULL,
   `teacherid` int(11) DEFAULT NULL,
