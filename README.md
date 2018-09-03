@@ -1,8 +1,8 @@
 # Node.JS API Server
 Teachers need a system where they can perform administrative functions for their students. Teachers and students are identified by their email addresses.
 
-Database:
-
+# Installation
+## Database:
 * CREATE DATABASE `school` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */;
 * CREATE TABLE `teachers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -22,8 +22,12 @@ Database:
   CONSTRAINT `teacherid` FOREIGN KEY (`teacherid`) REFERENCES `teachers` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-Build Steps:
+## Dependencies:
+```bash
+npm install
+```
 
-* npm install express mysql async --save
-* npm install --save-dev nodemon
-* nodemon
+## Start the program:
+```bash
+set PORT=8888 & npm start
+```
