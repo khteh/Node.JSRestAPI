@@ -24,8 +24,6 @@ Database:
 
 Build Steps:
 
-* npm install
-* npm install mysql --save
-* npm install async --save
+* npm install express mysql async --save
 * npm install --save-dev nodemon
 * nodemon
