@@ -32,12 +32,12 @@ CREATE TABLE `students` (
 npm install
 ```
 
-## Start the program:
+# Start the program:
 ```bash
 set PORT=8888 & npm start
 ```
 
-## Run tests:
+# Run tests:
 ```bash
 npm test
 ```
