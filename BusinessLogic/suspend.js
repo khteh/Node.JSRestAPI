@@ -1,9 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../lib/db.js');
-var async = require('async'); 
-// POST /students
-router.post('/', function (req, res, next) {
+var async = require('async');
+function Suspend(req, res, next) {
     var studentID = -1;
     console.log("POST /api/suspend req: " + JSON.stringify(req.body));
 	if (req.body.student !== undefined) {
@@ -55,5 +54,5 @@ router.post('/', function (req, res, next) {
             }
 		});
 	}
-});
-module.exports = router;
+};
+module.exports = Suspend;

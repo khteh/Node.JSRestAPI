@@ -3,8 +3,7 @@ var router = express.Router();
 var db = require('../lib/db.js');
 var async = require('async');
 var url = require('url');
-// GET /students list
-router.get('/', function (req, res, next) {
+function CommonStudents(req, res, next) {
     var url_parts = url.parse(req.url, true);
     var query = url_parts.query;
     console.log('GET /api/commonstudents query: ' + JSON.stringify(query));
@@ -66,5 +65,5 @@ router.get('/', function (req, res, next) {
         }
         );
     }//if
-});
-module.exports = router;
+};
+module.exports = CommonStudents;

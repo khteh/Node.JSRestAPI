@@ -1,9 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../lib/db.js');
-var async = require('async'); 
-// POST /students
-router.post('/', function (req, res, next) {
+var async = require('async');
+function Registration(req, res, next) {
     var teacherID = -1;
     console.log("POST /api/register req: " + JSON.stringify(req.body));
 	if (req.body.students !== undefined && req.body.teacher !== undefined && req.body.students.length > 0) {
@@ -110,5 +109,5 @@ router.post('/', function (req, res, next) {
             }
 		});
 	}
-});
-module.exports = router;
+};
+module.exports = Registration;
