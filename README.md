@@ -13,19 +13,28 @@ CREATE TABLE `teachers` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `Non-Clustered` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ```
 ```bash
 CREATE TABLE `students` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(320) NOT NULL,
-  `teacherid` int(11) DEFAULT NULL,
   `isSuspended` tinyint(4) NOT NULL DEFAULT '0',
   UNIQUE KEY `id_UNIQUE` (`id`),
-  KEY `Non-Clustered` (`email`),
+  KEY `Non-Clustered` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+```
+```bash
+CREATE TABLE `teacher_student` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `teacherid` int(11) NOT NULL,
+  `studentid` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
   KEY `teacherid_idx` (`teacherid`),
+  KEY `studentid_idx` (`studentid`),
+  CONSTRAINT `studentid` FOREIGN KEY (`studentid`) REFERENCES `students` (`id`),
   CONSTRAINT `teacherid` FOREIGN KEY (`teacherid`) REFERENCES `teachers` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ```
 ## Dependencies:
 ```bash
