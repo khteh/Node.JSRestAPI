@@ -13,7 +13,7 @@ var suspend = require('../BusinessLogic/suspend.js');
 var commonstudents = require('../BusinessLogic/commonstudents.js');
 chai.use(chaiHttp);
 expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
-//Our parent block
+//Clean up before all tests
 before((done) => {
     console.log("Cleanup teacher_student table!");
     db.query('delete from teacher_student', function (error, result) {
