@@ -1,5 +1,5 @@
 # Node.JS API Server
-Teachers need a system where they can perform administrative functions for their students. Teachers and students are identified by their email addresses.
+Teachers need a system where they can perform administrative functions for their students. Teachers and students are identified by their email addresses. Unit tests using mocha framework with char assertion library.
 
 # Installation
 ## Database:
