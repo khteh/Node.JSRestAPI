@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "mocha tests --timeout 10000 --recursive --watch"
   },
   "dependencies": {
     "async": "^2.6.1",
@@ -16,6 +17,9 @@
     "mysql": "^2.16.0"
   },
   "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-http": "^4.2.0",
+    "mocha": "^5.2.0",
     "nodemon": "^1.18.4"
   }
 }

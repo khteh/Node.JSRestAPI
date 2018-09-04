@@ -21,7 +21,7 @@ function Registration(req, res, next) {
 			        callback(error, result);
 			    });
 			}, function (callback) {
-			    console.log("teacher "+teacherID);
+			    console.log(`teacher ${teacherID}`);
 			    if (teacherID === -1) {
 			        var teacher_query = `INSERT INTO teachers (email) VALUES ('${req.body.teacher}')`;
 			        console.log("insert statement: " + teacher_query);

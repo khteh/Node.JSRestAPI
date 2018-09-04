@@ -59,8 +59,9 @@ function CommonStudents(req, res, next) {
                 // Index of results:
                 // 0: result from the first serial function
                 // 1: results from the second serial function
-                console.log("runs successfully! with " + results.length + " results: " + JSON.stringify(results));
-                res.json((results.length > 0) ? { students: results[1].map(i => i.email)} : {students: []});
+                var students = { students: results[1].map(i => i.email) };
+                console.log("GET /api/commonstudents successful. " + students.length + " results: " + JSON.stringify(students));
+                res.json(students);
             }
         }
         );
