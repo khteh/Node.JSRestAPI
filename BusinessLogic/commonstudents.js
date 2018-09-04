@@ -30,8 +30,8 @@ function CommonStudents(req, res, next) {
 			}, function (callback) {
                 console.log(`teacherids ${teacherids}`);
                 if (teacherids.length > 0) {
-                    // SELECT count(*), id, teacherid,studentid FROM school.teacher_student where teacherid in (10,11) GROUP BY studentid HAVING COUNT(*) > 1;
-                    var students_query = `SELECT count(*), studentid FROM school.teacher_student where teacherid in ('${teacherids}') GROUP BY studentid HAVING COUNT(*) > 1;`;
+                    // SELECT count(*), id, teacherid,studentid FROM teacher_student where teacherid in (10,11) GROUP BY studentid HAVING COUNT(*) > 1;
+                    var students_query = `SELECT count(*), studentid FROM teacher_student where teacherid in ('${teacherids}') GROUP BY studentid HAVING COUNT(*) > 1;`;
 			        console.log(`students_query: ${students_query}`);
 			        db.query(students_query, function (error, result) {
 			            if (error)

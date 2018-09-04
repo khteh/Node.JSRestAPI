@@ -6,28 +6,34 @@ var chaiHttp = require('chai-http');
 var expect = require('chai').expect;
 var should = require('chai').should();
 var app = require('../app');
+var db = require('../lib/db.js');
 var registration = require('../BusinessLogic/registration.js');
 var notifications = require('../BusinessLogic/notifications.js');
 var suspend = require('../BusinessLogic/suspend.js');
 var commonstudents = require('../BusinessLogic/commonstudents.js');
 chai.use(chaiHttp);
-/*
-  * Test the /GET commonstudents
-  */
-describe('/GET commonstudents', () => {
-    it('it should GET students common to a given list of teachers', (done) => {
-        chai.request(app)
-            .get('/api/commonstudents')
-            .query({ teacher: ['teacherken@gmail.com', 'teacher1@gmail.com', 'teacher2@gmail.com', 'teacher3@gmail.com', 'teacher4@gmail.com'] })
-            .end((err, res) => {
-                //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
-                res.should.have.status(200);
-                expect(res.body).to.have.property('students');
-                expect(res.body.students).to.be.a('array');
-                //res.body.students.length.should.be.eql(0);
-                done();
-            });
+expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
+//Our parent block
+before((done) => {
+    console.log("Cleanup teacher_student table!");
+    db.query('delete from teacher_student', function (error, result) {
+        expect(error).to.be.null;
+        done();
     });
+});
+before((done) => {
+        console.log("Cleanup students table!");
+        db.query('delete from students', function (error, result) {
+            expect(error).to.be.null;
+            done();
+        });
+});
+before((done) => {
+        console.log("Cleanup teachers table!");
+        db.query('delete from teachers', function (error, result) {
+            expect(error).to.be.null;
+            done();
+        });
 });
 /*
   * Test the /POST /api/register
@@ -35,7 +41,7 @@ describe('/GET commonstudents', () => {
 describe('/POST /api/register', () => {
     it('it should register one or more students to a specified teacher', (done) => {
         let register = {
-            "teacher": "teacher1@gmail.com",
+            "teacher": "teacher1@example.com",
             "students": [
                 "student1@example.com",
                 "student2@example.com"
@@ -47,6 +53,47 @@ describe('/POST /api/register', () => {
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
                 res.should.have.status(204);
+                done();
+            });
+    });
+});
+/*
+  * Test the /POST /api/register
+  */
+describe('/POST /api/register', () => {
+    it('it should register one or more students to a specified teacher', (done) => {
+        let register = {
+            "teacher": "teacher2@example.com",
+            "students": [
+                "student2@example.com",
+                "student3@example.com"
+            ]
+        }
+        chai.request(app)
+            .post('/api/register')
+            .send(register)
+            .end((err, res) => {
+                //console.log("/POST /api/register response: " + JSON.stringify(res));
+                res.should.have.status(204);
+                done();
+            });
+    });
+});
+/*
+  * Test the /GET commonstudents
+  */
+describe('/GET commonstudents', () => {
+    it('it should GET students common to a given list of teachers', (done) => {
+        chai.request(app)
+            .get('/api/commonstudents')
+            .query({ teacher: ['teacher1@example.com', 'teacher2@example.com'] })
+            .end((err, res) => {
+                //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
+                res.should.have.status(200);
+                expect(res.body).to.have.property('students');
+                expect(res.body.students).to.be.a('array');
+                expect(res.body.students.length).to.be.eql(1);
+                expect(res.body.students[0]).to.be.eql('student2@example.com');
                 done();
             });
     });
@@ -73,8 +120,8 @@ describe('/POST /api/suspend', () => {
 describe('/POST /api/retrievefornotifications', () => {
     it('it should retrieve a list of students who can receive a given notification', (done) => {
         let notifications = {
-            "teacher": "teacher1@gmail.com",
-            "notification": "Hello students! @student1@example.com @student3@example.com @student5@example.com @studentjon@example.com"
+            "teacher": "teacher1@example.com",
+            "notification": "Hello students! @student1@example.com @student2@example.com @student3@example.com"
         }
         chai.request(app)
             .post('/api/retrievefornotifications')
@@ -84,6 +131,7 @@ describe('/POST /api/retrievefornotifications', () => {
                 res.should.have.status(200);
                 expect(res.body).to.have.property('recipients');
                 expect(res.body.recipients).to.be.a('array');
+                expect(res.body.recipients.length).to.be.eql(2);
                 done();
             });
     });

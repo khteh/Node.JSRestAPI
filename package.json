@@ -3,11 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "SET NODE_ENV=default && node ./bin/www",
     "test": "mocha tests --timeout 10000 --recursive --watch"
   },
   "dependencies": {
-    "async": "^2.6.1",
+    "async": "^2.6.1",  
+    "config": "^2.0.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "ejs": "~2.5.7",

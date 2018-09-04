@@ -44,7 +44,7 @@ function Notifications(req, res, next) {
                                 callback(error, result);
                             });
                         }, function (callback) {
-                            var student_query = `select s.email from school.teacher_student ts join school.students s on ts.studentid = s.id where teacherid = ${teacherID} && s.isSuspended != 1;`;
+                            var student_query = `select s.email from teacher_student ts join students s on ts.studentid = s.id where teacherid = ${teacherID} && s.isSuspended != 1;`;
                             console.log(`select statement: ${student_query}`);
                             db.query(student_query, function (error, result) {
                                 if (error)
