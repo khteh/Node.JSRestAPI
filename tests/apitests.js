@@ -52,7 +52,8 @@ describe('/POST /api/register', () => {
             .send(register)
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
-                res.should.have.status(204);
+                expect(res).to.have.status(204);
+                expect(err).to.be.null;
                 done();
             });
     });
@@ -74,7 +75,8 @@ describe('/POST /api/register', () => {
             .send(register)
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
-                res.should.have.status(204);
+                expect(res).to.have.status(204);
+                expect(err).to.be.null;
                 done();
             });
     });
@@ -89,9 +91,11 @@ describe('/GET commonstudents', () => {
             .query({ teacher: ['teacher1@example.com', 'teacher2@example.com'] })
             .end((err, res) => {
                 //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
-                res.should.have.status(200);
+                expect(res).to.have.status(200);
+                expect(err).to.be.null;
+                expect(res).to.have.property('body');
                 expect(res.body).to.have.property('students');
-                expect(res.body.students).to.be.a('array');
+                expect(res.body.students).to.be.a('array').that.includes('student2@example.com');
                 expect(res.body.students.length).to.be.eql(1);
                 expect(res.body.students[0]).to.be.eql('student2@example.com');
                 done();
@@ -108,8 +112,9 @@ describe('/POST /api/suspend', () => {
             .post('/api/suspend')
             .send(suspend)
             .end((err, res) => {
-                //console.log("/POST /api/suspend response: " + JSON.stringify(res));
-                res.should.have.status(204);
+                console.log("/POST /api/suspend response: " + JSON.stringify(res));
+                expect(res).to.have.status(204);
+                expect(err).to.be.null;
                 done();
             });
     });
@@ -128,9 +133,11 @@ describe('/POST /api/retrievefornotifications', () => {
             .send(notifications)
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
-                res.should.have.status(200);
+                expect(res).to.have.status(200);
+                expect(err).to.be.null;
+                expect(res).to.have.property('body');
                 expect(res.body).to.have.property('recipients');
-                expect(res.body.recipients).to.be.a('array');
+                expect(res.body.recipients).to.be.a('array').that.includes('student2@example.com', 'student3@example.com');
                 expect(res.body.recipients.length).to.be.eql(2);
                 done();
             });
