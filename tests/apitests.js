@@ -73,7 +73,7 @@ describe('/POST /api/suspend', () => {
 describe('/POST /api/retrievefornotifications', () => {
     it('it should retrieve a list of students who can receive a given notification', (done) => {
         let notifications = {
-            "teacher": "teacherken@example.com",
+            "teacher": "teacher1@gmail.com",
             "notification": "Hello students! @student1@example.com @student3@example.com @student5@example.com @studentjon@example.com"
         }
         chai.request(app)
