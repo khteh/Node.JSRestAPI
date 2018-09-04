@@ -42,11 +42,13 @@ npm install
 ```
 
 # Start the program:
+* Edit config/default.json to configure the database connection parameters
 ```bash
 set PORT=8888 & npm start
 ```
 
 # Run tests:
+* Edit config/test.json to configure the database connection parameters
 ```bash
 npm test
 ```
