@@ -14,7 +14,7 @@ function Suspend(req, res, next) {
 			            console.error(error.message);
 			        else if (result.length > 0) {
 			            studentID = result[0].id;
-			            console.log(`Get student: ${studentID}`);
+			            //console.log(`Get student: ${studentID}`);
 			            //console.log('rows: '+rows+);
 			        } else
 			            console.log(`Student ${req.body.student} not found!`);
@@ -24,7 +24,7 @@ function Suspend(req, res, next) {
 			    console.log("studentID "+studentID);
 			    if (studentID !== -1) {
 			        var student_query = `UPDATE students SET isSuspended = 1 WHERE id='${studentID}'`;
-			        console.log("UPDATE statement: " + student_query);
+			        //console.log("UPDATE statement: " + student_query);
 			        var newTeacher = db.query(student_query, function (error, result) {
 			            if (error)
 			                console.error(error.message); // if error occured during connection 

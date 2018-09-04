@@ -58,7 +58,7 @@ function Registration(req, res, next) {
 			    console.log("Processing " + req.body.students.length + " students...");
 			    async.each(req.body.students, function (student, callback) {
 			        var studentID = -1, relationshipID = -1;
-			        console.log(student);
+			        console.log(`Processing student: ${student}`);
 			        async.series([
                         function (callback) {
 			                getStudent(student, function (err, result) {
@@ -103,7 +103,7 @@ function Registration(req, res, next) {
                                             console.error(error.message);
                                         else if (result.length > 0) {
                                             relationshipID = result[0].id;
-                                            console.log(`Get relationship: ${relationshipID}`);
+                                            //console.log(`Get relationship: ${relationshipID}`);
                                         } else
                                             console.log("No relationship!");
                                         callback(error, result);

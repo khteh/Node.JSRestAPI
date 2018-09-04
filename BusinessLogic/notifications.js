@@ -7,7 +7,7 @@ function Notifications(req, res, next) {
     console.log("POST /api/retrievefornotifications req: " + JSON.stringify(req.body));
     if (req.body.notification !== undefined && req.body.teacher !== undefined && req.body.notification.length > 0) {
         var notifications = req.body.notification.split(' @').splice(1);
-        console.log("notifications: " + JSON.stringify(notifications));
+        //console.log("notifications: " + JSON.stringify(notifications));
         var students = notifications.join('\',\'');
         console.log(`students: ${students}`);
 		async.series([
@@ -30,7 +30,7 @@ function Notifications(req, res, next) {
 			        async.parallel([
                         function (callback) {
                             var student_query = `select email from students where isSuspended != 1 && email in ('${students}')`;
-                            console.log(`select statement: ${student_query}`);
+                            //console.log(`select statement: ${student_query}`);
                             db.query(student_query, function (error, result) {
                                 if (error)
                                     console.error(error.message); // if error occured during connection 
@@ -45,7 +45,7 @@ function Notifications(req, res, next) {
                             });
                         }, function (callback) {
                             var student_query = `select s.email from teacher_student ts join students s on ts.studentid = s.id where teacherid = ${teacherID} && s.isSuspended != 1;`;
-                            console.log(`select statement: ${student_query}`);
+                            //console.log(`select statement: ${student_query}`);
                             db.query(student_query, function (error, result) {
                                 if (error)
                                     console.error(error.message); // if error occured during connection 

@@ -112,7 +112,7 @@ describe('/POST /api/suspend', () => {
             .post('/api/suspend')
             .send(suspend)
             .end((err, res) => {
-                console.log("/POST /api/suspend response: " + JSON.stringify(res));
+                //console.log("/POST /api/suspend response: " + JSON.stringify(res));
                 expect(res).to.have.status(204);
                 expect(err).to.be.null;
                 done();
