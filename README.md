@@ -36,3 +36,8 @@ npm install
 ```bash
 set PORT=8888 & npm start
 ```
+
+## Run tests:
+```bash
+npm test
+```
