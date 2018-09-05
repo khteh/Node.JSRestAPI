@@ -41,7 +41,7 @@ CREATE TABLE `teacher_student` (
 npm install
 ```
 
-# Start the program:
+# Start the application:
 * Edit `config/default.json` to configure the database connection parameters
 ```
 set PORT=8888 & npm start
