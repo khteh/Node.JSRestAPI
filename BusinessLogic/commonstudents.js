@@ -39,10 +39,10 @@ function CommonStudents(req, res, next) {
 			            else {
 			                // rows: {"fieldCount":0,"affectedRows":1,"insertId":2,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
 			                if (result.length > 0) {
-			                    //console.log(result.length + ' students: ' + JSON.stringify(result));
+			                    //console.log('Common: '+result.length + ' students: ' + JSON.stringify(result));
 			                    var ids = result.map(i => i.studentid);
 			                    studentids = ids.join('\',\'');
-			                    console.log(result.length + ' students: ' + studentids);
+			                    console.log('Common: '+ result.length + ' students: ' + studentids);
 			                } else
 			                    console.error("No students found!");
 			            }
