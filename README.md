@@ -3,10 +3,10 @@ Teachers need a system where they can perform administrative functions for their
 
 # Installation
 ## Database:
-```bash
+```
 CREATE DATABASE `school` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */;
 ```
-```bash
+```
 CREATE TABLE `teachers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(320) NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE `teachers` (
   KEY `Non-Clustered` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ```
-```bash
+```
 CREATE TABLE `students` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(320) NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE `students` (
   KEY `Non-Clustered` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ```
-```bash
+```
 CREATE TABLE `teacher_student` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `teacherid` int(11) NOT NULL,
@@ -37,18 +37,18 @@ CREATE TABLE `teacher_student` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ```
 ## Dependencies:
-```bash
+```
 npm install
 ```
 
 # Start the program:
 * Edit config/default.json to configure the database connection parameters
-```bash
+```
 set PORT=8888 & npm start
 ```
 
 # Run tests:
 * Edit config/test.json to configure the database connection parameters
-```bash
+```
 npm test
 ```
