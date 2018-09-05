@@ -143,3 +143,27 @@ describe('/POST /api/retrievefornotifications', () => {
             });
     });
 });
+/*
+  * Test the /POST /api/retrievefornotifications
+  */
+describe('/POST /api/retrievefornotifications', () => {
+    it('it should retrieve a list of students who can receive a given notification', (done) => {
+        let notifications = {
+            "teacher": "teacher1@example.com",
+            "notification": "Hello students!"
+        }
+        chai.request(app)
+            .post('/api/retrievefornotifications')
+            .send(notifications)
+            .end((err, res) => {
+                //console.log("/POST /api/register response: " + JSON.stringify(res));
+                expect(res).to.have.status(200);
+                expect(err).to.be.null;
+                expect(res).to.have.property('body');
+                expect(res.body).to.have.property('recipients');
+                expect(res.body.recipients).to.be.a('array').that.includes('student2@example.com');
+                expect(res.body.recipients.length).to.be.eql(1);
+                done();
+            });
+    });
+});
