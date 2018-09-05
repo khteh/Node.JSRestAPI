@@ -130,6 +130,30 @@ describe('Two teachers, two students tests', () => {
      * Test the /POST /api/retrievefornotifications
      */
     describe('/POST /api/retrievefornotifications', () => {
+        it('it should retrieve a list of students who can receive a given notification from teacher1. Unregistered student mentioned should not be considered', (done) => {
+            let notifications = {
+                "teacher": "teacher1@example.com",
+                "notification": "Hello students! @invalidstudent@example.com"
+            }
+            chai.request(app)
+                .post('/api/retrievefornotifications')
+                .send(notifications)
+                .end((err, res) => {
+                    //console.log("/POST /api/register response: " + JSON.stringify(res));
+                    expect(res).to.have.status(200);
+                    expect(err).to.be.null;
+                    expect(res).to.have.property('body');
+                    expect(res.body).to.have.property('recipients');
+                    expect(res.body.recipients).to.be.a('array').that.includes('student1@example.com');
+                    expect(res.body.recipients.length).to.be.eql(1);
+                    done();
+                });
+        });
+    });
+    /*
+     * Test the /POST /api/retrievefornotifications
+     */
+    describe('/POST /api/retrievefornotifications', () => {
         it('it should retrieve a list of students who can receive a given notification from teacher2', (done) => {
         let notifications = {
             "teacher": "teacher1@example.com",
