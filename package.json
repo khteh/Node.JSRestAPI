@@ -7,11 +7,12 @@
     "test": "mocha tests --timeout 10000 --recursive --watch"
   },
   "dependencies": {
-    "async": "^2.6.1",  
+    "async": "^2.6.1",
     "config": "^2.0.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "ejs": "~2.5.7",
+    "email-validator": "^2.0.4",
     "express": "~4.16.0",
     "http-errors": "~1.6.2",
     "morgan": "~1.9.0",

@@ -16,24 +16,74 @@ expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
 describe('Two teachers, two students tests', () => {
     //Clean up before all tests in this block
     before('Cleanup teacher_student table!', (done) => {
-        console.log("Cleanup teacher_student table!");
+        //console.log("Cleanup teacher_student table!");
         db.query('delete from teacher_student', function (error, result) {
             expect(error).to.be.null;
             done();
         });
     });
     before("Cleanup students table!", (done) => {
-        console.log("Cleanup students table!");
+        //console.log("Cleanup students table!");
         db.query('delete from students', function (error, result) {
             expect(error).to.be.null;
             done();
         });
     });
     before("Cleanup teachers table!", (done) => {
-        console.log("Cleanup teachers table!");
+        //console.log("Cleanup teachers table!");
         db.query('delete from teachers', function (error, result) {
             expect(error).to.be.null;
             done();
+        });
+    });
+    /*
+      * Test the /POST /api/register
+      */
+    describe('/POST /api/register', () => {
+        it('It should NOT register teacher1 and student1 due to invalid email of the teacher!', (done) => {
+            let register = {
+                "teacher": "teacher1 @example.com",
+                "students": [
+                    "student1@example.com",
+                ]
+            }
+            chai.request(app)
+                .post('/api/register')
+                .send(register)
+                .end((err, res) => {
+                    //console.log("/POST /api/register response: " + JSON.stringify(res));
+                    expect(res).to.have.status(400);
+                    expect(res).to.have.property('body');
+                    expect(res.body).to.have.property('message');
+                    expect(res.body.message).to.not.be.empty;
+                    //console.log("/POST /api/register err: "+JSON.stringify(err));
+                    done();
+                });
+        });
+    });
+    /*
+      * Test the /POST /api/register
+      */
+    describe('/POST /api/register', () => {
+        it('It should NOT register teacher1 and student1 due to invalid email of the student!', (done) => {
+            let register = {
+                "teacher": "teacher1@example.com",
+                "students": [
+                    "student1 @example.com",
+                ]
+            }
+            chai.request(app)
+                .post('/api/register')
+                .send(register)
+                .end((err, res) => {
+                    //console.log("/POST /api/register response: " + JSON.stringify(res));
+                    expect(res).to.have.status(400);
+                    expect(res).to.have.property('body');
+                    expect(res.body).to.have.property('message');
+                    expect(res.body.message).to.not.be.empty;
+                    //console.log("/POST /api/register err: "+JSON.stringify(err));
+                    done();
+                });
         });
     });
     /*

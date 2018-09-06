@@ -1,10 +1,27 @@
 var express = require('express');
+var emailvalidator = require('email-validator');
 var router = express.Router();
 var db = require('../lib/db.js');
 var async = require('async');
 function Registration(req, res, next) {
     var teacherID = -1;
+    var message = {'message': 'Calling /api/register'};
     console.log("POST /api/register req: " + JSON.stringify(req.body));
+    var teacher = '';
+    var students = [];
+    if (req.body.teacher === undefined)
+        message.message += ' without a teacher specified!';
+    else if (emailvalidator.validate(req.body.teacher) === false)
+        message.message += ' with invalid teacher email address!';
+    else
+        teacher = req.body.teacher;
+    if (req.body.students !== undefined && req.body.students.length > 0)
+        req.body.students.map(i => { if (emailvalidator.validate(i)) students.push(i) });
+    if (students.length == 0) {
+        if (teacher === '')
+            message.message += ' and';
+        message.message += ' without any student with valid email address specified!';
+    }
     getStudent = function (student, callback) {
         var studentID = -1;
         var student_query = `select id from students where email = '${student}'`;
@@ -19,10 +36,10 @@ function Registration(req, res, next) {
             callback(error, studentID);
         });
     }
-	if (req.body.students !== undefined && req.body.teacher !== undefined && req.body.students.length > 0) {
+    if (teacher !=='' && students.length > 0) {
 		async.series([
 			function (callback) {
-			    var teacher_query = `select id from teachers where email = '${req.body.teacher}'`;
+			    var teacher_query = `select id from teachers where email = '${teacher}'`;
 			    db.query(teacher_query, function (error, result) {
 			        if (error)
 			            console.error(error.message);
@@ -31,14 +48,14 @@ function Registration(req, res, next) {
 			            console.log(`Get teacher: ${teacherID}`);
 			            //console.log('rows: '+rows+);
 			        } else
-			            console.log(`No teacher ${req.body.teacher}`);
+			            console.log(`No teacher ${teacher}`);
 			        callback(error, result);
 			    });
 			}, function (callback) {
 			    console.log(`teacher ${teacherID}`);
 			    if (teacherID === -1) {
-			        console.log(`Add new teacher ${req.body.teacher}`);
-			        var teacher_query = `INSERT INTO teachers (email) VALUES ('${req.body.teacher}')`;
+			        console.log(`Add new teacher ${teacher}`);
+			        var teacher_query = `INSERT INTO teachers (email) VALUES ('${teacher}')`;
 			        var newTeacher = db.query(teacher_query, function (error, result) {
 			            if (error)
 			                console.error(error.message); // if error occured during connection 
@@ -46,17 +63,17 @@ function Registration(req, res, next) {
 			                // rows: {"fieldCount":0,"affectedRows":1,"insertId":2,"serverStatus":2,"warningCount":0,"message":"","protocol41":true,"changedRows":0}
 			                if (result.affectedRows === 1) {
 			                    teacherID = result.insertId;
-			                    console.log('Teacher ' + req.body.teacher + ' inserted successfully. ID: '+teacherID);
+			                    console.log(`Teacher ${teacher} inserted successfully. ID: ${teacherID}`);
 			                } else
-			                    console.error("Failed inserting new teacher. " + result.message);
+			                    console.error(`Failed inserting new teacher. ${result.message}`);
 			            }
 			            callback(error, result);
 			        });
 			    } else
 			        callback(null, null);
 			}, function (callback) {
-			    console.log("Processing " + req.body.students.length + " students...");
-			    async.each(req.body.students, function (student, callback) {
+			    console.log(`Processing ${students.length} students...`);
+			    async.each(students, function (student, callback) {
 			        var studentID = -1, relationshipID = -1;
 			        console.log(`Processing student: ${student}`);
 			        async.series([
@@ -166,6 +183,9 @@ function Registration(req, res, next) {
                 res.status(204).end();
             }
 		});
-	}
+    } else { // if (teacher !=='' && students.length > 0) {
+        res.status(400);
+        res.json(message);
+    }
 };
 module.exports = Registration;
