@@ -16,13 +16,22 @@ function Registration(req, res, next) {
     else
         teacher = req.body.teacher;
     if (req.body.students !== undefined && req.body.students.length > 0) {
-        if (Array.isArray(req.body.students))
+        if (!Array.isArray(req.body.students)) {
+            if (teacher === '')
+                message.message += ' and';
+            message.message += ' without a list of students specified!';
+        } else {
             req.body.students.map(i => { if (emailvalidator.validate(i)) students.push(i) });
-    }
-    if (students.length == 0) {
+            if (students.length == 0) {
+                if (teacher === '')
+                    message.message += ' and';
+                message.message += ' without any student with valid email address specified!';
+            }
+        }
+    } else {
         if (teacher === '')
             message.message += ' and';
-        message.message += ' without any student with valid email address specified!';
+        message.message += ' without a valid list of students specified!';
     }
     getStudent = function (student, callback) {
         var studentID = -1;

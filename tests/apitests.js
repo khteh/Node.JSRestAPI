@@ -13,6 +13,13 @@ var suspend = require('../BusinessLogic/suspend.js');
 var commonstudents = require('../BusinessLogic/commonstudents.js');
 chai.use(chaiHttp);
 expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
+verifyClientError = function (err, res) {
+    expect(res).to.have.status(400);
+    expect(res).to.have.property('body');
+    expect(res.body).to.have.property('message');
+    expect(res.body.message).to.not.be.empty;
+    //console.log("/POST /api/register err: "+JSON.stringify(err));
+}
 describe('Two teachers, two students tests', () => {
     //Clean up before all tests in this block
     before('Cleanup teacher_student table!', (done) => {
@@ -45,12 +52,7 @@ describe('Two teachers, two students tests', () => {
                 .post('/api/register')
                 .send({})
                 .end((err, res) => {
-                    //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).to.have.status(400);
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('message');
-                    expect(res.body.message).to.not.be.empty;
-                    //console.log("/POST /api/register err: "+JSON.stringify(err));
+                    verifyClientError(err, res);
                     done();
                 });
         });
@@ -70,12 +72,7 @@ describe('Two teachers, two students tests', () => {
                 .post('/api/register')
                 .send(register)
                 .end((err, res) => {
-                    //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).to.have.status(400);
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('message');
-                    expect(res.body.message).to.not.be.empty;
-                    //console.log("/POST /api/register err: "+JSON.stringify(err));
+                    verifyClientError(err, res);
                     done();
                 });
         });
@@ -95,12 +92,7 @@ describe('Two teachers, two students tests', () => {
                 .post('/api/register')
                 .send(register)
                 .end((err, res) => {
-                    //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).to.have.status(400);
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('message');
-                    expect(res.body.message).to.not.be.empty;
-                    //console.log("/POST /api/register err: "+JSON.stringify(err));
+                    verifyClientError(err, res);
                     done();
                 });
         });
@@ -159,12 +151,7 @@ describe('Two teachers, two students tests', () => {
                 .get('/api/commonstudents')
                 .query({})
                 .end((err, res) => {
-                    //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
-                    expect(res).to.have.status(400);
-                    expect(err).to.be.null;
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('message');
-                    expect(res.body.message).to.not.be.empty;
+                    verifyClientError(err, res);
                     done();
                 });
         });
@@ -178,12 +165,7 @@ describe('Two teachers, two students tests', () => {
                 .get('/api/commonstudents')
                 .query({ "teacher": "teacher1 @example.com" })
                 .end((err, res) => {
-                    //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
-                    expect(res).to.have.status(400);
-                    expect(err).to.be.null;
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('message');
-                    expect(res.body.message).to.not.be.empty;
+                    verifyClientError(err, res);
                     done();
                 });
         });
@@ -355,11 +337,7 @@ describe('Two teachers, two students tests', () => {
                 .post('/api/suspend')
                 .send({})
                 .end((err, res) => {
-                    //console.log("/POST /api/suspend response: " + JSON.stringify(res));
-                    expect(res).to.have.status(400);
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('message');
-                    expect(res.body.message).to.not.be.empty;
+                    verifyClientError(err, res);
                     done();
                 });
         });
@@ -374,11 +352,7 @@ describe('Two teachers, two students tests', () => {
                 .post('/api/suspend')
                 .send({})
                 .end((err, res) => {
-                    //console.log("/POST /api/suspend response: " + JSON.stringify(res));
-                    expect(res).to.have.status(400);
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('message');
-                    expect(res.body.message).to.not.be.empty;
+                    verifyClientError(err, res);
                     done();
                 });
         });
@@ -393,11 +367,7 @@ describe('Two teachers, two students tests', () => {
                 .post('/api/suspend')
                 .send({})
                 .end((err, res) => {
-                    //console.log("/POST /api/suspend response: " + JSON.stringify(res));
-                    expect(res).to.have.status(400);
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('message');
-                    expect(res.body.message).to.not.be.empty;
+                    verifyClientError(err, res);
                     done();
                 });
         });
