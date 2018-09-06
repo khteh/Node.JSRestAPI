@@ -387,6 +387,25 @@ describe('Two teachers, two students tests', () => {
      * Test the /POST /api/suspend
      */
     describe('/POST /api/suspend', () => {
+        it('it should FAIL to suspend due to invalid student datatype provided!', (done) => {
+            let suspend = { "student": ["student @example.com"] };
+            chai.request(app)
+                .post('/api/suspend')
+                .send({})
+                .end((err, res) => {
+                    //console.log("/POST /api/suspend response: " + JSON.stringify(res));
+                    expect(res).to.have.status(400);
+                    expect(res).to.have.property('body');
+                    expect(res.body).to.have.property('message');
+                    expect(res.body.message).to.not.be.empty;
+                    done();
+                });
+        });
+    });
+    /*
+     * Test the /POST /api/suspend
+     */
+    describe('/POST /api/suspend', () => {
         it('it should suspend student1', (done) => {
             let suspend = { "student": "student1@example.com" };
             chai.request(app)

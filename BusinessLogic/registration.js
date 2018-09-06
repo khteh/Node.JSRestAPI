@@ -15,8 +15,10 @@ function Registration(req, res, next) {
         message.message += ' with invalid teacher email address!';
     else
         teacher = req.body.teacher;
-    if (req.body.students !== undefined && req.body.students.length > 0)
-        req.body.students.map(i => { if (emailvalidator.validate(i)) students.push(i) });
+    if (req.body.students !== undefined && req.body.students.length > 0) {
+        if (Array.isArray(req.body.students))
+            req.body.students.map(i => { if (emailvalidator.validate(i)) students.push(i) });
+    }
     if (students.length == 0) {
         if (teacher === '')
             message.message += ' and';
