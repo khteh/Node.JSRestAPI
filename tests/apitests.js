@@ -135,6 +135,85 @@ describe('Two teachers, two students tests', () => {
       * Test the /GET commonstudents
       */
     describe('/GET commonstudents', () => {
+        it('it should GET students common to empty query string which results in error', (done) => {
+            chai.request(app)
+                .get('/api/commonstudents')
+                .query({})
+                .end((err, res) => {
+                    //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
+                    expect(res).to.have.status(400);
+                    expect(err).to.be.null;
+                    expect(res).to.have.property('body');
+                    expect(res.body).to.have.property('message');
+                    expect(res.body.message).to.not.be.empty;
+                    done();
+                });
+        });
+    });
+    /*
+      * Test the /GET commonstudents
+      */
+    describe('/GET commonstudents', () => {
+        it('it should GET students common to invalid email in query string which results in error', (done) => {
+            chai.request(app)
+                .get('/api/commonstudents')
+                .query({ "teacher": "teacher1 @example.com" })
+                .end((err, res) => {
+                    //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
+                    expect(res).to.have.status(400);
+                    expect(err).to.be.null;
+                    expect(res).to.have.property('body');
+                    expect(res.body).to.have.property('message');
+                    expect(res.body.message).to.not.be.empty;
+                    done();
+                });
+        });
+    });
+    /*
+      * Test the /GET commonstudents
+      */
+    describe('/GET commonstudents', () => {
+        it('it should GET students common to teacher1@example.com', (done) => {
+            chai.request(app)
+                .get('/api/commonstudents')
+                .query({ "teacher": "teacher1@example.com" })
+                .end((err, res) => {
+                    //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
+                    expect(res).to.have.status(200);
+                    expect(err).to.be.null;
+                    expect(res).to.have.property('body');
+                    expect(res.body).to.have.property('students');
+                    expect(res.body.students).to.be.a('array').that.includes('student1@example.com');
+                    expect(res.body.students.length).to.be.eql(1);
+                    expect(res.body.students[0]).to.be.eql('student1@example.com');
+                    done();
+                });
+        });
+    });
+    /*
+      * Test the /GET commonstudents
+      */
+    describe('/GET commonstudents', () => {
+        it('it should GET students common to teacher2@example.com', (done) => {
+            chai.request(app)
+                .get('/api/commonstudents')
+                .query({ "teacher": "teacher2@example.com" })
+                .end((err, res) => {
+                    //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
+                    expect(res).to.have.status(200);
+                    expect(err).to.be.null;
+                    expect(res).to.have.property('body');
+                    expect(res.body).to.have.property('students');
+                    expect(res.body.students).to.be.a('array').that.includes('student1@example.com', 'student2@example.com');
+                    expect(res.body.students.length).to.be.eql(2);
+                    done();
+                });
+        });
+    });
+    /*
+      * Test the /GET commonstudents
+      */
+    describe('/GET commonstudents', () => {
         it('it should GET students common to teacher1 and teacher2', (done) => {
             chai.request(app)
                 .get('/api/commonstudents')
