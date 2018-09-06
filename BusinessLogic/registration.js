@@ -44,6 +44,7 @@ function Registration(req, res, next) {
                 console.log(`Existing student: ${studentID}`);
             } else
                 console.log(`New student: ${student}`);
+            console.log("calling back...");
             callback(error, studentID);
         });
     }
@@ -185,7 +186,7 @@ function Registration(req, res, next) {
             if (err) {
                 console.error("/api/registration Error: " + JSON.stringify(err));
                 res.status(err.status || 500);
-                res.json({ 'message': 'Internal server error' });
+                res.json({ 'message': err.message });
             } else {
 			    // Index of results:
 				// 0: result from the first serial function

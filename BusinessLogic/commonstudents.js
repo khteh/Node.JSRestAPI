@@ -23,9 +23,10 @@ function CommonStudents(req, res, next) {
 			    var teacher_query = `select id from teachers where email in ('${teachers}')`;
 			    //console.log(`teacher_query: ${teacher_query}`);
 			    db.query(teacher_query, function (error, result) {
-			        if (error)
-			            console.error(error.message);
-			        else if (result.length > 0) {
+			        if (error) {
+			            console.error(`Database error: ${error.message}`);
+			            callback(error, result);
+			        } else if (result.length > 0) {
 			            var ids = result.map(i => i.id);
 			            teacherids = ids.join('\',\'');
 			            //console.log(`Teachers: ${teacherids}`);
@@ -97,7 +98,7 @@ function CommonStudents(req, res, next) {
             if (err) {
                 console.error("Error: " + JSON.stringify(err));
                 res.status(err.status || 500);
-                res.json(err);
+                res.json({ 'message': err.message });
             } else if (typeof results === 'undefined' || results === null || !results.length) {
                 console.error("Failed with null/empty result!");
                 res.status(500);

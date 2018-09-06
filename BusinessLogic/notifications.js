@@ -26,9 +26,10 @@ function Notifications(req, res, next) {
 			function (callback) {
 			    var teacher_query = `select id from teachers where email = '${teacher}'`;
 			    db.query(teacher_query, function (error, result) {
-			        if (error)
-			            console.error(error.message);
-			        else if (result.length > 0) {
+			        if (error) {
+			            console.error(`Database error: ${error.message}`);
+			            callback(error, result);
+			        } else if (result.length > 0) {
 			            teacherID = result[0].id;
 			            console.log(`Get teacher: ${teacherID}`);
 			            callback(error, result);
@@ -86,7 +87,7 @@ function Notifications(req, res, next) {
 		    if (err) {
 		        console.error("Error: " + JSON.stringify(err));
 		        res.status(err.status || 500);
-		        res.json(err);
+		        res.json({ 'message': err.message });
 		    } else if (typeof results === 'undefined' || results === null || !results.length) {
 		        console.error("Failed with null/empty result!");
 		        res.status(500);

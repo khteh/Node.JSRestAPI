@@ -12,7 +12,7 @@ function Suspend(req, res, next) {
 			    var teacher_query = `select id from students where email = '${req.body.student}'`;
 			    db.query(teacher_query, function (error, result) {
 			        if (error)
-			            console.error(error.message);
+			            console.error(`Database error: ${error.message}`);
 			        else if (result.length > 0) {
 			            studentID = result[0].id;
 			            //console.log(`Get student: ${studentID}`);
@@ -45,7 +45,7 @@ function Suspend(req, res, next) {
             if (err) {
                 console.error("Error: " + JSON.stringify(err));
                 res.status(err.status || 500);
-                res.json('Internal server error');
+                res.json({ 'message': err.message });
             } else {
 			    // Index of results:
 				// 0: result from the first serial function
