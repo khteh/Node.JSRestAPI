@@ -48,7 +48,8 @@ set PORT=8888 & npm start
 ```
 
 # Run tests:
-* Edit `config/test.json` to configure the database connection parameters
+* Edit `config/test.json` to configure the database connection parameters.
+* WARNING! All tables in the database configured for test will be emptied for testing purpose.
 ```
 npm test
 ```
