@@ -6,7 +6,7 @@ var async = require('async');
 function Suspend(req, res, next) {
     var studentID = -1;
     console.log("POST /api/suspend req: " + JSON.stringify(req.body));
-	if (req.body.student !== undefined && emailvalidator.validate(req.body.student)) {
+	if (req.body.student !== undefined && typeof(req.body.student) === 'string' && emailvalidator.validate(req.body.student)) {
 		async.series([
 			function (callback) {
 			    var teacher_query = `select id from students where email = '${req.body.student}'`;
@@ -57,7 +57,9 @@ function Suspend(req, res, next) {
 	} else {
 	    res.status(400);
 	    if (!req.hasOwnProperty('body') || !req.body.hasOwnProperty('student') || req.body.student === undefined)
-	        res.json({'message':'Calling /api/suspend without specifying student!'});
+	        res.json({ 'message': 'Calling /api/suspend without specifying student!' });
+	    else if (typeof(req.body.student) !== 'string')
+	        res.json({ 'message': 'Calling /api/suspend with more than one student!' });
 	    else if (!emailvalidator.validate(req.body.student))
 	        res.json({ 'message': 'Calling /api/suspend with invalid student email!' });
 	    else
