@@ -40,6 +40,25 @@ describe('Two teachers, two students tests', () => {
       * Test the /POST /api/register
       */
     describe('/POST /api/register', () => {
+        it('It should FAIL to register due to empty data!', (done) => {
+            chai.request(app)
+                .post('/api/register')
+                .send({})
+                .end((err, res) => {
+                    //console.log("/POST /api/register response: " + JSON.stringify(res));
+                    expect(res).to.have.status(400);
+                    expect(res).to.have.property('body');
+                    expect(res.body).to.have.property('message');
+                    expect(res.body.message).to.not.be.empty;
+                    //console.log("/POST /api/register err: "+JSON.stringify(err));
+                    done();
+                });
+        });
+    });
+    /*
+      * Test the /POST /api/register
+      */
+    describe('/POST /api/register', () => {
         it('It should NOT register teacher1 and student1 due to invalid email of the teacher!', (done) => {
             let register = {
                 "teacher": "teacher1 @example.com",
@@ -323,6 +342,43 @@ describe('Two teachers, two students tests', () => {
                     expect(res.body).to.have.property('recipients');
                     expect(res.body.recipients).to.be.a('array').that.includes('student1@example.com', 'student2@example.com');
                     expect(res.body.recipients.length).to.be.eql(2);
+                    done();
+                });
+        });
+    });
+    /*
+     * Test the /POST /api/suspend
+     */
+    describe('/POST /api/suspend', () => {
+        it('it should FAIL to suspend due to empty data!', (done) => {
+            chai.request(app)
+                .post('/api/suspend')
+                .send({})
+                .end((err, res) => {
+                    //console.log("/POST /api/suspend response: " + JSON.stringify(res));
+                    expect(res).to.have.status(400);
+                    expect(res).to.have.property('body');
+                    expect(res.body).to.have.property('message');
+                    expect(res.body.message).to.not.be.empty;
+                    done();
+                });
+        });
+    });
+    /*
+     * Test the /POST /api/suspend
+     */
+    describe('/POST /api/suspend', () => {
+        it('it should FAIL to suspend due to invalid email provided!', (done) => {
+            let suspend = { "student": "student @example.com" };
+            chai.request(app)
+                .post('/api/suspend')
+                .send({})
+                .end((err, res) => {
+                    //console.log("/POST /api/suspend response: " + JSON.stringify(res));
+                    expect(res).to.have.status(400);
+                    expect(res).to.have.property('body');
+                    expect(res.body).to.have.property('message');
+                    expect(res.body.message).to.not.be.empty;
                     done();
                 });
         });

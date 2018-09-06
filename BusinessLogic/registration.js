@@ -9,7 +9,7 @@ function Registration(req, res, next) {
     console.log("POST /api/register req: " + JSON.stringify(req.body));
     var teacher = '';
     var students = [];
-    if (req.body.teacher === undefined)
+    if (!req.body.hasOwnProperty('teacher') || req.body.teacher === undefined)
         message.message += ' without a teacher specified!';
     else if (emailvalidator.validate(req.body.teacher) === false)
         message.message += ' with invalid teacher email address!';

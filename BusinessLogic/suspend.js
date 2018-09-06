@@ -1,11 +1,12 @@
 var express = require('express');
+var emailvalidator = require('email-validator');
 var router = express.Router();
 var db = require('../lib/db.js');
 var async = require('async');
 function Suspend(req, res, next) {
     var studentID = -1;
     console.log("POST /api/suspend req: " + JSON.stringify(req.body));
-	if (req.body.student !== undefined) {
+	if (req.body.student !== undefined && emailvalidator.validate(req.body.student)) {
 		async.series([
 			function (callback) {
 			    var teacher_query = `select id from students where email = '${req.body.student}'`;
@@ -53,6 +54,14 @@ function Suspend(req, res, next) {
                 res.status(204).end();
             }
 		});
+	} else {
+	    res.status(400);
+	    if (!req.hasOwnProperty('body') || !req.body.hasOwnProperty('student') || req.body.student === undefined)
+	        res.json({'message':'Calling /api/suspend without specifying student!'});
+	    else if (!emailvalidator.validate(req.body.student))
+	        res.json({ 'message': 'Calling /api/suspend with invalid student email!' });
+	    else
+	        res.json({ 'message': `Calling /api/suspend with unregistered student ${req.body.student}!` });
 	}
 };
 module.exports = Suspend;
