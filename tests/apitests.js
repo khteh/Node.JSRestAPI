@@ -236,6 +236,24 @@ describe('Two teachers, two students tests', () => {
      * Test the /POST /api/retrievefornotifications
      */
     describe('/POST /api/retrievefornotifications', () => {
+        it('it should NOT retrieve a list of students who can receive a given notification due to invalid teacher1 email', (done) => {
+            let notifications = {
+                "teacher": "teacher1 @example.com",
+                "notification": "Hello students!"
+            }
+            chai.request(app)
+                .post('/api/retrievefornotifications')
+                .send(notifications)
+                .end((err, res) => {
+                    verifyClientError(err, res);
+                    done();
+                });
+        });
+    });
+    /*
+     * Test the /POST /api/retrievefornotifications
+     */
+    describe('/POST /api/retrievefornotifications', () => {
         it('it should retrieve a list of students who can receive a given notification from teacher1', (done) => {
             let notifications = {
                 "teacher": "teacher1@example.com",
@@ -284,25 +302,49 @@ describe('Two teachers, two students tests', () => {
      * Test the /POST /api/retrievefornotifications
      */
     describe('/POST /api/retrievefornotifications', () => {
-        it('it should retrieve a list of students who can receive a given notification from teacher2', (done) => {
-        let notifications = {
-            "teacher": "teacher1@example.com",
-            "notification": "Hello students! @student2@example.com"
-        }
-        chai.request(app)
-            .post('/api/retrievefornotifications')
-            .send(notifications)
-            .end((err, res) => {
-                //console.log("/POST /api/register response: " + JSON.stringify(res));
-                expect(res).to.have.status(200);
-                expect(err).to.be.null;
-                expect(res).to.have.property('body');
-                expect(res.body).to.have.property('recipients');
-                expect(res.body.recipients).to.be.a('array').that.includes('student1@example.com', 'student2@example.com');
-                expect(res.body.recipients.length).to.be.eql(2);
-                done();
-            });
+        it('it should retrieve a student1 and student2 who can receive a given notification from teacher1', (done) => {
+            let notifications = {
+                "teacher": "teacher1@example.com",
+                "notification": "Hello students! @student2@example.com"
+            }
+            chai.request(app)
+                .post('/api/retrievefornotifications')
+                .send(notifications)
+                .end((err, res) => {
+                    //console.log("/POST /api/register response: " + JSON.stringify(res));
+                    expect(res).to.have.status(200);
+                    expect(err).to.be.null;
+                    expect(res).to.have.property('body');
+                    expect(res.body).to.have.property('recipients');
+                    expect(res.body.recipients).to.be.a('array').that.includes('student1@example.com', 'student2@example.com');
+                    expect(res.body.recipients.length).to.be.eql(2);
+                    done();
+                });
+        });
     });
+    /*
+     * Test the /POST /api/retrievefornotifications
+     */
+    describe('/POST /api/retrievefornotifications', () => {
+        it('it should retrieve a student1 WITHOUT student2 who can receive a given notification from teacher1 due to invalid student2 email', (done) => {
+            let notifications = {
+                "teacher": "teacher1@example.com",
+                "notification": "Hello students! @student2 @example.com"
+            }
+            chai.request(app)
+                .post('/api/retrievefornotifications')
+                .send(notifications)
+                .end((err, res) => {
+                    //console.log("/POST /api/register response: " + JSON.stringify(res));
+                    expect(res).to.have.status(200);
+                    expect(err).to.be.null;
+                    expect(res).to.have.property('body');
+                    expect(res.body).to.have.property('recipients');
+                    expect(res.body.recipients).to.be.a('array').that.includes('student1@example.com');
+                    expect(res.body.recipients.length).to.be.eql(1);
+                    done();
+                });
+        });
     });
     /*
      * Test the /POST /api/retrievefornotifications

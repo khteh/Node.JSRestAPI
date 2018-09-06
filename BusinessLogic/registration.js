@@ -53,7 +53,7 @@ function Registration(req, res, next) {
 			    var teacher_query = `select id from teachers where email = '${teacher}'`;
 			    db.query(teacher_query, function (error, result) {
 			        if (error)
-			            console.error(error.message);
+			            console.error(`Database error: ${error.message}`);
 			        else if (result.length > 0) {
 			            teacherID = result[0].id;
 			            console.log(`Get teacher: ${teacherID}`);
@@ -183,7 +183,7 @@ function Registration(req, res, next) {
 			}
 		], function(err, results) {
             if (err) {
-                console.error("Error: " + JSON.stringify(err));
+                console.error("/api/registration Error: " + JSON.stringify(err));
                 res.status(err.status || 500);
                 res.json({ 'message': 'Internal server error' });
             } else {

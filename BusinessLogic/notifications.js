@@ -1,18 +1,30 @@
 var express = require('express');
+var emailvalidator = require('email-validator');
 var router = express.Router();
 var db = require('../lib/db.js');
 var async = require('async');
 function Notifications(req, res, next) {
     var teacherID = -1;
+    var teacher = '';
+    var message = { 'message': 'Calling /api/retrievefornotifications' };
     console.log("POST /api/retrievefornotifications req: " + JSON.stringify(req.body));
-    if (req.body.notification !== undefined && req.body.teacher !== undefined && req.body.notification.length > 0) {
+    if (!req.body.hasOwnProperty('teacher') || req.body.teacher === undefined)
+        message.message += ' without a teacher specified!';
+    else if (emailvalidator.validate(req.body.teacher) === false)
+        message.message += ' with invalid teacher email address!';
+    else
+        teacher = req.body.teacher;
+    if (req.body.notification !== undefined && teacher !== '' && req.body.notification.length > 0) {
         var notifications = req.body.notification.split(' @').splice(1);
         //console.log("notifications: " + JSON.stringify(notifications));
-        var students = notifications.join('\',\'');
+        var notification_emails = [];
+        notifications.map(i => { if (emailvalidator.validate(i)) notification_emails.push(i) });
+        //console.log("notification_emails: " + JSON.stringify(notification_emails));
+        var students = notification_emails.join('\',\'');
         console.log(`students: ${students}`);
 		async.series([
 			function (callback) {
-			    var teacher_query = `select id from teachers where email = '${req.body.teacher}'`;
+			    var teacher_query = `select id from teachers where email = '${teacher}'`;
 			    db.query(teacher_query, function (error, result) {
 			        if (error)
 			            console.error(error.message);
@@ -21,8 +33,8 @@ function Notifications(req, res, next) {
 			            console.log(`Get teacher: ${teacherID}`);
 			            callback(error, result);
 			        } else {
-			            console.log(`Invalid teacher ${req.body.teacher}`);
-			            callback(null, { 'message': `Invalid teacher ${req.body.teacher}` });
+			            console.log(`Invalid teacher ${teacher}`);
+			            callback(null, { 'message': `Invalid teacher ${teacher}` });
 			        }
 			    });
 			}, function (callback) {
@@ -39,7 +51,7 @@ function Notifications(req, res, next) {
                                     if (result.length > 0)
                                         console.log(result.length + ' students: ' + JSON.stringify(result));
                                     else
-                                        console.error(`No recipients for the notification from ${req.body.teacher} ID ${teacherID}`);
+                                        console.error(`No recipients for the notification from ${teacher} ID ${teacherID}`);
                                 }
                                 callback(error, result);
                             });
@@ -54,7 +66,7 @@ function Notifications(req, res, next) {
                                     if (result.length > 0)
                                         console.log(result.length + ' students: ' + JSON.stringify(result));
                                     else
-                                        console.error(`No recipients for the notification from ${req.body.teacher} ID ${teacherID}`);
+                                        console.error(`No recipients for the notification from ${teacher} ID ${teacherID}`);
                                 }
                                 callback(error, result);
                             });
@@ -100,6 +112,11 @@ function Notifications(req, res, next) {
 		        res.json(recipients);
 		    }
 		});
-	}
+    } else {
+        if (teacher === '') {
+            res.status(400);
+            res.json(message);
+        }
+    }
 };
 module.exports = Notifications;
