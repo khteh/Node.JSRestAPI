@@ -11,7 +11,7 @@ jobs: # a collection of steps
           MYSQL_ALLOW_EMPTY_PASSWORD: true
           MYSQL_PASSWORD:
       - image: mysql:latest
-        command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci
+        command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci --default-authentication-plugin=mysql_native_password
         environment:
           MYSQL_USER: root
           MYSQL_ALLOW_EMPTY_PASSWORD: true
