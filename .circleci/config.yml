@@ -17,7 +17,7 @@ jobs: # a collection of steps
           MYSQL_ALLOW_EMPTY_PASSWORD: true
     steps:
       - checkout
-      - run: sudo apt install -y mysql-client
+      - run: apt update && apt install -y mysql-client
       - run:
           name: Create school DB
           command: mysql -h 127.0.0.1 -u root -e "create database school;"
@@ -57,13 +57,16 @@ jobs: # a collection of steps
       - run:
           name: update-npm
           command: 'sudo npm install -g npm@latest'                                                
-      - restore_cache: # special step to restore the dependency cache
-          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
-          key: dependency-cache-{{ checksum "package.json" }}          
-      - save_cache: # special step to save the dependency cache
-          key: dependency-cache-{{ checksum "package.json" }}
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - save_cache:
           paths:
-            - ./node_modules
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
       - run: # run tests
           name: test
           command: npm test
