@@ -11,7 +11,7 @@ jobs: # a collection of steps
           MYSQL_ALLOW_EMPTY_PASSWORD: true
           MYSQL_PASSWORD:
       - image: mysql:latest
-        command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci --innodb-large-prefix=true --innodb-file-format=Barracuda
+        command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci
         environment:
           MYSQL_USER: root
           MYSQL_ALLOW_EMPTY_PASSWORD: true
@@ -20,7 +20,7 @@ jobs: # a collection of steps
       - run: apt update && apt install -y mysql-client
       - run:
           name: install dockerize
-          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
       - run:
           name: Wait for db
           command: dockerize -wait tcp://localhost:3306 -timeout 1m      
@@ -62,7 +62,7 @@ jobs: # a collection of steps
                                                 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
       - run:
           name: update-npm
-          command: 'sudo npm install -g npm@latest'                                                
+          command: 'npm install -g npm@latest'                                                
       # Download and cache dependencies
       - restore_cache:
           keys:
