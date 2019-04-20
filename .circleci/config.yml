@@ -26,40 +26,7 @@ jobs: # a collection of steps
           command: dockerize -wait tcp://localhost:3306 -timeout 1m      
       - run:
           name: Create school DB
-          command: mysql -h 127.0.0.1 -u root -e "create database school;"
-      - run:
-          name: Create Teachers table
-          command: |
-                mysql -h 127.0.0.1 -u root -e "CREATE TABLE 'teachers' (
-                                                  'id' int(11) NOT NULL AUTO_INCREMENT,
-                                                  'email' varchar(320) NOT NULL,
-                                                  PRIMARY KEY ('id'),
-                                                  UNIQUE KEY 'id_UNIQUE' ('id'),
-                                                  KEY 'Non-Clustered' ('email')
-                                                  ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
-      - run:
-          name: Create Students table
-          command: |
-                 mysql -h 127.0.0.1 -u root -e "CREATE TABLE `students` (
-                                               `id` int(11) NOT NULL AUTO_INCREMENT,
-                                               `email` varchar(320) NOT NULL,
-                                                isSuspended` tinyint(4) NOT NULL DEFAULT '0',
-                                                UNIQUE KEY `id_UNIQUE` (`id`),
-                                                KEY `Non-Clustered` (`email`)
-                                                ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
-      - run:
-          name: Create Teacher-Student relationships table
-          command: |
-                 mysql -h 127.0.0.1 -u root -e "CREATE TABLE `teacher_student` (
-                                               `id` int(11) NOT NULL AUTO_INCREMENT,
-                                               `teacherid` int(11) NOT NULL,
-                                               `studentid` int(11) NOT NULL,
-                                                PRIMARY KEY (`id`),
-                                                KEY `teacherid_idx` (`teacherid`),
-                                                KEY `studentid_idx` (`studentid`),
-                                                CONSTRAINT `studentid` FOREIGN KEY (`studentid`) REFERENCES `students` (`id`),
-                                                CONSTRAINT `teacherid` FOREIGN KEY (`teacherid`) REFERENCES `teachers` (`id`)
-                                                ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+          command: mysql -h 127.0.0.1 -u root < school_db.sql
       - run:
           name: update-npm
           command: 'npm install -g npm@latest'                                                
