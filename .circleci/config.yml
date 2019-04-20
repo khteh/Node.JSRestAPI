@@ -14,7 +14,7 @@ jobs: # a collection of steps
         command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci --default-authentication-plugin=mysql_native_password
         environment:
           MYSQL_USER: guest
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
           MYSQL_PASSWORD: P@$$w0rd
     steps:
       - checkout
