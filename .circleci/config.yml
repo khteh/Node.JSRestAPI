@@ -26,13 +26,13 @@ jobs: # a collection of steps
           name: Wait for db
           command: dockerize -wait tcp://localhost:3306 -timeout 1m      
       - run:
-          name: Create school DB
-          command: mysql -h 127.0.0.1 -u root < school_db.sql
-      - run:
           name: Create and grant guest user
           command: |
-            mysql -h 127.0.0.1 -u root -e "CREATE USER 'guest'@'127.0.0.1' IDENTIFIED BY 'P@$$w0rd';"
-            mysql -h 127.0.0.1 -u root -e "grant all privileges on school_test.* to 'guest'@'127.0.0.1';"
+            mysql -h 127.0.0.1 -u root -e "CREATE USER 'guest'@'localhost' IDENTIFIED BY 'P@$$w0rd';"
+            mysql -h 127.0.0.1 -u root -e "grant all privileges on *.* to 'guest'@'localhost';"
+      - run:
+          name: Create school DB
+          command: mysql -h 127.0.0.1 -u root < school_db.sql
       - run:
           name: update-npm
           command: npm install -g npm@latest
