@@ -26,3 +26,4 @@ CREATE TABLE teacher_student (
   CONSTRAINT teacherid FOREIGN KEY (teacherid) REFERENCES teachers (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 grant all on school_test.* to 'guest'@'localhost';
+FLUSH PRIVILEGES;
