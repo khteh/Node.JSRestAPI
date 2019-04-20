@@ -30,12 +30,12 @@ jobs: # a collection of steps
       - run:
           name: Create Teachers table
           command: |
-                mysql -h 127.0.0.1 -u root -e "CREATE TABLE `teachers` (
-                                                  `id` int(11) NOT NULL AUTO_INCREMENT,
-                                                  `email` varchar(320) NOT NULL,
-                                                  PRIMARY KEY (`id`),
-                                                  UNIQUE KEY `id_UNIQUE` (`id`),
-                                                  KEY `Non-Clustered` (`email`)
+                mysql -h 127.0.0.1 -u root -e "CREATE TABLE 'teachers' (
+                                                  'id' int(11) NOT NULL AUTO_INCREMENT,
+                                                  'email' varchar(320) NOT NULL,
+                                                  PRIMARY KEY ('id'),
+                                                  UNIQUE KEY 'id_UNIQUE' ('id'),
+                                                  KEY 'Non-Clustered' ('email')
                                                   ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
       - run:
           name: Create Students table
