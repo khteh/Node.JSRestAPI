@@ -1,0 +1,93 @@
+version: 2 # use CircleCI 2.0
+jobs: # a collection of steps
+  build: # runs not using Workflows must have a `build` job as entry point
+    working_directory: ~/mern-starter # directory where steps will run
+    docker: # run the steps with Docker
+      - image: node:latest # ...with this image as the primary container; this is where all `steps` will run
+        environment:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_DB: school
+          MYSQL_USER: root
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_PASSWORD:
+      - image: mysql:latest
+        command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci --innodb-large-prefix=true --innodb-file-format=Barracuda
+        environment:
+          MYSQL_USER: root
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+    steps:
+      - checkout
+      - run: sudo apt install -y mysql-client
+      - run:
+          name: Create school DB
+          command: mysql -h 127.0.0.1 -u root -e "create database school;"
+      - run:
+          name: Create Teachers table
+          command: |
+                mysql -h 127.0.0.1 -u root -e "CREATE TABLE `teachers` (
+                                                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                                                  `email` varchar(320) NOT NULL,
+                                                  PRIMARY KEY (`id`),
+                                                  UNIQUE KEY `id_UNIQUE` (`id`),
+                                                  KEY `Non-Clustered` (`email`)
+                                                  ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+      - run:
+          name: Create Students table
+          command: |
+                 mysql -h 127.0.0.1 -u root -e "CREATE TABLE `students` (
+                                               `id` int(11) NOT NULL AUTO_INCREMENT,
+                                               `email` varchar(320) NOT NULL,
+                                                isSuspended` tinyint(4) NOT NULL DEFAULT '0',
+                                                UNIQUE KEY `id_UNIQUE` (`id`),
+                                                KEY `Non-Clustered` (`email`)
+                                                ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+      - run:
+          name: Create Teacher-Student relationships table
+          command: |
+                 mysql -h 127.0.0.1 -u root -e "CREATE TABLE `teacher_student` (
+                                               `id` int(11) NOT NULL AUTO_INCREMENT,
+                                               `teacherid` int(11) NOT NULL,
+                                               `studentid` int(11) NOT NULL,
+                                                PRIMARY KEY (`id`),
+                                                KEY `teacherid_idx` (`teacherid`),
+                                                KEY `studentid_idx` (`studentid`),
+                                                CONSTRAINT `studentid` FOREIGN KEY (`studentid`) REFERENCES `students` (`id`),
+                                                CONSTRAINT `teacherid` FOREIGN KEY (`teacherid`) REFERENCES `teachers` (`id`)
+                                                ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
+      - run:
+          name: update-npm
+          command: 'sudo npm install -g npm@latest'                                                
+      - restore_cache: # special step to restore the dependency cache
+          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+          key: dependency-cache-{{ checksum "package.json" }}          
+      - save_cache: # special step to save the dependency cache
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run: # run tests
+          name: test
+          command: npm test
+      - run: # run coverage report
+          name: code-coverage
+          command: './node_modules/.bin/nyc report --reporter=text-lcov'
+      - store_artifacts: # special step to save test results as as artifact
+          # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
+          path: test-results.xml
+          prefix: tests
+      - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
+          path: coverage
+          prefix: coverage
+      - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
+          path: test-results.xml            
+      - run:
+          name: Build & Push docker image
+          command: |
+            docker build -t khteh/node.jsrestapi:latest -t khteh/node.jsrestapi:$CIRCLE_BUILD_NUM .
+      - run:
+          name: Login to docker hub
+          command: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run:
+          name: Push images to docker hub
+          command: |
+            docker push khteh/node.jsrestapi:latest
+            docker push khteh/node.jsrestapi:$CIRCLE_BUILD_NUM          
