@@ -29,19 +29,22 @@ jobs: # a collection of steps
           command: mysql -h 127.0.0.1 -u root < school_db.sql
       - run:
           name: update-npm
-          command: 'npm install -g npm@latest'                                                
+          command: npm install -g npm@latest
       # Download and cache dependencies
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package.json" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
+      - run:
+          name: install-npm-wee
+          command: npm install            
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
       - run: # run tests
-          name: test
+          name: Tests
           command: npm test
       - run: # run coverage report
           name: code-coverage
