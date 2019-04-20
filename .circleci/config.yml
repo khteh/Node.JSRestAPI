@@ -31,8 +31,8 @@ jobs: # a collection of steps
       - run:
           name: Create and grant guest user
           command: |
-            mysql -h 127.0.0.1 -u root -e "CREATE USER 'guest'@'localhost' IDENTIFIED BY 'P@$$w0rd';"
-            mysql -h 127.0.0.1 -u root -e "grant all privileges on school_test.* to 'guest'@'localhost';"
+            mysql -h 127.0.0.1 -u root -e "CREATE USER 'guest'@'127.0.0.1' IDENTIFIED BY 'P@$$w0rd';"
+            mysql -h 127.0.0.1 -u root -e "grant all privileges on school_test.* to 'guest'@'127.0.0.1';"
       - run:
           name: update-npm
           command: npm install -g npm@latest
