@@ -1,3 +1,5 @@
+CREATE USER guest@localhost IDENTIFIED WITH mysql_native_password BY 'P@$$w0rd';
+grant all privileges on *.* to guest@localhost;
 CREATE DATABASE school_test /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */;
 USE school_test;
 CREATE TABLE teachers (
