@@ -19,6 +19,12 @@ jobs: # a collection of steps
       - checkout
       - run: apt update && apt install -y mysql-client
       - run:
+          name: install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+      - run:
+          name: Wait for db
+          command: dockerize -wait tcp://localhost:3306 -timeout 1m      
+      - run:
           name: Create school DB
           command: mysql -h 127.0.0.1 -u root -e "create database school;"
       - run:
