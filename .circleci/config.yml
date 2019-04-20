@@ -7,17 +7,15 @@ jobs: # a collection of steps
         environment:
           MYSQL_HOST: 127.0.0.1
           MYSQL_DB: school_test
-          MYSQL_USER: guest
-          MYSQL_ALLOW_EMPTY_PASSWORD: false
-          MYSQL_PASSWORD: P@$$w0rd
+          MYSQL_USER: root
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
       - image: mysql:latest
         command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci --default-authentication-plugin=mysql_native_password
         environment:
           MYSQL_HOST: 127.0.0.1
           MYSQL_DB: school_test
-          MYSQL_USER: guest
-          MYSQL_ALLOW_EMPTY_PASSWORD: false
-          MYSQL_PASSWORD: P@$$w0rd
+          MYSQL_USER: root
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
     steps:
       - checkout
       - run: apt update && apt install -y mysql-client
@@ -30,6 +28,11 @@ jobs: # a collection of steps
       - run:
           name: Create school DB
           command: mysql -h 127.0.0.1 -u root < school_db.sql
+      - run:
+          name: Create and grant guest user
+          command: |
+            mysql -h 127.0.0.1 -u root -e "CREATE USER 'guest'@'localhost' IDENTIFIED BY 'P@$$w0rd';"
+            mysql -h 127.0.0.1 -u root -e "grant all privileges on school_test.* to 'guest'@'localhost';"
       - run:
           name: update-npm
           command: npm install -g npm@latest
