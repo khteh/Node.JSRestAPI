@@ -6,15 +6,16 @@ jobs: # a collection of steps
       - image: node:latest # ...with this image as the primary container; this is where all `steps` will run
         environment:
           MYSQL_HOST: 127.0.0.1
-          MYSQL_DB: school
-          MYSQL_USER: root
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
-          MYSQL_PASSWORD:
+          MYSQL_DB: school_test
+          MYSQL_USER: guest
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_PASSWORD: P@$$w0rd
       - image: mysql:latest
         command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci --default-authentication-plugin=mysql_native_password
         environment:
-          MYSQL_USER: root
+          MYSQL_USER: guest
           MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_PASSWORD: P@$$w0rd
     steps:
       - checkout
       - run: apt update && apt install -y mysql-client
