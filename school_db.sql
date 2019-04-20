@@ -1,5 +1,4 @@
-CREATE USER guest@localhost IDENTIFIED WITH mysql_native_password BY 'P@$$w0rd';
-grant all privileges on *.* to guest@localhost;
+CREATE USER 'guest'@'localhost' IDENTIFIED WITH mysql_native_password BY 'P@$$w0rd';
 CREATE DATABASE school_test /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */;
 USE school_test;
 CREATE TABLE teachers (
@@ -26,3 +25,4 @@ CREATE TABLE teacher_student (
   CONSTRAINT studentid FOREIGN KEY (studentid) REFERENCES students (id),
   CONSTRAINT teacherid FOREIGN KEY (teacherid) REFERENCES teachers (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+grant all on school_test.* to 'guest'@'localhost';
