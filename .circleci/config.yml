@@ -66,17 +66,17 @@ jobs: # a collection of steps
           command: |
             # nyc report requires that nyc has already been run,
             # which creates the .nyc_output folder containing necessary data
-            ./node_modules/.bin/nyc report --reporter=text-lcov > test_reports/lcov.info
+            ./node_modules/.bin/nyc report --reporter=text-lcov
             #./cc-test-reporter after-build -t lcov
           when: always          
-      - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
+      - store_artifacts:  # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
           path: ./test_reports/mocha/test-results.xml
           prefix: tests
-      - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
-          path: test_reports/lcov.info
+      - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
+          path: coverage
           prefix: coverage          
       - store_test_results: # special step to save test results as as artifact
-          # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
+          # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: test_reports
       - run:
           name: Build docker image
