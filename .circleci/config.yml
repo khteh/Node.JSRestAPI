@@ -63,6 +63,12 @@ jobs: # a collection of steps
           name: List test_reports folder
           command: ls -lR test_reports
       - run:
+          name: Test node_modules executables
+          command: |
+            ./node_modules/.bin/mocha
+            ./node_modules/.bin/nyc
+            ./node_modules/.bin/eslint
+      - run:
           name: eslint
           command: ./node_modules/.bin/eslint && ./node_modules/.bin/eslint ./ --format junit --output-file ./test_reports/eslint/eslint.xml
           when: always
