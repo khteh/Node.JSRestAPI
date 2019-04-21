@@ -37,7 +37,7 @@ jobs: # a collection of steps
           command: npm install -g npm@latest
       - run:
           name: Fix executable permission
-          command: chmod -R +x node_modules/.bin/* && ls -lR node_modules/.bin
+          command: chmod -R u+rwx .
       - run:
           name: install mocha, junit-reporter, nyc and eslint
           command: npm i -g mocha mocha-junit-reporter nyc eslint
