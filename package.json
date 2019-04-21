@@ -5,7 +5,7 @@
   "scripts": {
     "start": "SET NODE_ENV=default && node ./bin/www",
     "test": "mocha tests --timeout 10000 --recursive --check-leaks --exit --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml",
-	"cover": "nyc npm test"
+    "cover": "nyc npm test"
   },
   "dependencies": {
     "async": "^2.6.2",
@@ -14,8 +14,10 @@
     "debug": "~2.6.9",
     "ejs": "~2.5.7",
     "email-validator": "^2.0.4",
+    "eslint": "^5.16.0",
     "express": "^4.16.4",
     "http-errors": "~1.6.2",
+    "mocha-junit-reporter": "^1.22.0",
     "morgan": "^1.9.1",
     "mysql": "^2.17.1",
     "nyc": "^14.0.0"

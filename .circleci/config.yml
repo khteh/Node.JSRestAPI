@@ -4,12 +4,14 @@ jobs: # a collection of steps
     working_directory: ~/workspace # directory where steps will run
     docker: # run the steps with Docker
       - image: node:latest # ...with this image as the primary container; this is where all `steps` will run
+        restart: on-failure # Restart the container if it exits due to an error
         environment:
           MYSQL_HOST: 127.0.0.1
           MYSQL_DB: school_test
           MYSQL_USER: root
           MYSQL_ALLOW_EMPTY_PASSWORD: true
       - image: mysql:latest
+        restart: on-failure # Restart the container if it exits due to an error
         command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci --default-authentication-plugin=mysql_native_password
         environment:
           MYSQL_HOST: 127.0.0.1
