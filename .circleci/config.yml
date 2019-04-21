@@ -60,8 +60,8 @@ jobs: # a collection of steps
           command: npm run cover
           when: always
       - run:
-          name: List test_results folder
-          command: ls -lR test_results
+          name: List test_reports folder
+          command: ls -lR test_reports
       - run:
           name: eslint
           command: ./node_modules/.bin/eslint && ./node_modules/.bin/eslint ./ --format junit --output-file ./test_reports/eslint/eslint.xml
