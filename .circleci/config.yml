@@ -22,7 +22,7 @@ jobs: # a collection of steps
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: apt update && apt install -y mysql-client sudo
+      - run: apt update && apt install -y mysql-client
       - run:
           name: install dockerize
           command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
@@ -35,6 +35,9 @@ jobs: # a collection of steps
       - run:
           name: update-npm
           command: npm install -g npm@latest
+      - run:
+          name: Fix executable permission
+          command: chmod +x node_modules/.bin/*
       - run:
           name: install mocha, junit-reporter, nyc and eslint
           command: npm i -g mocha mocha-junit-reporter nyc eslint
@@ -58,7 +61,7 @@ jobs: # a collection of steps
           when: always
       - run:
           name: eslint
-          command: sudo ./node_modules/.bin/eslint ./ --format junit --output-file ./test_reports/eslint/eslint.xml
+          command: ./node_modules/.bin/eslint ./ --format junit --output-file ./test_reports/eslint/eslint.xml
           when: always
       - run:
           name: Setup Code Climate test-reporter
