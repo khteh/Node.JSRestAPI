@@ -63,7 +63,10 @@ jobs: # a collection of steps
           when: always
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: coverage
-          prefix: coverage          
+          prefix: coverage
+      - store_artifacts:
+          path: test_reports/mocha/test-results.xml
+          prefix: mocha
       - store_test_results: # special step to save test results as as artifact
           # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: test_reports
