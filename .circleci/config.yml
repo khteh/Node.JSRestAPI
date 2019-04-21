@@ -26,7 +26,7 @@ jobs: # a collection of steps
           name: Wait for db
           command: dockerize -wait tcp://localhost:3306 -timeout 1m      
       - run:
-          name: Create school DB
+          name: Prepare database for tests
           command: mysql -h 127.0.0.1 -u root < school_db.sql
       - run:
           name: update-npm
@@ -52,7 +52,7 @@ jobs: # a collection of steps
           key: v1-dependencies-{{ checksum "package.json" }}
       - run: # run tests
           name: Tests
-          command: npm test
+          command: npm run cover
       - run: # run coverage report
           name: code-coverage
           command: nyc report --reporter=text-lcov 
