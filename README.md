@@ -53,3 +53,8 @@ set PORT=8888 & npm start
 ```
 npm test
 ```
+## Run tests with coverage report:
+* Use Istanbul library with mocha to generate test coverage report.
+```
+npm run cover
+```
