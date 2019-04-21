@@ -58,7 +58,7 @@ jobs: # a collection of steps
           when: always
       - run:
           name: eslint
-          command: ./node_modules/.bin/eslint/eslint ./ --format junit --output-file ./test_reports/eslint/eslint.xml
+          command: ./node_modules/.bin/eslint ./ --format junit --output-file ./test_reports/eslint/eslint.xml
           when: always
       - run:
           name: Setup Code Climate test-reporter
