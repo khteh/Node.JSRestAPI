@@ -36,9 +36,6 @@ jobs: # a collection of steps
           name: update-npm
           command: npm install -g npm@latest
       - run: mkdir test_reports          
-      - run:
-          name: install mocha, junit-reporter, nyc and eslint
-          command: npm i -g mocha mocha-junit-reporter nyc eslint
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -57,21 +54,11 @@ jobs: # a collection of steps
           command: chmod -R ugo+rwx .
       - run: # run tests
           name: Tests
-          command: npm run cover
+          command: ./node_modules/.bin/nyc ./node_modules/.bin/mocha tests --timeout 10000 --recursive --check-leaks --exit --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml
           when: always
       - run:
-          name: List test_reports folder
-          command: ls -lR test_reports
-      - run:
-          name: Test node_modules executables
-          command: |
-            ls -lR node_modules/.bin
-            ./node_modules/.bin/mocha
-            ./node_modules/.bin/nyc
-            ./node_modules/.bin/eslint
-      - run:
           name: eslint
-          command: ./node_modules/.bin/eslint && ./node_modules/.bin/eslint ./ --format junit --output-file ./test_reports/eslint/eslint.xml
+          command: ./node_modules/.bin/eslint --init && ./node_modules/.bin/eslint ./ --format junit --output-file ./test_reports/eslint/eslint.xml
           when: always
       - run:
           name: Setup Code Climate test-reporter
