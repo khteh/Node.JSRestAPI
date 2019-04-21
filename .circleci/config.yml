@@ -70,7 +70,7 @@ jobs: # a collection of steps
             mkdir coverage
             # nyc report requires that nyc has already been run,
             # which creates the .nyc_output folder containing necessary data
-            nyc report --reporter=text-lcov > coverage/lcov.info
+            ./node_modules/.bin/nyc report --reporter=text-lcov > coverage/lcov.info
             ./cc-test-reporter after-build -t lcov
           when: always          
       - store_test_results: # special step to save test results as as artifact
