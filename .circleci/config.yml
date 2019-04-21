@@ -65,14 +65,14 @@ jobs: # a collection of steps
             #./cc-test-reporter after-build -t lcov
           when: always          
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
-          path: test-results.xml
+          path: ./test_reports/mocha/test-results.xml
           prefix: tests
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
-          path: coverage
+          path: test_reports/lcov.info
           prefix: coverage          
       - store_test_results: # special step to save test results as as artifact
           # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
-          path: test-results.xml
+          path: test_reports
       - run:
           name: Build & Push docker image
           command: |
