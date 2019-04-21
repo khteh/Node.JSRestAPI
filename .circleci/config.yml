@@ -57,10 +57,6 @@ jobs: # a collection of steps
           command: ./node_modules/.bin/nyc ./node_modules/.bin/mocha tests --timeout 10000 --recursive --check-leaks --exit --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml
           when: always
       - run:
-          name: eslint
-          command: ./node_modules/.bin/eslint ./ --format junit --output-file ./test_reports/eslint/eslint.xml
-          when: always
-      - run:
           name: Setup Code Climate test-reporter
           command: |
              # download test reporter as a static binary
@@ -83,8 +79,6 @@ jobs: # a collection of steps
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
           path: ./test_reports/mocha/test-results.xml
           prefix: coverage
-      - store_artifacts: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
-          path: ./test_reports/eslint/eslint.xml
       - store_artifacts: # upload test coverage as artifact
           path: ./coverage/lcov.info
           prefix: tests          
