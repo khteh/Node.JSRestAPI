@@ -50,11 +50,13 @@ set PORT=8888 & npm start
 # Run tests:
 * Edit `config/test.json` to configure the database connection parameters.
 * WARNING! All tables in the database configured for test will be emptied for testing purpose.
+* Generates test_reports/mocha/test-results.xml
 ```
 npm test
 ```
 ## Run tests with coverage report:
 * Use Istanbul library with mocha to generate test coverage report.
+* Generates text and html reports
 ```
 npm run cover
 ```
