@@ -82,12 +82,15 @@ jobs: # a collection of steps
           path: test_reports
       - run:
           name: Build docker image
-          command: docker build -t khteh/node.jsrestapi:latest -t khteh/node.jsrestapi:$CIRCLE_BUILD_NUM .
+          command: |
+            VERSION=$(node -p "require('./package.json').version").$CIRCLE_BUILD_NUM
+            docker build -t khteh/node.jsrestapi:latest -t khteh/node.jsrestapi:$VERSION .
       - run:
           name: Login to docker hub
           command: docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run:
           name: Push images to docker hub
           command: |
+            VERSION=$(node -p "require('./package.json').version").$CIRCLE_BUILD_NUM
             docker push khteh/node.jsrestapi:latest
-            docker push khteh/node.jsrestapi:$CIRCLE_BUILD_NUM          
+            docker push khteh/node.jsrestapi:$VERSION          
