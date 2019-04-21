@@ -37,9 +37,6 @@ jobs: # a collection of steps
           command: npm install -g npm@latest
       - run: mkdir test_reports          
       - run:
-          name: Fix working directory permissions
-          command: chmod -R u+rwx .
-      - run:
           name: install mocha, junit-reporter, nyc and eslint
           command: npm i -g mocha mocha-junit-reporter nyc eslint
       # Download and cache dependencies
@@ -55,6 +52,9 @@ jobs: # a collection of steps
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Fix working directory permissions
+          command: chmod -R u+rwx .
       - run: # run tests
           name: Tests
           command: npm run cover
