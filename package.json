@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "SET NODE_ENV=default && node ./bin/www",
-    "test": "mocha tests --timeout 10000 --recursive"
+    "test": "mocha tests --timeout 10000 --recursive --check-leaks --exit",
+	"cover": "nyc npm test"
   },
   "dependencies": {
     "async": "^2.6.2",

@@ -33,7 +33,7 @@ function Registration(req, res, next) {
             message.message += ' and';
         message.message += ' without a valid list of students specified!';
     }
-    getStudent = function (student, callback) {
+    var getStudent = function (student, callback) {
         var studentID = -1;
         var student_query = `select id from students where email = '${student}'`;
         db.query(student_query, function (error, result) {
@@ -48,7 +48,7 @@ function Registration(req, res, next) {
             callback(error, studentID);
         });
     }
-    if (teacher !=='' && students.length > 0) {
+    if (teacher !== '' && students.length > 0) {
 		async.series([
 			function (callback) {
 			    var teacher_query = `select id from teachers where email = '${teacher}'`;
