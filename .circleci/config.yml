@@ -22,12 +22,12 @@ jobs: # a collection of steps
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: apt update && apt install -y mysql-client
+      - run: apt update && apt install -y mysql-client sudo
       - run:
           name: install dockerize
           command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
       - run:
-          name: Wait for database
+          name: Wait for MYSQL Server
           command: dockerize -wait tcp://localhost:3306 -timeout 1m      
       - run:
           name: Prepare database for tests
@@ -58,7 +58,7 @@ jobs: # a collection of steps
           when: always
       - run:
           name: eslint
-          command: ./node_modules/.bin/eslint ./ --format junit --output-file ./test_reports/eslint/eslint.xml
+          command: sudo ./node_modules/.bin/eslint ./ --format junit --output-file ./test_reports/eslint/eslint.xml
           when: always
       - run:
           name: Setup Code Climate test-reporter
