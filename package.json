@@ -1,6 +1,6 @@
 {
   "name": "node.jsrestapi",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "start": "SET NODE_ENV=default && node ./bin/www",
