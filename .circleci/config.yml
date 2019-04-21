@@ -27,7 +27,7 @@ jobs: # a collection of steps
           name: install dockerize
           command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
       - run:
-          name: Wait for db
+          name: Wait for database
           command: dockerize -wait tcp://localhost:3306 -timeout 1m      
       - run:
           name: Prepare database for tests
@@ -58,7 +58,7 @@ jobs: # a collection of steps
           when: always
       - run:
           name: eslint
-          command: eslint ./ --format junit --output-file ./test_reports/eslint/eslint.xml
+          command: ./node_modules/.bin/eslint/eslint ./ --format junit --output-file ./test_reports/eslint/eslint.xml
           when: always
       - run:
           name: Setup Code Climate test-reporter
