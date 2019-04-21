@@ -59,21 +59,13 @@ jobs: # a collection of steps
           command: chmod -R ugo+rwx .
       - run: # run tests
           name: Tests
-          command: ./node_modules/.bin/nyc ./node_modules/.bin/mocha tests --timeout 10000 --recursive --check-leaks --exit --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml
+          command: ./node_modules/.bin/nyc --reporter=lcov --reporter=text ./node_modules/.bin/mocha tests --timeout 10000 --recursive --check-leaks --exit
           when: always
-      - run:
-          name: code-coverage
-          command: |
-            # nyc report requires that nyc has already been run,
-            # which creates the .nyc_output folder containing necessary data
-            ./node_modules/.bin/nyc report --reporter=text-lcov > test_reports/lcov.info
-            #./cc-test-reporter after-build -t lcov
-          when: always          
       - store_artifacts:  # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/ 
           path: ./test_reports/mocha/test-results.xml
           prefix: tests
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
-          path: test_reports/lcov.info
+          path: coverage
           prefix: coverage          
       - store_test_results: # special step to save test results as as artifact
           # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
