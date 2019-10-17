@@ -24,13 +24,15 @@ jobs: # a collection of steps
       - run:
           name: Install Docker client
           command: |
-            VER="18.06.3-ce"
+            VER="19.03.2"
             curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
             tar -xz -C /tmp -f /tmp/docker-$VER.tgz
             mv /tmp/docker/* /usr/bin
       - run:
           name: install dockerize
-          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          command: |
+            DOCKERIZE_VERSION="v0.6.1"
+            wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
       - run:
           name: Wait for MYSQL Server
           command: dockerize -wait tcp://localhost:3306 -timeout 1m      
@@ -83,5 +85,54 @@ jobs: # a collection of steps
           name: Push images to docker hub
           command: |
             VERSION=$(node -p "require('./package.json').version").$CIRCLE_BUILD_NUM
+            echo ${VERSION} > docker-build_number.txt
             docker push khteh/node.jsrestapi:latest
             docker push khteh/node.jsrestapi:$VERSION          
+      - persist_to_workspace:
+          name: Save Workspace
+          root: .
+          paths:
+            - docker-build_number.txt
+#  deploy-eks:
+#    working_directory: /tmp
+#    docker: 
+#      - image: khteh/circleci-openjdk:latest
+#    steps:  
+#      - attach_workspace:
+#          at: /tmp
+#      - setup_remote_docker:
+#          docker_layer_caching: true
+#      - run:  
+#          name: Use the saved build number here
+#          command: |
+#            echo 'export CIRCLE_BUILD_NUM_DOCKER="$(cat /tmp/docker-build_number.txt)"' >> $BASH_ENV
+#            . $BASH_ENV
+#            echo CIRCLE_BUILD_NUM_DOCKER: $CIRCLE_BUILD_NUM_DOCKER
+#      - run:  
+#          name: Set Default AWS Region
+#          command: aws configure set default.region $AWS_REGION
+#      - run:  
+#          name: Set AWS Access Key
+#          command: aws configure set aws_access_key_id $AWS_ACCESS_KEY
+#      - run:  
+#          name: Set AWS Secret Key
+#          command: aws configure set aws_secret_access_key $AWS_SECRET_KEY
+#      - run:  
+#          name: Update Kubectl Configuration with cluster name
+#          command: aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
+#      - run:  
+#          name: Update Node.JS RestAPI application
+#          command: |
+#            kubectl patch statefulset nodejsrestapi --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"'$AWS_ACCOUNT_ID'.dkr.ecr.ap-southeast-1.amazonaws.com/nodejsrestapi:'$CIRCLE_BUILD_NUM_DOCKER'"}]'
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:   
+      - build 
+      - deploy-eks:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+
