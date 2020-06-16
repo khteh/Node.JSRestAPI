@@ -46,7 +46,74 @@ npm install
 ```
 set PORT=8888 & npm start
 ```
-
+# Use Cases
+## Register one or more students to a specified teacher.
+* `POST /api/register`
+```
+{
+  "teacher": "teacherken@gmail.com"
+  "students":
+    [
+      "studentjon@gmail.com",
+      "studenthon@gmail.com"
+    ]
+}
+```
+## Retrieve students who are registered to ALL of the given teachers:
+* `GET /api/commonstudents?teacher=teacher1%40gmail.com&teacher=teacher2%40gmail.com`
+* Sample successful response:
+```
+{
+  "students" :
+    [
+      "commonstudent1@gmail.com", 
+      "commonstudent2@gmail.com"
+    ]
+}
+```
+## Suspend a specified student:
+* `POST /api/suspend`
+```
+{
+  "student" : "studentmary@gmail.com"
+}
+```
+## Retrieve a list of students who can receive a given notification:
+* `POST /api/retrievefornotifications`
+* Sample request body (1):
+```
+{
+  "teacher":  "teacherken@gmail.com",
+  "notification": "Hello students! @studentagnes@gmail.com @studentmiche@gmail.com"
+}
+```
+* Sample successful response to (1):
+```
+{
+  "recipients":
+    [
+      "studentbob@gmail.com",
+      "studentagnes@gmail.com", 
+      "studentmiche@gmail.com"
+    ]   
+}
+```
+* Sample request body (2):
+```
+{
+  "teacher":  "teacherken@gmail.com",
+  "notification": "Hey everybody"
+}
+```
+* Sample successful response to (2):
+```
+{
+  "recipients":
+    [
+      "studentbob@gmail.com"
+    ]   
+}
+```
 # Run tests:
 * Edit `config/test.json` to configure the database connection parameters.
 * WARNING! All tables in the database configured for test will be emptied for testing purpose.
