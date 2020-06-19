@@ -43,8 +43,13 @@ npm install
 
 # Start the application:
 * Edit `config/default.json` to configure the database connection parameters
+* To run in development mode with nodemon:
 ```
-set PORT=8888 & npm start
+$ npm run dev
+```
+* To run in production mode:
+```
+$ set PORT=8888 & npm start
 ```
 # Use Cases
 ## Greetings API
