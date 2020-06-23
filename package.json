@@ -7,7 +7,8 @@
     "dev": "nodemon --ignore node_modules/ bin/www",
     "start": "SET NODE_ENV=default&& node bin/www",
     "test": "mocha tests --timeout 10000 --recursive --check-leaks --exit --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml",
-    "cover": "nyc --reporter=lcov --reporter=text npm test"
+    "cover": "nyc --reporter=lcov --reporter=text npm test",
+	"sonarqube": "mocha --reporter mocha-sonarqube-reporter tests --reporter-options output=test_reports/sonarqube/test_results.xml"
   },
   "dependencies": {
     "async": "^2.6.3",
@@ -26,6 +27,7 @@
     "chai-http": "^4.3.0",
     "mocha": "^8.0.1",
     "mocha-junit-reporter": "^1.23.3",
+    "mocha-sonarqube-reporter": "^1.0.1",
     "nodemon": "^1.19.4",
     "nyc": "^14.1.1",
     "sonarqube-scanner": "^2.6.0"
