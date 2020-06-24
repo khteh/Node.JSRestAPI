@@ -12,7 +12,6 @@ scanner(
 		"sonar.scm.disabled": "true",
 		"sonar.sources": "BusinessLogic, routes, bin, app.js",
 		"sonar.tests": "tests",
-		"sonar.language": "null",
 		"sonar.dependencyCheck.reportPath": "dependency-check-report.xml",
 		"sonar.dependencyCheck.htmlReportPath": "dependency-check-report.html",
 		"sonar.javascript.jstest.reportsPath": "test_reports",
