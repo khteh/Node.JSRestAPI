@@ -1,5 +1,5 @@
 # Node.JS API Server
-Teachers need a system where they can perform administrative functions for their students. Teachers and students are identified by their email addresses. Unit tests using mocha framework with chai assertion library. Test coverage report is generated with Istanbul library.
+Teachers need a system where they can perform administrative functions for their students. Teachers and students are identified by their email addresses. Unit tests using mocha framework with chai assertion library. Test coverage report is generated with Istanbul library and SonarQube. Dependency check is done with OWASP dependency check CLI.
 
 # Installation
 ## Database:
@@ -171,3 +171,10 @@ All files                     |    87.38 |    63.32 |    97.52 |    87.06 |     
   teachersapi_tests.js        |      100 |      100 |      100 |      100 |                   |
 ------------------------------|----------|----------|----------|----------|-------------------|
 ```
+## Run dependency check
+* Download OWASP dependency check CLI: https://jeremylong.github.io/DependencyCheck/dependency-check-cli/index.html
+* Run the CLI: `dependency-check.bat --project "Node.JSRestAPI" -f XML -f HTML --scan .`
+
+## Run SonarQube scan
+* Change the `serverUrl` and `token` in `analyse.js`
+* `node analyse.js`
