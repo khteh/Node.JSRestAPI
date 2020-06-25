@@ -1,0 +1,55 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: helm-slave
+  labels:
+    role: jenkins-slave
+data:
+  helm: |-
+    <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
+      <inheritFrom></inheritFrom>
+      <name>helm</name>
+      <instanceCap>2147483647</instanceCap>
+      <idleMinutes>0</idleMinutes>
+      <label>helm</label>
+      <serviceAccount>jenkins</serviceAccount>
+      <nodeSelector></nodeSelector>
+      <volumes/>
+      <containers>
+        <container>
+        <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+          <name>jnlp</name>
+          <image>image-registry.openshift-image-registry.svc:5000/openshift/jenkins-agent-ansible:latest</image>
+          <privileged>false</privileged>
+          <alwaysPullImage>true</alwaysPullImage>
+          <workingDir>/tmp</workingDir>
+          <command></command>
+          <args>${computer.jnlpmac} ${computer.name}</args>
+          <ttyEnabled>false</ttyEnabled>
+          <resourceRequestCpu></resourceRequestCpu>
+          <resourceRequestMemory></resourceRequestMemory>
+          <resourceLimitCpu></resourceLimitCpu>
+          <resourceLimitMemory></resourceLimitMemory>
+          <envVars>
+            <envVar>
+                <key>no_proxy</key>
+                <value>true</value>
+            </envVar>
+            <envVar>
+                <key>JENKINS_AGENT_WORKDIR</key>
+                <value>/tmp</value>
+            </envVar>
+          </envVars>
+        </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+        </container>
+      </containers>
+      <envVars>
+        <envVar>
+            <key>no_proxy</key>
+            <value>true</value>
+        </envVar>
+      </envVars>
+      <annotations/>
+      <imagePullSecrets/>
+      <nodeProperties/>
+    </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>

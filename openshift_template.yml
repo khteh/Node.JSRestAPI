@@ -1,0 +1,250 @@
+apiVersion: v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: ${APPLICATION_NAME}_ocp_jenkins_build_template
+objects:
+
+# defines the build configuration (using the Docker strategy)
+- kind: BuildConfig
+  apiVersion: v1
+  metadata:
+    name: ${APPLICATION_NAME}
+    annotations:
+      pipeline.alpha.openshift.io/uses: '[{"name": "${APPLICATION_NAME}", "namespace": "", "kind": "StatefulSet"}]'
+    labels:
+      app: ${APPLICATION_NAME}
+  spec:
+    runPolicy: Serial
+    triggers: []
+    source:
+      type: Git
+      contextDir: ${WORKSPACE}
+      git:
+        name: bitbucket
+        ref: master
+        uri: ${GIT_URL}
+      sourceSecret:
+        name: bbpull
+    output:
+      to:
+        kind: ImageStreamTag
+        name: '${APPLICATION_NAME}:latest'
+    strategy:
+      type: Source
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: "nodejs-12:latest"
+          namespace: nodejsrestapi
+
+# build config for the source code using jenkins pipeline
+- kind: BuildConfig
+  apiVersion: v1
+  metadata:
+    annotations:
+      pipeline.alpha.openshift.io/uses: '[{"name": "${APPLICATION_NAME}", "namespace": "", "kind": "StatefulSet"}]'
+    labels:
+      app: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}-pipeline
+  spec:
+    strategy:
+      type: JenkinsPipeline
+      jenkinsPipelineStrategy: 
+        jenkinsfilePath: Jenkinsfile
+        env:
+          - name: APPLICATION_NAME
+            value: ${APPLICATION_NAME}
+    source:
+      type: Git
+      #contextDir: /
+      git:
+        name: bitbucket
+        ref: master
+        uri: ${GIT_URL}
+      sourceSecret:
+        name: bbpull
+    triggers:
+    - type: "Bitbucket"
+      bitbucket:
+        secret: FW4QqQ0VE2cVjsz9CK11oZJ3doat6mLZYQr3l265Emg
+
+- kind: Secret
+  apiVersion: v1
+  metadata:
+    name: bbpull
+    namespace: nodejsrestapi
+  labels:
+    credential.sync.jenkins.openshift.io: 'true'
+  type: Opaque
+  data:
+    username: cDEzMzEyMzg=
+    password: TVRRMU5qUXdORGszTkRjMU9rdU1ENER0SXlGRjNuU1hhTldnK2hvUVZzYnM=
+# image stream configuration
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: ${APPLICATION_NAME}
+    
+ # deployment configuration
+- apiVersion: apps/v1
+  kind: StatefulSet
+  metadata:
+    name: ${APPLICATION_NAME}
+    labels:
+      component: ${COMPONENT_NAME}
+      app: ${APPLICATION_NAME}    
+  spec:
+    serviceName: ${SERVICE_NAME}
+    replicas: 2
+    updateStrategy: 
+      type: RollingUpdate
+    selector:
+      matchLabels:
+        app: ${APPLICATION_NAME}
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: ${APPLICATION_NAME}
+      spec:
+        terminationGracePeriodSeconds: 10
+        containers:
+        - name: ${APPLICATION_NAME}         
+          image: ${APPLICATION_NAME}
+          imagePullPolicy: Always
+          env:
+            - name: PORT
+              value: "8080"
+            - name: NODE_ENV
+              value: "default"
+            - name: LOGLEVEL
+              value: ${LOG_LEVEL}
+            - name: CONSUMER_TOPIC
+              value: ${APP_CONSUMER_TOPIC}
+            - name: PRODUCER_TOPIC
+              value: ${APP_PRODUCER_TOPIC}
+            - name: NSB_KAFKA_HOST
+              value: ${APPLICATION_KAFKA_HOST}
+            - name: JAEGER_SERVICE_NAME
+              value: ${JAEGER_SERVICE_NAME}
+            - name: JAEGER_ENDPOINT
+              value: ${JAEGER_ENDPOINT}
+            - name: JAEGER_SAMPLER_PARAM
+              value: ${JAEGER_SAMPLER_PARAM}
+            - name: ACTIVE_PROFILE
+              value: openshift            
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+          resources:
+            limits:
+              cpu: 250m
+              memory: 1024Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${APPLICATION_NAME}
+        from:
+          kind: ImageStreamTag
+          name: ${APPLICATION_NAME}:latest
+      type: ImageChange
+
+# service configuration
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: ${SERVICE_NAME}
+    labels:
+      component: ${COMPONENT_NAME}
+      app: ${APPLICATION_NAME}
+  spec:
+    selector:
+      app: ${APPLICATION_NAME}
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    sessionAffinity: None
+    type: ClusterIP
+
+# parameter for the openshift template
+parameters:
+- description: The component for the application.
+  name: COMPONENT_NAME
+  value: nodejs
+- description: The name for the service of the application.
+  name: SERVICE_NAME
+  value: svc-nodejs-testrestapi
+- description: The name for the application.
+  name: APPLICATION_NAME
+  value: nodejs-testrestapi
+- description: Working Directory
+  name: WORKSPACE
+  value: /
+- description: BitBucket repository URL.
+  name: GIT_URL
+  value: https://github.com/khteh/Node.JSRestAPI
+- description: INFO or DEBUG log level.
+  name: LOG_LEVEL
+  value: DEBUG
+- description: Active profile.
+  name: APPLICATION_ACTIVE_PROFILE
+  value: openshift
+- description: Hostname:port of Kafka
+  name: APPLICATION_KAFKA_HOST
+  value: cp-kafka.dp-common-event-streaming.svc.cluster.local:9092
+- description: Jaeger Service Name.
+  name: JAEGER_SERVICE_NAME
+  value: nodejs-testrestapi
+- description: Jaeger Sampler Parameter.
+  name: JAEGER_SAMPLER_PARAM
+  value: "1.0"
+- description: Jaeger collector endpoint.
+  name: JAEGER_ENDPOINT
+  value: http://simple-prod-collector.dp-common-logging.svc.cluster.local:14268/api/traces  
+- description: Consumer Topic - topic where the microservice consume.
+  name: APP_CONSUMER_TOPIC
+  value: NormalCease5gTransformTopic
+- description: Producer Topic - topic where the microservice publish.
+  name: APP_PRODUCER_TOPIC
+  value: NormalEdaCai3GAdapterTopic
