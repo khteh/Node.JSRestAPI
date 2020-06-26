@@ -33,7 +33,8 @@ describe('Greetings API tests', () => {
 					expect(res.body).to.have.property('message');
 					expect(res.body.message).to.not.be.empty;
 					let now = new Date();
-					let time = now.toLocaleString(undefined, {
+					let time = now.toLocaleString("en-SG", {
+						timeZone: 'Asia/Singapore',
 						day: 'numeric',
 						month: 'numeric',
 						year: 'numeric',
@@ -62,7 +63,8 @@ describe('Greetings API tests', () => {
 					expect(res.body).to.have.property('message');
 					expect(res.body.message).to.not.be.empty;
 					let now = new Date();
-					let time = now.toLocaleString(undefined, {
+					let time = now.toLocaleString("en-SG", {
+						timeZone: 'Asia/Singapore',
 						day: 'numeric',
 						month: 'numeric',
 						year: 'numeric',

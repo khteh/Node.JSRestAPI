@@ -12,11 +12,16 @@ scanner(
 		"sonar.scm.disabled": "true",
 		"sonar.sources": "BusinessLogic, routes, bin, app.js",
 		"sonar.tests": "tests",
-		"sonar.dependencyCheck.reportPath": "dependency-check-report.xml",
+		"sonar.dependencyCheck.jsonReportPath": "dependency-check-report.json",
 		"sonar.dependencyCheck.htmlReportPath": "dependency-check-report.html",
 		"sonar.javascript.jstest.reportsPath": "test_reports",
 		"sonar.javascript.lcov.reportPaths": "coverage/lcov.info",
-		"sonar.testExecutionReportPaths": "test_reports/sonarqube/test_results.xml"
+		"sonar.testExecutionReportPaths": "test_reports/sonarqube/test_results.xml",
+		"sonar.dependencyCheck.severity.blocker": "9.0",
+		"sonar.dependencyCheck.severity.critical": "7.0",
+		"sonar.dependencyCheck.severity.major": "4.0",
+		"sonar.dependencyCheck.severity.minor": "0.0",
+		"sonar.dependencyCheck.summarize": "true"
     }
   },
   () => process.exit()

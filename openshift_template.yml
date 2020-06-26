@@ -11,9 +11,10 @@ objects:
   metadata:
     name: ${APPLICATION_NAME}
     annotations:
-      pipeline.alpha.openshift.io/uses: '[{"name": "${APPLICATION_NAME}", "namespace": "", "kind": "StatefulSet"}]'
+      pipeline.alpha.openshift.io/uses: '[{"name": "${APPLICATION_NAME}", "namespace": "", "kind": "DeploymentConfig"}]'
     labels:
       app: ${APPLICATION_NAME}
+      component: ${COMPONENT_NAME}
   spec:
     runPolicy: Serial
     triggers: []
@@ -43,9 +44,10 @@ objects:
   apiVersion: v1
   metadata:
     annotations:
-      pipeline.alpha.openshift.io/uses: '[{"name": "${APPLICATION_NAME}", "namespace": "", "kind": "StatefulSet"}]'
+      pipeline.alpha.openshift.io/uses: '[{"name": "${APPLICATION_NAME}", "namespace": "", "kind": "DeploymentConfig"}]'
     labels:
       app: ${APPLICATION_NAME}
+      component: ${COMPONENT_NAME}
     name: ${APPLICATION_NAME}-pipeline
   spec:
     strategy:
@@ -87,21 +89,20 @@ objects:
     name: ${APPLICATION_NAME}
     
  # deployment configuration
-- apiVersion: apps/v1
-  kind: StatefulSet
+- apiVersion: v1
+  kind: DeploymentConfig
   metadata:
     name: ${APPLICATION_NAME}
     labels:
       component: ${COMPONENT_NAME}
       app: ${APPLICATION_NAME}    
   spec:
-    serviceName: ${SERVICE_NAME}
     replicas: 2
     updateStrategy: 
       type: RollingUpdate
     selector:
-      matchLabels:
-        app: ${APPLICATION_NAME}
+      app: ${APPLICATION_NAME}
+      deploymentconfig: ${APPLICATION_NAME}
     strategy:
       activeDeadlineSeconds: 21600
       resources: {}
@@ -115,7 +116,9 @@ objects:
     template:
       metadata:
         labels:
+          component: ${COMPONENT_NAME}
           app: ${APPLICATION_NAME}
+          deploymentconfig: ${APPLICATION_NAME}
       spec:
         terminationGracePeriodSeconds: 10
         containers:
@@ -211,7 +214,7 @@ objects:
 parameters:
 - description: The component for the application.
   name: COMPONENT_NAME
-  value: nodejs
+  value: jenkins
 - description: The name for the service of the application.
   name: SERVICE_NAME
   value: svc-nodejs-testrestapi
@@ -230,21 +233,3 @@ parameters:
 - description: Active profile.
   name: APPLICATION_ACTIVE_PROFILE
   value: openshift
-- description: Hostname:port of Kafka
-  name: APPLICATION_KAFKA_HOST
-  value: cp-kafka.dp-common-event-streaming.svc.cluster.local:9092
-- description: Jaeger Service Name.
-  name: JAEGER_SERVICE_NAME
-  value: nodejs-testrestapi
-- description: Jaeger Sampler Parameter.
-  name: JAEGER_SAMPLER_PARAM
-  value: "1.0"
-- description: Jaeger collector endpoint.
-  name: JAEGER_ENDPOINT
-  value: http://simple-prod-collector.dp-common-logging.svc.cluster.local:14268/api/traces  
-- description: Consumer Topic - topic where the microservice consume.
-  name: APP_CONSUMER_TOPIC
-  value: NormalCease5gTransformTopic
-- description: Producer Topic - topic where the microservice publish.
-  name: APP_PRODUCER_TOPIC
-  value: NormalEdaCai3GAdapterTopic

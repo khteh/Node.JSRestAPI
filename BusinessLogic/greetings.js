@@ -9,7 +9,8 @@ function Greetings(req, res, next) {
     console.log('GET /api/greetings query: ' + JSON.stringify(query));
     var greetings = 'Hello';
 	let now = new Date();
-	let time = now.toLocaleString(undefined, {
+	let time = now.toLocaleString("en-SG", {
+		timeZone: 'Asia/Singapore',
 		day: 'numeric',
 		month: 'numeric',
 		year: 'numeric',

@@ -2,8 +2,9 @@ import groovy.json.JsonBuilder
 @Library('common-libs@master') _
 try {
     def err = null
+	def version = "latest"
     properties([
-        pipelineTriggers([pollSCM('H/60 * * * 1-5')]),
+        //pipelineTriggers([pollSCM('H/60 * * * 1-5')]),
         parameters([
             choice( name: 'runVulnerabilityScan', choices: "Disable\nEnable", description: 'Enable or Disable Vulnerability Scan' )
         ])
@@ -56,7 +57,8 @@ try {
 				ciBuildQualityCheckNodeJS(app: appName)
 			}
 			stage("Build Docker Image") {
-				ciBuildNodeJSDocker(app: appName, proj: project)
+				version = ciBuildReadNodeJSVersion() + ".${env.BUILD_ID}"
+				ciBuildNodeJSDocker(app: appName, proj: project, version: version)
 			}
             if (env.runVulnerabilityScan == 'Enable') {
                 stage('Vulnerability Analysis'){
@@ -83,8 +85,8 @@ try {
 			]) {
 			node("helm-slave") {
 				// Deploy to SIT if it is "develop" branch, UAT if it is "master" branch
-				stage("Deployment") {            	
-					cdDeployOpenShiftStatefulSet(app: appName, hcrepo: helmRepo, nsp: project, hcbranch: helmchartBranch, helmchartPath: helmchartPath)
+				stage("Deployment") {
+					cdDeployOpenShiftStatefulSet(app: appName, hcrepo: helmRepo, nsp: project, hcbranch: helmchartBranch, helmchartPath: helmchartPath, version: version)
 				}
 			}
 		}
