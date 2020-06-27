@@ -176,5 +176,9 @@ All files                     |    87.38 |    63.32 |    97.52 |    87.06 |     
 * Run the CLI: `dependency-check.bat --project "Node.JSRestAPI" -f XML -f HTML --scan .`
 
 ## Run SonarQube scan
+* Install SonarQube according to https://docs.sonarqube.org/latest/setup/get-started-2-minutes/
+* Start SonarQube server
+* Create a new project from the dashboard localhost:9000
 * Change the `serverUrl` and `token` in `analyse.js`
 * `node analyse.js`
+* Go to the dashboard localhost:9000 to view the scan results.
