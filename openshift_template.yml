@@ -5,7 +5,7 @@ metadata:
   name: ${APPLICATION_NAME}_ocp_jenkins_build_template
 objects:
 
-# defines the build configuration (using the Docker strategy)
+# Used to build docker image with `oc start-build ${appName} --from-dir=. -n ${project}`
 - kind: BuildConfig
   apiVersion: v1
   metadata:
