@@ -191,25 +191,6 @@ objects:
           name: ${APPLICATION_NAME}:latest
       type: ImageChange
 
-# service configuration
-- apiVersion: v1
-  kind: Service
-  metadata:
-    name: ${SERVICE_NAME}
-    labels:
-      component: ${COMPONENT_NAME}
-      app: ${APPLICATION_NAME}
-  spec:
-    selector:
-      app: ${APPLICATION_NAME}
-    ports:
-    - name: http
-      port: 8080
-      protocol: TCP
-      targetPort: 8080
-    sessionAffinity: None
-    type: ClusterIP
-
 # parameter for the openshift template
 parameters:
 - description: The component for the application.

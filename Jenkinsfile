@@ -14,7 +14,7 @@ try {
         def appName="${env.APPLICATION_NAME}".toLowerCase()
         def SOURCE_BRANCH="${env.GIT_BRANCH}"
         def DESTINATION_BRANCH="master"
-        def nexusSnapRepo="pentest1-maven-snapshots"
+        def nexusSnapRepo="nodejsnamespace-maven-snapshots"
         def helmRepo="https://github.com/khteh/kubernetes"
         def helmchartBranch="master"
         def helmchartPath="HelmCharts"
@@ -26,10 +26,11 @@ try {
         }
 		podTemplate(label: "${project}-${appName}-${scm.branches[0].name}-${env.BUILD_ID}", 
             cloud: "openshift", 
+			namespace: "nodejsnamespace",
             inheritFrom: "nodejs", 
             containers: [
 				containerTemplate(name: "jnlp", 
-					image: "image-registry.openshift-image-registry.svc:5000/pentest1/jenkins-agent-nodejs-10-rhel7:latest", 
+					image: "image-registry.openshift-image-registry.svc:5000/nodejsnamespace/jenkins-agent-nodejs-12-rhel7:latest", 
 					envVars: [
 						envVar(key: "workingDir", value: "/tmp"),
 						envVar(key: "JENKINS_AGENT_WORKDIR", value: "/tmp"),
