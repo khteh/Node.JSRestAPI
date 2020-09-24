@@ -49,6 +49,11 @@ $ npm run dev
 ```
 * To run in production mode:
 ```
+$ npm start
+```
+* Default port number is `3000`
+* To run the application listening on different port:
+```
 $ set PORT=8888 & npm start
 ```
 # Use Cases
