@@ -58,14 +58,14 @@ $ set PORT=8888 & npm start
 ```
 # Use Cases
 ## Greetings API
-* `GET localhost:8888/api/greetings`
+* `GET localhost:3000/api/greetings`
 * Response:
 ```
 {
     "message": "Hello! It's 6/17/2020, 01:42:56 PM now."
 }
 ```
-* `GET localhost:8888/api/greetings?name=Mickey%20Mouse`
+* `GET localhost:3000/api/greetings?name=Mickey%20Mouse`
 * Response:
 ```
 {
