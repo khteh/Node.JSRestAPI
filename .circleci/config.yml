@@ -39,11 +39,9 @@ jobs: # a collection of steps
       - run:
           name: Prepare database for tests
           command: mysql -h 127.0.0.1 -u root < school_db.sql
-      - run:
-          name: Upgrade npm
-          command: |
-            rm -rf /usr/local/lib/node_modules/npm
-            npm install -g npm@latest
+      #- run:
+      #    name: Upgrade npm
+      #    command: npm install -g npm@latest
       - run: mkdir test_reports          
       # Download and cache dependencies
       - restore_cache:
