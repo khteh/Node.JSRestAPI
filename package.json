@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "main": "bin/www",
+  "type": "module",
   "scripts": {
     "dev": "nodemon --ignore node_modules/ bin/www",
     "start": "SET NODE_ENV=default&& node bin/www",
