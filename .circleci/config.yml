@@ -37,7 +37,7 @@ jobs: # a collection of steps
       - run:
           name: Prepare database for tests
           command: mysql -h 127.0.0.1 -u root < school_db.sql
-      - run: mkdir test_reports          
+      - run: mkdir test_reports
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -47,7 +47,7 @@ jobs: # a collection of steps
       - run:
           name: Install dependencies
           command: |
-            npm install -g npm-reinstall
+            npm i -g read-pkg
             npm install            
       - save_cache:
           paths:
