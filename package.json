@@ -20,7 +20,8 @@
     "express": "^4.17.1",
     "http-errors": "~1.8.0",
     "morgan": "^1.10.0",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "read-pkg-up": "^8.0.0"
   },
   "devDependencies": {
     "chai": "^4.3.4",
