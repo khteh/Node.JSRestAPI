@@ -46,9 +46,7 @@ jobs: # a collection of steps
             - v1-dependencies-
       - run:
           name: Install dependencies
-          command: |
-            npm i -g read-pkg
-            npm install            
+          command: npm install            
       - save_cache:
           paths:
             - node_modules
