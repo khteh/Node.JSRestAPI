@@ -4,7 +4,7 @@ process.env.NODE_ENV = 'test'
 import chai from 'chai'
 import chaiHttp from 'chai-http'
 import app from '../app.js'
-import db from '../lib/db.js'
+import {Query} from '../lib/db.js'
 import registration from '../BusinessLogic/registration.js'
 import notifications from '../BusinessLogic/notifications.js'
 import suspend from '../BusinessLogic/suspend.js'
@@ -24,21 +24,21 @@ describe('Two teachers, two students tests', () => {
     //Clean up before all tests in this block
     before('Cleanup teacher_student table!', (done) => {
         //console.log("Cleanup teacher_student table!");
-        db('delete from teacher_student', function (error, result) {
+        Query('delete from teacher_student', function (error, result) {
             expect(error).to.be.null;
             done();
         });
     });
     before("Cleanup students table!", (done) => {
         //console.log("Cleanup students table!");
-        db('delete from students', function (error, result) {
+        Query('delete from students', function (error, result) {
             expect(error).to.be.null;
             done();
         });
     });
     before("Cleanup teachers table!", (done) => {
         //console.log("Cleanup teachers table!");
-        db('delete from teachers', function (error, result) {
+        Query('delete from teachers', function (error, result) {
             expect(error).to.be.null;
             done();
         });

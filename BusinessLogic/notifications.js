@@ -1,7 +1,7 @@
 import express from 'express'
 import emailvalidator from 'email-validator'
 var router = express.Router();
-import db from '../lib/db.js'
+import {Query} from '../lib/db.js'
 import async from 'async'
 function Notifications(req, res, next) {
     var teacherID = -1;
@@ -25,7 +25,7 @@ function Notifications(req, res, next) {
 		async.series([
 			function (callback) {
 			    var teacher_query = `select id from teachers where email = '${teacher}'`;
-			    db(teacher_query, function (error, result) {
+			    Query(teacher_query, function (error, result) {
 			        if (error) {
 			            console.error(`Database error: ${error.message}`);
 			            callback(error, result);
@@ -44,7 +44,7 @@ function Notifications(req, res, next) {
                         function (callback) {
                             var student_query = `select email from students where isSuspended != 1 && email in ('${students}')`;
                             //console.log(`select statement: ${student_query}`);
-                            db(student_query, function (error, result) {
+                            Query(student_query, function (error, result) {
                                 if (error)
                                     console.error(error.message); // if error occured during connection 
                                 else {
@@ -59,7 +59,7 @@ function Notifications(req, res, next) {
                         }, function (callback) {
                             var student_query = `select s.email from teacher_student ts join students s on ts.studentid = s.id where teacherid = ${teacherID} && s.isSuspended != 1;`;
                             //console.log(`select statement: ${student_query}`);
-                            db(student_query, function (error, result) {
+                            Query(student_query, function (error, result) {
                                 if (error)
                                     console.error(error.message); // if error occured during connection 
                                 else {

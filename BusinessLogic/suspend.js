@@ -1,7 +1,7 @@
 import express from 'express'
 import emailvalidator from 'email-validator'
 var router = express.Router();
-import db from '../lib/db.js'
+import {Query} from '../lib/db.js'
 import async from 'async'
 function Suspend(req, res, next) {
     var studentID = -1;
@@ -10,7 +10,7 @@ function Suspend(req, res, next) {
 		async.series([
 			function (callback) {
 			    var teacher_query = `select id from students where email = '${req.body.student}'`;
-			    db(teacher_query, function (error, result) {
+			    Query(teacher_query, function (error, result) {
 			        if (error)
 			            console.error(`Database error: ${error.message}`);
 			        else if (result.length > 0) {
@@ -26,7 +26,7 @@ function Suspend(req, res, next) {
 			    if (studentID !== -1) {
 			        var student_query = `UPDATE students SET isSuspended = 1 WHERE id='${studentID}'`;
 			        //console.log("UPDATE statement: " + student_query);
-			        var newTeacher = db(student_query, function (error, result) {
+			        var newTeacher = Query(student_query, function (error, result) {
 			            if (error)
 			                console.error(error.message); // if error occured during connection 
 			            else {
