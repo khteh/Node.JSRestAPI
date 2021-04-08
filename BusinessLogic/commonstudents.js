@@ -22,7 +22,7 @@ function CommonStudents(req, res, next) {
 			    var teachers = teacher_emails.join('\',\'');
 			    var teacher_query = `select id from teachers where email in ('${teachers}')`;
 			    //console.log(`teacher_query: ${teacher_query}`);
-			    db.query(teacher_query, function (error, result) {
+			    db(teacher_query, function (error, result) {
 			        if (error) {
 			            console.error(`Database error: ${error.message}`);
 			            callback(error, result);
@@ -41,7 +41,7 @@ function CommonStudents(req, res, next) {
 			    if (teacher_emails.length == 1) {
 			        var students_query = `SELECT studentid FROM teacher_student where teacherid = '${teacherids}';`;
 			        //console.log(`students_query: ${students_query}`);
-			        db.query(students_query, function (error, result) {
+			        db(students_query, function (error, result) {
 			            if (error)
 			                console.error(error.message); // if error occured during connection 
 			            else {
@@ -60,7 +60,7 @@ function CommonStudents(req, res, next) {
 			        // SELECT count(*), id, teacherid,studentid FROM teacher_student where teacherid in (10,11) GROUP BY studentid HAVING COUNT(*) > 1;
 			        var students_query = `SELECT count(*), studentid FROM teacher_student where teacherid in ('${teacherids}') GROUP BY studentid HAVING COUNT(*) > 1;`;
 			        //console.log(`students_query: ${students_query}`);
-			        db.query(students_query, function (error, result) {
+			        db(students_query, function (error, result) {
 			            if (error)
 			                console.error(error.message); // if error occured during connection 
 			            else {
@@ -79,7 +79,7 @@ function CommonStudents(req, res, next) {
 			}, function (callback) {
 			    if (studentids.length > 0) {
 			        var students_query = `SELECT email from students where id in ('${studentids}')`;
-			        db.query(students_query, function (error, result) {
+			        db(students_query, function (error, result) {
 			            if (error)
 			                console.error(error.message); // if error occured during connection 
 			            else {

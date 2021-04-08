@@ -36,7 +36,7 @@ function Registration(req, res, next) {
     var getStudent = function (student, callback) {
         var studentID = -1;
         var student_query = `select id from students where email = '${student}'`;
-        db.query(student_query, function (error, result) {
+        db(student_query, function (error, result) {
             if (error)
                 console.error(error.message);
             else if (result.length > 0) {
@@ -52,7 +52,7 @@ function Registration(req, res, next) {
 		async.series([
 			function (callback) {
 			    var teacher_query = `select id from teachers where email = '${teacher}'`;
-			    db.query(teacher_query, function (error, result) {
+			    db(teacher_query, function (error, result) {
 			        if (error)
 			            console.error(`Database error: ${error.message}`);
 			        else if (result.length > 0) {
@@ -68,7 +68,7 @@ function Registration(req, res, next) {
 			    if (teacherID === -1) {
 			        console.log(`Add new teacher ${teacher}`);
 			        var teacher_query = `INSERT INTO teachers (email) VALUES ('${teacher}')`;
-			        var newTeacher = db.query(teacher_query, function (error, result) {
+			        var newTeacher = db(teacher_query, function (error, result) {
 			            if (error)
 			                console.error(error.message); // if error occured during connection 
 			            else {
@@ -101,7 +101,7 @@ function Registration(req, res, next) {
 			                if (studentID === -1) { // New Student
 			                    console.log(`Process new student ${student}`);
 			                    var insert = `INSERT INTO students (email) VALUES ('${student}')`;
-			                    db.query(insert, function (error, results) {
+			                    db(insert, function (error, results) {
 			                        if (error) {
 			                            console.error(error.message); // if error occured during connection 
 			                            //context.fail('Error executing database query to Insert the booking');
@@ -127,7 +127,7 @@ function Registration(req, res, next) {
                                     });
                                 }, function (callback) { // Get existing relationship, if any
                                     var relationship_query = `select id from teacher_student where teacherid = '${teacherID}' && studentid = '${studentID}'`;
-                                    db.query(relationship_query, function (error, result) {
+                                    db(relationship_query, function (error, result) {
                                         if (error)
                                             console.error(error.message);
                                         else if (result.length > 0) {
@@ -141,7 +141,7 @@ function Registration(req, res, next) {
                                     if (relationshipID === -1) {
                                         console.log(`Add new relationship between teacher ${teacherID} and student ${studentID}`);
                                         var insert = `INSERT INTO teacher_student (teacherid, studentid) VALUES ('${teacherID}', '${studentID}')`;
-                                        db.query(insert, function (error, results) {
+                                        db(insert, function (error, results) {
                                             if (error) {
                                                 console.error(error.message); // if error occured during connection 
                                                 //context.fail('Error executing database query to Insert the booking');

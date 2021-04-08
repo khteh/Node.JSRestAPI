@@ -25,7 +25,7 @@ function Notifications(req, res, next) {
 		async.series([
 			function (callback) {
 			    var teacher_query = `select id from teachers where email = '${teacher}'`;
-			    db.query(teacher_query, function (error, result) {
+			    db(teacher_query, function (error, result) {
 			        if (error) {
 			            console.error(`Database error: ${error.message}`);
 			            callback(error, result);
@@ -44,7 +44,7 @@ function Notifications(req, res, next) {
                         function (callback) {
                             var student_query = `select email from students where isSuspended != 1 && email in ('${students}')`;
                             //console.log(`select statement: ${student_query}`);
-                            db.query(student_query, function (error, result) {
+                            db(student_query, function (error, result) {
                                 if (error)
                                     console.error(error.message); // if error occured during connection 
                                 else {
@@ -59,7 +59,7 @@ function Notifications(req, res, next) {
                         }, function (callback) {
                             var student_query = `select s.email from teacher_student ts join students s on ts.studentid = s.id where teacherid = ${teacherID} && s.isSuspended != 1;`;
                             //console.log(`select statement: ${student_query}`);
-                            db.query(student_query, function (error, result) {
+                            db(student_query, function (error, result) {
                                 if (error)
                                     console.error(error.message); // if error occured during connection 
                                 else {

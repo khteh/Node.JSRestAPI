@@ -10,7 +10,7 @@ function Suspend(req, res, next) {
 		async.series([
 			function (callback) {
 			    var teacher_query = `select id from students where email = '${req.body.student}'`;
-			    db.query(teacher_query, function (error, result) {
+			    db(teacher_query, function (error, result) {
 			        if (error)
 			            console.error(`Database error: ${error.message}`);
 			        else if (result.length > 0) {
@@ -26,7 +26,7 @@ function Suspend(req, res, next) {
 			    if (studentID !== -1) {
 			        var student_query = `UPDATE students SET isSuspended = 1 WHERE id='${studentID}'`;
 			        //console.log("UPDATE statement: " + student_query);
-			        var newTeacher = db.query(student_query, function (error, result) {
+			        var newTeacher = db(student_query, function (error, result) {
 			            if (error)
 			                console.error(error.message); // if error occured during connection 
 			            else {

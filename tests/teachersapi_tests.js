@@ -24,21 +24,21 @@ describe('Two teachers, two students tests', () => {
     //Clean up before all tests in this block
     before('Cleanup teacher_student table!', (done) => {
         //console.log("Cleanup teacher_student table!");
-        db.query('delete from teacher_student', function (error, result) {
+        db('delete from teacher_student', function (error, result) {
             expect(error).to.be.null;
             done();
         });
     });
     before("Cleanup students table!", (done) => {
         //console.log("Cleanup students table!");
-        db.query('delete from students', function (error, result) {
+        db('delete from students', function (error, result) {
             expect(error).to.be.null;
             done();
         });
     });
     before("Cleanup teachers table!", (done) => {
         //console.log("Cleanup teachers table!");
-        db.query('delete from teachers', function (error, result) {
+        db('delete from teachers', function (error, result) {
             expect(error).to.be.null;
             done();
         });
