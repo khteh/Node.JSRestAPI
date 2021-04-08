@@ -1,19 +1,19 @@
 // Set env variable to test during the tests
-process.env.NODE_ENV = 'test';
-var assert = require('assert');
-var chai = require('chai');
-var chaiHttp = require('chai-http');
-var expect = require('chai').expect;
-var should = require('chai').should();
-var app = require('../app');
-var db = require('../lib/db.js');
-var registration = require('../BusinessLogic/registration.js');
-var notifications = require('../BusinessLogic/notifications.js');
-var suspend = require('../BusinessLogic/suspend.js');
-var commonstudents = require('../BusinessLogic/commonstudents.js');
-chai.use(chaiHttp);
-expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
-verifyClientError = function (err, res) {
+process.env.NODE_ENV = 'test'
+//import assert from assert
+import chai from 'chai'
+import chaiHttp from 'chai-http'
+import app from '../app.js'
+import db from '../lib/db.js'
+import registration from '../BusinessLogic/registration.js'
+import notifications from '../BusinessLogic/notifications.js'
+import suspend from '../BusinessLogic/suspend.js'
+import commonstudents from '../BusinessLogic/commonstudents.js'
+var expect = chai.expect
+var should = chai.should()
+chai.use(chaiHttp)
+//expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
+var verifyClientError = function (err, res) {
     expect(res).to.have.status(400);
     expect(res).to.have.property('body');
     expect(res.body).to.have.property('message');

@@ -1,17 +1,18 @@
 // Set env variable to test during the tests
-process.env.NODE_ENV = 'test';
-config = require('config');
-var assert = require('assert');
-var chai = require('chai');
-var chaiHttp = require('chai-http');
-var expect = require('chai').expect;
-var assert = require('chai').assert;
-var should = require('chai').should();
-var app = require('../app');
-var greetings = require('../BusinessLogic/greetings.js');
-chai.use(chaiHttp);
-expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
-verifyClientError = function (err, res) {
+process.env.NODE_ENV = 'test'
+import config from 'config'
+import app from '../app.js'
+import greetings from '../BusinessLogic/greetings.js'
+//import assert from 'assert'
+import chai from 'chai'
+import chaiHttp from 'chai-http'
+var expect = chai.expect
+var assert = chai.assert
+var should = chai.should()
+chai.use(chaiHttp)
+//console.log("NODE_ENV: "+config.util.getEnv('NODE_ENV')+ ", : "+process.env.NODE_ENV)
+//expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
+var verifyClientError = function (err, res) {
     expect(res).to.have.status(400);
     expect(res).to.have.property('body');
     expect(res.body).to.have.property('message');

@@ -1,8 +1,8 @@
-var express = require('express');
-var emailvalidator = require('email-validator');
+import express from 'express'
+import emailvalidator from 'email-validator'
 var router = express.Router();
-var async = require('async');
-var url = require('url');
+import async from 'async'
+import url from 'url'
 function Greetings(req, res, next) {
     var url_parts = url.parse(req.url, true);
     var query = url_parts.query;
@@ -24,4 +24,4 @@ function Greetings(req, res, next) {
 	res.status(200);
 	res.json({ 'message': greetings });	
 };
-module.exports = Greetings;
+export { Greetings as default};

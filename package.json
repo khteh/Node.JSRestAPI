@@ -2,10 +2,11 @@
   "name": "node.jsrestapi",
   "version": "1.0.0",
   "private": true,
-  "main": "bin/www",
+  "exports": "bin/www.js",
+  "type": "module",
   "scripts": {
-    "dev": "nodemon --ignore node_modules/ bin/www",
-    "start": "SET NODE_ENV=default&& node bin/www",
+    "dev": "nodemon --ignore node_modules/ bin/www.js",
+    "start": "SET NODE_ENV=default&& node bin/www.js",
     "test": "mocha tests --timeout 10000 --recursive --check-leaks --exit --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml",
     "cover": "nyc --reporter=lcov --reporter=text npm test",
     "sonarqube": "mocha --reporter mocha-sonarqube-reporter tests --reporter-options output=test_reports/sonarqube/test_results.xml"

@@ -1,8 +1,8 @@
-var express = require('express');
-var emailvalidator = require('email-validator');
+import express from 'express'
+import emailvalidator from 'email-validator'
 var router = express.Router();
-var db = require('../lib/db.js');
-var async = require('async');
+import db from '../lib/db.js'
+import async from 'async'
 function Registration(req, res, next) {
     var teacherID = -1;
     var message = {'message': 'Calling /api/register'};
@@ -200,4 +200,4 @@ function Registration(req, res, next) {
         res.json(message);
     }
 };
-module.exports = Registration;
+export { Registration as default };

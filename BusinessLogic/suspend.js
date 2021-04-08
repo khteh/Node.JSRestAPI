@@ -1,8 +1,8 @@
-var express = require('express');
-var emailvalidator = require('email-validator');
+import express from 'express'
+import emailvalidator from 'email-validator'
 var router = express.Router();
-var db = require('../lib/db.js');
-var async = require('async');
+import db from '../lib/db.js'
+import async from 'async'
 function Suspend(req, res, next) {
     var studentID = -1;
     console.log("POST /api/suspend req: " + JSON.stringify(req.body));
@@ -66,4 +66,4 @@ function Suspend(req, res, next) {
 	        res.json({ 'message': `Calling /api/suspend with unregistered student ${req.body.student}!` });
 	}
 };
-module.exports = Suspend;
+export { Suspend as default };

@@ -1,9 +1,9 @@
-var express = require('express');
-var emailvalidator = require('email-validator');
+import express from 'express'
+import emailvalidator from 'email-validator'
 var router = express.Router();
-var db = require('../lib/db.js');
-var async = require('async');
-var url = require('url');
+import db from '../lib/db.js'
+import async from 'async'
+import url from 'url'
 function CommonStudents(req, res, next) {
     var url_parts = url.parse(req.url, true);
     var query = url_parts.query;
@@ -122,4 +122,4 @@ function CommonStudents(req, res, next) {
         res.json({ 'message': 'Calling /api/commonstudents without any valid teacher specified in query string!' });
     }
 };
-module.exports = CommonStudents;
+export { CommonStudents as default };

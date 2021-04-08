@@ -3,10 +3,10 @@
 /**
  * Module dependencies.
  */
-
-var app = require('../app');
-var debug = require('debug')('teachersapi:server');
-var http = require('http');
+import app from '../app.js'
+import d from 'debug'
+var debug = d('teachersapi:server');
+import http from 'http'
 
 /**
  * Get port from environment and store in Express.
