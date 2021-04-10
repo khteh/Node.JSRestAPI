@@ -39,11 +39,11 @@ jobs: # a collection of steps
           command: mysql -h 127.0.0.1 -u root < school_db.sql
       - run: mkdir test_reports
       # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
+      #- restore_cache:
+      #    keys:
+      #      - v1-dependencies-{{ checksum "package.json" }}
             # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+      #      - v1-dependencies-
       - run:
           name: Install dependencies
           command: npm install            
