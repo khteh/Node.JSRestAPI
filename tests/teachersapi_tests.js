@@ -1,5 +1,5 @@
 // Set env variable to test during the tests
-process.env.NODE_ENV = 'test'
+import config from 'config'
 //import assert from assert
 import chai from 'chai'
 import chaiHttp from 'chai-http'
@@ -12,7 +12,7 @@ import commonstudents from '../BusinessLogic/commonstudents.js'
 var expect = chai.expect
 var should = chai.should()
 chai.use(chaiHttp)
-//expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
+expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
 var verifyClientError = function (err, res) {
     expect(res).to.have.status(400);
     expect(res).to.have.property('body');
