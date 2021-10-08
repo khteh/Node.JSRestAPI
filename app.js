@@ -6,6 +6,7 @@ import path from 'path'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
 import indexRoute from './routes/index.js'
+import healthchecks from './routes/healthchecks.js'
 import api from './routes/api.js'
 var app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -21,6 +22,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRoute);
+app.use('/healthchecks', healthchecks);
 app.use('/api', api);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
