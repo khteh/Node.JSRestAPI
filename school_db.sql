@@ -1,5 +1,5 @@
-CREATE USER 'guest'@'%' IDENTIFIED WITH mysql_native_password BY 'P@$$w0rd';
-alter user 'guest'@'%' identified with mysql_native_password BY 'P@$$w0rd';
+CREATE USER 'guest'@'%' IDENTIFIED WITH mysql_native_password BY 'P*ssw0rd';
+alter user 'guest'@'%' identified with mysql_native_password BY 'P*ssw0rd';
 CREATE DATABASE school_test /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */;
 USE school_test;
 CREATE TABLE teachers (
