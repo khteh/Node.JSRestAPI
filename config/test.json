@@ -1,6 +1,6 @@
 {
 	"DBHost": "localhost",
-	"Port": "30001",
+	"Port": "3306",
 	"Database" : "school_test",
 	"Username": "guest",
 	"Password": "P*ssw0rd"
