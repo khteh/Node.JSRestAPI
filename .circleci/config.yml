@@ -18,7 +18,7 @@ jobs: # a collection of steps
       - checkout
       - setup_remote_docker:
           docker_layer_caching: false # Only available in paid plan
-      - run: apt update -y && apt install -y mysql-client
+      - run: apt update -y && apt install -y default-mysql-client
       - run:
           name: Install Docker client
           command: |
