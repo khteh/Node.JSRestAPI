@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon --ignore node_modules/ bin/www.js",
-    "start": "SET NODE_ENV=default&& node bin/www.js",
-    "test": "SET NODE_ENV=test&&mocha tests --timeout 10000 --recursive --check-leaks --exit --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml",
+    "start": "export NODE_ENV=default&& node bin/www.js",
+    "test": "export NODE_ENV=test&& mocha tests --timeout 10000 --recursive --check-leaks --exit --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml",
     "cover": "nyc --reporter=lcov --reporter=text npm test",
     "sonarqube": "mocha --reporter mocha-sonarqube-reporter tests --reporter-options output=test_reports/sonarqube/test_results.xml"
   },
@@ -21,12 +21,12 @@
     "express": "^4.17.1",
     "http-errors": "~1.8.0",
     "morgan": "^1.10.0",
-    "mysql": "^2.18.1"
+    "mysql2": "^2.3.0"
   },
   "devDependencies": {
     "chai": "^4.3.4",
     "chai-http": "^4.3.0",
-    "mocha": "^8.3.2",
+    "mocha": "^9.1.2",
     "mocha-junit-reporter": "^2.0.0",
     "mocha-sonarqube-reporter": "^1.0.2",
     "nodemon": "^2.0.7",
