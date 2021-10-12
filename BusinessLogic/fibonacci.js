@@ -5,7 +5,7 @@ function Fibonacci(req, res, next) {
     var query = url_parts.query;
     var message = "";
     console.log('GET /api/fibonacci query: ' + JSON.stringify(query));
-    if (query.n !== undefined && query.n.length > 0) {
+    if (query.n !== undefined && query.n.length > 0 && !isNaN(query.n)) {
         try {
             let result = fib(+query.n);
             console.log("fib("+query.n+"): "+ result)
