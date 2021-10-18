@@ -5,11 +5,11 @@
   "exports": "bin/www.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --ignore node_modules/ bin/www.js",
+    "dev": "./node_modules/.bin/nodemon --ignore node_modules/ bin/www.js",
     "start": "export NODE_ENV=default&& node bin/www.js",
-    "test": "export NODE_ENV=test&& mocha tests --timeout 10000 --recursive --check-leaks --exit --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml",
-    "cover": "nyc --reporter=lcov --reporter=text npm test",
-    "sonarqube": "mocha --reporter mocha-sonarqube-reporter tests --reporter-options output=test_reports/sonarqube/test_results.xml"
+    "test": "export NODE_ENV=test&& ./node_modules/.bin/mocha tests --timeout 10000 --recursive --check-leaks --exit --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml",
+    "cover": "./node_modules/.bin/nyc --reporter=lcov --reporter=text npm test",
+    "sonarqube": "./node_modules/.bin/mocha --reporter mocha-sonarqube-reporter tests --reporter-options output=test_reports/sonarqube/test_results.xml"
   },
   "dependencies": {
     "ansi-regex": ">=5.0.1",
