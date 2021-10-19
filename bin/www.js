@@ -30,17 +30,6 @@ const options = {
 var port = normalizePort(process.env.PORT || '4433');
 //app.set('port', port);
 var server = spdy.createServer(options, app);
-/*
-      .listen(port, (error) => {
-        if (error) {
-          onError(error);
-          //console.error(error)
-          //return process.exit(1)
-        } else {
-          console.log('Listening on port: ' + port + '.')
-        }
-      })
-*/
 /**
  * Create HTTP server.
  */
