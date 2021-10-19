@@ -3,31 +3,56 @@
 /**
  * Module dependencies.
  */
-import app from '../app.js'
-import d from 'debug'
+import fs from 'fs';
+import app from '../app.js';
+import spdy from 'spdy'
+import http2 from 'http2';
+import d from 'debug';
 var debug = d('teachersapi:server');
-import http from 'http'
 
+/*
+https://stackoverflow.com/questions/59534717/how-to-integrate-http2-with-expressjs-using-nodejs-module-http2
+expressjs still does not officially support Node http2
+const server = http2.createSecureServer({
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.crt')
+});*/
+// https://github.com/spdy-http2/node-spdy
+const options = {
+        key: fs.readFileSync('server.key'),
+        cert:  fs.readFileSync('server.crt')
+};
+//console.log(options)
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '8443');
 app.set('port', port);
+spdy.createServer(options, app)
+      .listen(port, (error) => {
+        if (error) {
+          onError(error);
+          //console.error(error)
+          //return process.exit(1)
+        } else {
+          console.log('Listening on port: ' + port + '.')
+        }
+      })
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+//var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+//server.listen(port);
+//server.on('error', onError);
+//server.on('listening', onListening);
 
 /**
  * Normalize a port into a number, string, or false.
@@ -67,11 +92,9 @@ function onError(error) {
     case 'EACCES':
       console.error(bind + ' requires elevated privileges');
       process.exit(1);
-      break;
     case 'EADDRINUSE':
       console.error(bind + ' is already in use');
       process.exit(1);
-      break;
     default:
       throw error;
   }
@@ -82,7 +105,7 @@ function onError(error) {
  */
 
 function onListening() {
-  var addr = server.address();
+  var addr = spdy.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;

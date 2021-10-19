@@ -1,4 +1,6 @@
 *.swp
+*.crt
+*.key
 node_modules
 test_reports
 .nyc_output
