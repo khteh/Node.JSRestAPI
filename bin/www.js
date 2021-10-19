@@ -19,17 +19,18 @@ const server = http2.createSecureServer({
 });*/
 // https://github.com/spdy-http2/node-spdy
 const options = {
-        key: fs.readFileSync('server.key'),
-        cert:  fs.readFileSync('server.crt')
+  key: fs.readFileSync('server.key'),
+  cert:  fs.readFileSync('server.crt')
 };
 //console.log(options)
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '8443');
+var port = normalizePort(process.env.PORT || '4433');
 //app.set('port', port);
-spdy.createServer(options, app)
+var server = spdy.createServer(options, app);
+/*
       .listen(port, (error) => {
         if (error) {
           onError(error);
@@ -39,7 +40,7 @@ spdy.createServer(options, app)
           console.log('Listening on port: ' + port + '.')
         }
       })
-
+*/
 /**
  * Create HTTP server.
  */
@@ -50,7 +51,7 @@ spdy.createServer(options, app)
  * Listen on provided port, on all network interfaces.
  */
 
-//server.listen(port);
+server.listen(port);
 //server.on('error', onError);
 //server.on('listening', onListening);
 
