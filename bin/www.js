@@ -28,7 +28,7 @@ const options = {
  */
 
 var port = normalizePort(process.env.PORT || '8443');
-app.set('port', port);
+//app.set('port', port);
 spdy.createServer(options, app)
       .listen(port, (error) => {
         if (error) {
