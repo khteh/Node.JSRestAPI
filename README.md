@@ -55,6 +55,7 @@ npm install
 
 # Start the application:
 
+- Generate self-signed cert for serving HTTP/2 over HTTPS.
 - Edit `config/default.json` to configure the database connection parameters
 - To run in development mode with nodemon:
 
@@ -68,7 +69,7 @@ $ npm run dev
 $ npm start
 ```
 
-- Default port number is `3000`
+- Default port number is `4433` using HTTPS scheme
 - To run the application listening on different port:
 
 ```
@@ -79,7 +80,7 @@ $ set PORT=8888 & npm start
 
 ## Fibonacci API
 
-- `GET localhost:3000/api/fibonacci?n=20`
+- `GET https://localhost:4433/api/fibonacci?n=20`
 - Response:
 
 ```
@@ -90,7 +91,7 @@ $ set PORT=8888 & npm start
 
 ## Greetings API
 
-- `GET localhost:3000/api/greetings`
+- `GET https://localhost:4433/api/greetings`
 - Response:
 
 ```
@@ -99,7 +100,7 @@ $ set PORT=8888 & npm start
 }
 ```
 
-- `GET localhost:3000/api/greetings?name=Mickey%20Mouse`
+- `GET https://localhost:4433/api/greetings?name=Mickey%20Mouse`
 - Response:
 
 ```
