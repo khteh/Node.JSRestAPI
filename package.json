@@ -12,27 +12,27 @@
     "sonarqube": "./node_modules/.bin/mocha --reporter mocha-sonarqube-reporter tests --reporter-options output=test_reports/sonarqube/test_results.xml"
   },
   "dependencies": {
-    "ansi-regex": ">=5.0.1",
-    "async": "^3.2.0",
-    "config": "^3.3.6",
-    "cookie-parser": "^1.4.5",
+    "ansi-regex": "^6.0.1",
+    "async": "^3.2.3",
+    "config": "^3.3.7",
+    "cookie-parser": "^1.4.6",
     "debug": "~4.3.1",
     "ejs": "~3.1.6",
     "email-validator": "^2.0.4",
-    "express": "^4.17.1",
-    "http-errors": "~1.8.0",
+    "express": "^4.17.2",
+    "http-errors": "~2.0.0",
     "morgan": "^1.10.0",
-    "mysql2": "^2.3.0",
+    "mysql2": "^2.3.3",
     "spdy": "^4.0.2"
   },
   "devDependencies": {
-    "chai": "^4.3.4",
+    "chai": "^4.3.6",
     "chai-http": "^4.3.0",
-    "mocha": "^9.1.2",
-    "mocha-junit-reporter": "^2.0.0",
+    "mocha": "^9.2.0",
+    "mocha-junit-reporter": "^2.0.2",
     "mocha-sonarqube-reporter": "^1.0.2",
-    "nodemon": "^2.0.7",
+    "nodemon": "^2.0.15",
     "nyc": "^15.1.0",
-    "sonarqube-scanner": "^2.8.0"
+    "sonarqube-scanner": "^2.8.1"
   }
 }
