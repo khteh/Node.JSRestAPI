@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "./node_modules/.bin/nodemon --trace-deprecation --ignore node_modules/ bin/www.js",
     "start": "export NODE_ENV=dev&& node bin/www.js",
-    "test": "export NODE_ENV=test&& ./node_modules/.bin/mocha tests --timeout 10000 --recursive --check-leaks --exit --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml",
+    "test": "export NODE_ENV=test&& ./node_modules/.bin/mocha tests --timeout 10000 --recursive --check-leaks --exit --reporter=mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml",
     "cover": "./node_modules/.bin/nyc --reporter=lcov --reporter=text npm test",
     "sonarqube": "./node_modules/.bin/mocha --reporter mocha-sonarqube-reporter tests --reporter-options output=test_reports/sonarqube/test_results.xml"
   },
