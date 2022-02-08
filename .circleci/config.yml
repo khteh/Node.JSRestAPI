@@ -57,7 +57,7 @@ jobs: # a collection of steps
           command: chmod -R ugo+rwx .
       - run: # run tests
           name: Tests
-          command: export NODE_ENV=test && ./node_modules/.bin/nyc --reporter=lcov --reporter=text --timeout 10000 --recursive --check-leaks --exit --reporter=mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml ./node_modules/.bin/mocha tests
+          command: export NODE_ENV=test && ./node_modules/.bin/nyc --reporter=lcov --reporter=text --timeout 10000 --recursive --check-leaks --exit --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml ./node_modules/.bin/mocha tests
           when: always
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: coverage
