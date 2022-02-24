@@ -2,7 +2,7 @@
     "all": true,
     "check-coverage": false,    
     "include": [
-      "src/**/*.js"
+      "**/*.js"
     ],
     "exclude": [
       "node_modules/"
