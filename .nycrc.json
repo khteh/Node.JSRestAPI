@@ -1,0 +1,22 @@
+{
+    "all": true,
+    "check-coverage": false,    
+    "include": [
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "node_modules/"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "report-dir": "./coverage",
+    "branches": 15,
+    "lines": 40,
+    "functions": 35,
+    "statements": 40    
+}
