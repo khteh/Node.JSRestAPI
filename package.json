@@ -30,7 +30,7 @@
     "@babel/eslint-parser": "^7.17.0",
     "chai": "^4.3.6",
     "chai-http": "^4.3.0",
-    "eslint": "^8.13.0",
+    "eslint": "^8.14.0",
     "mocha": "^9.2.2",
     "mocha-junit-reporter": "^2.0.2",
     "mocha-sonarqube-reporter": "^1.0.2",
