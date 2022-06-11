@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "ansi-regex": "^6.0.1",
-    "async": "^3.2.3",
+    "async": "^3.2.4",
     "config": "^3.3.7",
     "cookie-parser": "^1.4.6",
     "debug": "~4.3.1",
@@ -30,7 +30,7 @@
     "@babel/eslint-parser": "^7.18.2",
     "chai": "^4.3.6",
     "chai-http": "^4.3.0",
-    "eslint": "^8.16.0",
+    "eslint": "^8.17.0",
     "mocha": "^10.0.0",
     "mocha-junit-reporter": "^2.0.2",
     "mocha-sonarqube-reporter": "^1.0.2",
