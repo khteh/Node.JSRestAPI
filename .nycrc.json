@@ -2,13 +2,15 @@
     "all": true,
     "check-coverage": false,    
     "include": [
-      "**/*.js"
+      "**/*.js",
+      "**/*.ts"
     ],
     "exclude": [
       "node_modules/"
     ],
     "extension": [
-      ".js"
+      ".js",
+      ".ts"
     ],
     "reporter": [
       "text-summary",
