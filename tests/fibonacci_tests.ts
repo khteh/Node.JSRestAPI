@@ -1,5 +1,6 @@
 import config from 'config'
-import app from '../app.js'
+//import app from '../app.js'
+import app from "../src/webapi/webapi"
 import chai from 'chai'
 import chaiHttp from 'chai-http'
 var expect = chai.expect
@@ -8,7 +9,7 @@ var should = chai.should()
 chai.use(chaiHttp)
 //console.log("NODE_ENV: "+config.util.getEnv('NODE_ENV')+ " : "+process.env.NODE_ENV)
 expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
-var verifyClientError = function (err, res) {
+var verifyClientError = function (err: any, res: any) {
     expect(res).to.have.status(400);
     expect(res).to.have.property('body');
     expect(res.body).to.have.property('message');

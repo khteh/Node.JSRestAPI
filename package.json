@@ -9,6 +9,7 @@
     "lint": "eslint --ext .js --ignore-path .gitignore ./",
     "dev": "./node_modules/.bin/nodemon --trace-deprecation --ignore node_modules/ bin/www.js",
     "start": "export NODE_ENV=dev&& node bin/www.js",
+    "start_ts": "export NODE_ENV=dev&& node src/webapi/server.ts",
     "test": "export NODE_ENV=test&& ./node_modules/.bin/mocha tests --timeout 10000 --recursive --check-leaks --exit --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml",
     "cover": "./node_modules/.bin/nyc --reporter=lcov --reporter=text --reporter=text-summary --reporter=html npm test",
     "sonarqube": "./node_modules/.bin/mocha --reporter mocha-sonarqube-reporter tests --reporter-options output=test_reports/sonarqube/test_results.xml"
@@ -42,7 +43,9 @@
     "nx": "^14.5.4",
     "nyc": "^15.1.0",
     "sonarqube-scanner": "^2.8.1",
-    "tslib": "^2.4.0"
+    "ts-node": "^10.9.1",
+    "tslib": "^2.4.0",
+    "typescript": "^4.7.4"
   },
   "workspaces": [
     "src/core",
