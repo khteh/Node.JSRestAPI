@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "module": "esnext",
         "target": "esnext",
+        "moduleResolution": "node",
         "sourceMap": true,
         "allowSyntheticDefaultImports": true,
         "emitDecoratorMetadata": true,

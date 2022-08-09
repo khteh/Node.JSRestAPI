@@ -9,9 +9,9 @@ import cors from 'cors'
 import path from 'path'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
-import indexRoute from './routes/index.js'
+import indexRoute from './routes/index'
 import healthchecks from './routes/healthchecks'
-import api from './routes/api.js'
+import api from './routes/api'
 import {Database} from "infrastructure"
 var app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -33,7 +33,7 @@ app.use('/', indexRoute);
 app.use('/healthchecks', healthchecks);
 app.use('/api', api);
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use(function (req: Request, res: Response, next: NextFunction) {
   next(createError(404));
 });
 // error handler
