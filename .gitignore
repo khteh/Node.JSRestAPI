@@ -2,6 +2,7 @@
 *.crt
 *.key
 node_modules
+**/build
 test_reports
 .nyc_output
 coverage
