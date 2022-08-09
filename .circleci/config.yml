@@ -47,9 +47,9 @@ jobs: # a collection of steps
           key: v1-{{ checksum "package.json" }}
       - run:
           name: Install dependencies
-          command: npm install            
+          command: npm install
       - save_cache:
-          key: v1-{{ checksum "package.json" }}      
+          key: v1-{{ checksum "package.json" }}
           paths:
             - node_modules
       - run:
@@ -57,6 +57,7 @@ jobs: # a collection of steps
           command: chmod -R ugo+rwx .
       - run: # run tests
           name: Tests
+          no_output_timeout: 5m
           command: export NODE_ENV=test && ./node_modules/.bin/nyc --timeout 10000 --recursive --check-leaks --exit --reporter=lcov --reporter=text --reporter=text-summary --reporter=html ./node_modules/.bin/mocha --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml tests
           when: always
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
@@ -83,7 +84,7 @@ jobs: # a collection of steps
             VERSION=$(node -p "require('./package.json').version").$CIRCLE_BUILD_NUM
             echo ${VERSION} > docker-build_number.txt
             docker push khteh/node.jsrestapi:latest
-            docker push khteh/node.jsrestapi:$VERSION          
+            docker push khteh/node.jsrestapi:$VERSION
       - persist_to_workspace:
           name: Save Workspace
           root: .
@@ -91,32 +92,32 @@ jobs: # a collection of steps
             - docker-build_number.txt
   deploy-eks:
     working_directory: /tmp
-    docker: 
+    docker:
       - image: khteh/circleci-openjdk:latest
-    steps:  
+    steps:
       - attach_workspace:
           at: /tmp
       - setup_remote_docker:
           docker_layer_caching: true
-      - run:  
+      - run:
           name: Use the saved build number here
           command: |
             echo 'export CIRCLE_BUILD_NUM_DOCKER="$(cat /tmp/docker-build_number.txt)"' >> $BASH_ENV
             . $BASH_ENV
             echo CIRCLE_BUILD_NUM_DOCKER: $CIRCLE_BUILD_NUM_DOCKER
-      - run:  
+      - run:
           name: Set Default AWS Region
           command: aws configure set default.region $AWS_REGION
-      - run:  
+      - run:
           name: Set AWS Access Key
           command: aws configure set aws_access_key_id $AWS_ACCESS_KEY
-      - run:  
+      - run:
           name: Set AWS Secret Key
           command: aws configure set aws_secret_access_key $AWS_SECRET_KEY
-      - run:  
+      - run:
           name: Update Kubectl Configuration with cluster name
           command: aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
-      - run:  
+      - run:
           name: Update Node.JS RestAPI application
           command: |
             kubectl patch statefulset nodejsrestapi --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"'$AWS_ACCOUNT_ID'.dkr.ecr.ap-southeast-1.amazonaws.com/nodejsrestapi:'$CIRCLE_BUILD_NUM_DOCKER'"}]'
