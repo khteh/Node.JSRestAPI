@@ -3,6 +3,7 @@
 *.key
 node_modules
 **/build
+**/.rollup.cache
 test_reports
 .nyc_output
 coverage
