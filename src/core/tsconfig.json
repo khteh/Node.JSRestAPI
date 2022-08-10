@@ -16,9 +16,18 @@
         "composite": true,
         "declaration": true,
         "declarationMap": true,
-        "incremental": true,        
+        "incremental": true,
         "outDir": "build/",
         "sourceMap": true,
+        "strict": true,
+        "esModuleInterop": false,
+        "skipLibCheck": true,
+        "noEmitOnError": true,
+        "forceConsistentCasingInFileNames": true,
+        "allowSyntheticDefaultImports": true,
+        "lib": [
+            "ES2020"
+        ],
         "plugins": [
             {
                 "name": "@rollup/plugin-typescript"

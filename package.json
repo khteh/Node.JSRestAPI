@@ -4,9 +4,17 @@
   "private": true,
   "exports": "./bin/www.js",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/khteh/Node.JSRestAPI.git"
+  },  
   "scripts": {
     "graph": "nx graph",
     "build": "npx tsc",
+    "build_core": "npm run build --workspace=core",
+    "build_infra": "npm run build --workspace=infrastructure",
+    "build_webapi": "npm run build --workspace=webapi",
+    "build_all": "npm run build_core && npm run build_infra && npm run build_webapi",
     "lint": "eslint --ext .js --ignore-path .gitignore ./",
     "dev": "./node_modules/.bin/nodemon --trace-deprecation --ignore node_modules/ bin/www.js",
     "dev_ts": "export NODE_ENV=dev&& concurrently \"npx tsc --watch\" \"nodemon -q build/index.js\"",
