@@ -1,10 +1,10 @@
 //var express = require('express');
 import express from 'express'
 import {Database} from 'infrastructure'
-var router = express.Router();
+var healthchecks = express.Router();
 
 /* k8s readiness check */
-router.get('/ready', function(req, res, next) {
+healthchecks.get('/ready', function(req, res, next) {
   var db_query = `select count(*) from students`;
   //console.log(`teacher_query: ${teacher_query}`);
   Database.Query(db_query, function (error:Error, result:any) {
@@ -16,7 +16,7 @@ router.get('/ready', function(req, res, next) {
   });
 });
 /* k8s liveness check */
-router.get('/live', function(req, res, next) {
+healthchecks.get('/live', function(req, res, next) {
   res.send('OK')
 });
-export { router as default };
+export { healthchecks as default };

@@ -4,10 +4,13 @@
   "description": "",
   "author": "Teh Kok How",
   "license": "ISC",
+  "type": "module",
   "scripts": {
     "build": "tsc --project tsconfig.build.json && npm run rollup",
     "build:watch": "nodemon -e ts --exec \"npm run build\" --ignore build/** --ignore tests/**",
-    "rollup": "rollup -c"
+    "rollup": "rollup -c",
+    "dev": "export NODE_ENV=dev&& concurrently \"npx tsc --watch\" \"nodemon -q build/index.js\"",
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "compression": "^1.7.4",

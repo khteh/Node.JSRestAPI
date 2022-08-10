@@ -1,9 +1,9 @@
 //var express = require('express');
 import express from 'express'
-var router = express.Router();
+var indexRoute = express.Router();
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+indexRoute.get('/', function(req, res, next) {
   res.render('index', { title: 'Student administrative app' });
 });
-export { router as default };
+export { indexRoute as default };
