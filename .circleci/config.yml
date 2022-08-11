@@ -55,10 +55,18 @@ jobs: # a collection of steps
       - run:
           name: Fix working directory permissions
           command: chmod -R ugo+rwx .
+      - run:
+          name: Build Typescript files
+          command: npm run build_all
       - run: # run tests
-          name: Tests
+          name: Javascript Tests
           no_output_timeout: 5m
           command: export NODE_ENV=test && ./node_modules/.bin/nyc --timeout 10000 --recursive --check-leaks --exit --reporter=lcov --reporter=text --reporter=text-summary --reporter=html ./node_modules/.bin/mocha --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml tests
+          when: always
+      - run: # run tests
+          name: Typescript Tests
+          no_output_timeout: 5m
+          command: export NODE_ENV=test && ./node_modules/.bin/nyc --timeout 10000 --recursive --check-leaks --exit --reporter=lcov --reporter=text --reporter=text-summary --reporter=html ./node_modules/.bin/mocha --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml -r ts-node/register tests/**/*.ts
           when: always
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: coverage
