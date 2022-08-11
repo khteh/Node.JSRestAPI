@@ -1,8 +1,7 @@
+import json from '@rollup/plugin-json';
 import typescript from '@rollup/plugin-typescript';
 import dts from 'rollup-plugin-dts';
-
 import tsConfig from './tsconfig.json';
-
 const config = [
     {
         input: "index.ts",
@@ -12,7 +11,8 @@ const config = [
                 {
                     sourceMap: tsConfig.compilerOptions.sourceMap
                 }
-            )
+            ),
+            json()
         ]
     },
     {
@@ -25,7 +25,8 @@ const config = [
                         baseUrl: tsConfig.compilerOptions.baseUrl
                     }
                 }
-            )
+            ),
+            json()
         ]
     },
 ]

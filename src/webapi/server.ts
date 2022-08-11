@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 import fs from 'fs';
-import app from 'webapi';
+import app from 'index';
 import spdy from 'spdy'
 import http2 from 'http2';
 import d from 'debug';

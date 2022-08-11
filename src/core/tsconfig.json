@@ -5,7 +5,7 @@
     ],
     "exclude": [
         "node_modules", 
-        "build/**/*"
+        "build"
     ],
     "compilerOptions": {
         "baseUrl": ".",
@@ -25,12 +25,20 @@
         "noEmitOnError": true,
         "forceConsistentCasingInFileNames": true,
         "allowSyntheticDefaultImports": true,
+        "importHelpers": true,
+        "noImplicitOverride": true,
+        "noPropertyAccessFromIndexSignature": false,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
         "lib": [
             "ES2020"
         ],
         "plugins": [
             {
                 "name": "@rollup/plugin-typescript"
+            },
+            {
+                "name": "@rollup/plugin-json"
             }
         ]
     }
