@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 import fs from 'fs';
-import app from 'index.js';
+import app from './index.js';
 import spdy from 'spdy'
 import http2 from 'http2';
 import d from 'debug';
