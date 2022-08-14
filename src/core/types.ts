@@ -6,4 +6,7 @@ const RepositoryTypes = {
     IStudentRepository: Symbol.for("IStudentRepository"),
     ITeacherRepository: Symbol.for("ITeacherRepository"),
 }
-export { UseCaseTypes, RepositoryTypes };
+const LoggerTypes = {
+    ILogger: Symbol.for("ILogger")
+}
+export { UseCaseTypes, RepositoryTypes, LoggerTypes };

@@ -3,11 +3,12 @@ import { Request, Response, NextFunction } from 'express';
 import emailvalidator from 'email-validator'
 var router = express.Router();
 import url from 'url'
+import { Logger } from "infrastructure"
 export class GreetingsController {
     public Greetings (req: Request, res: Response, next: NextFunction) {
         var url_parts = url.parse(req.url, true);
         var query = url_parts.query;
-        console.log('GET /api/greetings query: ' + JSON.stringify(query));
+        Logger.debug('GET /api/greetings query: ' + JSON.stringify(query));
         var greetings = 'Hello';
         let now = new Date();
         let time = now.toLocaleString("en-SG", {

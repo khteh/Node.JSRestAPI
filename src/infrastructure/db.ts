@@ -4,6 +4,7 @@ import config from 'config'
 import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { Student, Teacher } from "core"
+import { Logger } from "./index"
 export class Database {
 	private static _pool: Pool;
 	public static AppDataSource: DataSource;
@@ -26,7 +27,7 @@ export class Database {
 			Database.AppDataSource.initialize()
 				.then(() => {
 					// here you can start to work with your database
-					console.log("TypeORM initialized successfully!")
+					Logger.info("TypeORM initialized successfully!")
 				})
 				.catch((error) => console.error(`TypeORM initialization failed! ${error}`))
 			Database._pool = createPool({
@@ -38,7 +39,7 @@ export class Database {
 				database: process.env.MYSQL_DB || config.get('Database'),
 				insecureAuth: true
 			});
-			console.debug('MySql Adapter Pool generated successfully');
+			Logger.info('MySql Adapter Pool generated successfully');
 		} catch (error) {
 			console.error('[mysql.connector][init][Error]: ', error);
 			throw new Error('failed to initialized pool');

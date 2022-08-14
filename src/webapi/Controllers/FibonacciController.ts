@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Fibonacci } from 'core';
 import url from 'url'
+import { Logger } from "infrastructure"
 export class FibonacciController {
     private _fibonacci: Fibonacci;
     public constructor() {
@@ -10,16 +11,16 @@ export class FibonacciController {
         var url_parts = url.parse(req.url, true);
         var query = url_parts.query;
         var message = "";
-        console.log('GET /api/fibonacci query: ' + JSON.stringify(query));
+        Logger.debug('GET /api/fibonacci query: ' + JSON.stringify(query));
         if (query.n !== undefined && query.n.length > 0 && !isNaN(Number(query.n))) {
             try {
                 let result = this._fibonacci.fibonacci(+query.n);
-                console.log("fib(" + query.n + "): " + result)
+                Logger.debug("fib(" + query.n + "): " + result)
                 message = "Fibonacci(" + query.n + "): " + this._fibonacci.fibonacci(Number(query.n));
                 res.status(200);
                 res.json({ 'message': message });
             } catch (e) {
-                console.log("Exception! " + e)
+                Logger.debug("Exception! " + e)
                 res.status(500);
                 res.json({ 'message': e });
             }

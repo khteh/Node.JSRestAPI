@@ -6,15 +6,18 @@ import { RegisterTeacherRequest } from "DTO/UseCaseRequests/RegisterTeacherReque
 import { Teacher } from "Domain/Entities/Teacher";
 import { Error } from "DTO/Error"
 import { injectable, inject } from "inversify";
+import { ILogger, LogLevels } from "Interfaces/ILogger";
 @injectable()
 export class RegisterTeacherUseCase implements IRegisterTeacherUseCase {
     private readonly _repository: ITeacherRepository;
-    public constructor(repo: ITeacherRepository) {
+    private _logger: ILogger;
+    public constructor(logger: ILogger, repo: ITeacherRepository) {
+        this._logger = logger;
         this._repository = repo;
     }
     public async Handle (request: RegisterTeacherRequest, outputPort: IOutputPort<UseCaseResponseMessage>): Promise<Boolean> {
         let errors: Error[] = [];
-        console.log(`Processing teacher: ${request.Email}`);
+        this._logger.Log(LogLevels.debug, `Processing teacher: ${request.Email}`);
         let teacher = this._repository.GetByEmail(request.Email);
         if (teacher === undefined || teacher === null) {
             await this._repository.Add(new Teacher(request.FirstName, request.LastName, request.Email));

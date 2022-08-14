@@ -5,15 +5,18 @@ import { FibonacciController } from '../Controllers/FibonacciController';
 import { GreetingsController } from '../Controllers/GreetingsController';
 import { RegistrationController } from '../Controllers/RegistrationController';
 import { IRegisterStudentUseCase, IRegisterTeacherUseCase, Student, UseCaseTypes } from "core"
-import { IStudentRepository, ITeacherRepository, RepositoryTypes } from 'core';
+import { IStudentRepository, ITeacherRepository, RepositoryTypes, LoggerTypes } from 'core';
 import { RegisterStudentUseCase, RegisterTeacherUseCase } from 'core';
 import { StudentRepository, TeacherRepository } from "infrastructure"
+import { ILogger } from 'core';
+import { LoggerImpl } from "infrastructure"
 var api = express.Router();
 const di = new Container();
 di.bind<IRegisterStudentUseCase>(UseCaseTypes.IRegisterStudentUseCase).to(RegisterStudentUseCase);
 di.bind<IRegisterTeacherUseCase>(UseCaseTypes.IRegisterTeacherUseCase).to(RegisterTeacherUseCase);
 di.bind<IStudentRepository>(RepositoryTypes.IStudentRepository).to(StudentRepository);
 di.bind<ITeacherRepository>(RepositoryTypes.ITeacherRepository).to(TeacherRepository);
+di.bind<ILogger>(LoggerTypes.ILogger).to(LoggerImpl);
 var fibonacci = new FibonacciController();
 var greetings = new GreetingsController();
 var registration = new RegistrationController(di.get<IRegisterStudentUseCase>(UseCaseTypes.IRegisterStudentUseCase), di.get<IRegisterTeacherUseCase>(UseCaseTypes.IRegisterTeacherUseCase));
