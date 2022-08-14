@@ -1,6 +1,4 @@
-import express from 'express'
 import emailvalidator from 'email-validator'
-var router = express.Router();
 import {Query} from '../lib/db.js'
 import async from 'async'
 import url from 'url'

@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 import fs from 'fs';
-import app from './index.js';
+import { app } from './index.js';
 import spdy from 'spdy'
 import http2 from 'http2';
 import d from 'debug';
@@ -20,7 +20,7 @@ const server = http2.createSecureServer({
 // https://github.com/spdy-http2/node-spdy
 const options = {
   key: fs.readFileSync('server.key'),
-  cert:  fs.readFileSync('server.crt')
+  cert: fs.readFileSync('server.crt')
 };
 //console.log(options)
 /**
@@ -48,7 +48,7 @@ server.listen(port);
  * Normalize a port into a number, string, or false.
  */
 
-function normalizePort(val: string) {
+function normalizePort (val: string) {
   var port = Number(val);
 
   if (isNaN(port)) {

@@ -3,8 +3,8 @@ import { Request, Response, NextFunction } from 'express';
 import emailvalidator from 'email-validator'
 var router = express.Router();
 import url from 'url'
-export class Greetings {
-    public greetings(req: Request, res: Response, next: NextFunction) {
+export class GreetingsController {
+    public Greetings (req: Request, res: Response, next: NextFunction) {
         var url_parts = url.parse(req.url, true);
         var query = url_parts.query;
         console.log('GET /api/greetings query: ' + JSON.stringify(query));
@@ -23,6 +23,6 @@ export class Greetings {
             greetings += ' ' + query.name;
         greetings += "! It's " + time + " now.";
         res.status(200);
-        res.json({ 'message': greetings });	
+        res.json({ 'message': greetings });
     };
 }

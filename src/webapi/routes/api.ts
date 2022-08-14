@@ -1,18 +1,33 @@
+import config from 'config'
 import express from 'express'
-import {Fibonacci, Greetings} from 'core'
-var router = express.Router();
-var fibonacci = new Fibonacci(); 
-var greetings = new Greetings();
+import { Container } from "inversify";
+import { FibonacciController } from '../Controllers/FibonacciController';
+import { GreetingsController } from '../Controllers/GreetingsController';
+import { RegistrationController } from '../Controllers/RegistrationController';
+import { IRegisterStudentUseCase, IRegisterTeacherUseCase, Student, UseCaseTypes } from "core"
+import { IStudentRepository, ITeacherRepository, RepositoryTypes } from 'core';
+import { RegisterStudentUseCase, RegisterTeacherUseCase } from 'core';
+import { StudentRepository, TeacherRepository } from "infrastructure"
+var api = express.Router();
+const di = new Container();
+di.bind<IRegisterStudentUseCase>(UseCaseTypes.IRegisterStudentUseCase).to(RegisterStudentUseCase);
+di.bind<IRegisterTeacherUseCase>(UseCaseTypes.IRegisterTeacherUseCase).to(RegisterTeacherUseCase);
+di.bind<IStudentRepository>(RepositoryTypes.IStudentRepository).to(StudentRepository);
+di.bind<ITeacherRepository>(RepositoryTypes.ITeacherRepository).to(TeacherRepository);
+var fibonacci = new FibonacciController();
+var greetings = new GreetingsController();
+var registration = new RegistrationController(di.get<IRegisterStudentUseCase>(UseCaseTypes.IRegisterStudentUseCase), di.get<IRegisterTeacherUseCase>(UseCaseTypes.IRegisterTeacherUseCase));
 //import registration from '../BusinessLogic/registration.js'
 //import notifications from '../BusinessLogic/notifications.js'
 //import suspend from '../BusinessLogic/suspend.js'
 //import commonstudents from '../BusinessLogic/commonstudents.js'
 //import greetings from '../BusinessLogic/greetings.js'
 //import fibonacci from '../BusinessLogic/fibonacci.js'
-router.get('/greetings', function (req, res, next) { greetings.greetings(req, res, next); });
-router.get('/fibonacci', function (req, res, next) { fibonacci.fibonacci(req, res, next); });
-//router.post('/register', function (req, res, next) { registration(req, res, next); });
+api.get('/greetings', function (req, res, next) { greetings.Greetings(req, res, next); });
+api.get('/fibonacci', function (req, res, next) { fibonacci.Fibonacci(req, res, next); });
+api.post('/register/student', function (req, res, next) { registration.RegisterStudent(req, res, next); });
+api.post('/register/teacher', function (req, res, next) { registration.RegisterTeacher(req, res, next); });
 //router.post('/retrievefornotifications', function (req, res, next) { notifications(req, res, next); });
 //router.get('/commonstudents', function (req, res, next) { commonstudents(req, res, next); });
 //router.post('/suspend', function (req, res, next) { suspend(req, res, next); });
-export {router as default};
+export { api, di };
