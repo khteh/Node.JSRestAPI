@@ -18,18 +18,31 @@ export class RegisterStudentUseCase implements IRegisterStudentUseCase {
     public async Handle (request: RegisterStudentRequest, outputPort: IOutputPort<UseCaseResponseMessage>): Promise<Boolean> {
         let count: number = 0;
         let errors: Error[] = [];
-        request.Students.forEach(async i => {
-            this._logger.Log(LogLevels.debug, `Processing student: ${i}`);
-            let student = this._repository.GetByEmail(i.email);
-            if (student === undefined || student === null) {
-                await this._repository.Add(new Student(i.firstName, i.lastName, i.email, i.isSuspended ?? false));
-                count++;
+        let response: UseCaseResponseMessage;
+        try {
+            request.Students.forEach(async i => {
+                this._logger.Log(LogLevels.debug, `Processing student: ${i.email}`);
+                let student = this._repository.GetByEmail(i.email);
+                if (student === undefined || student === null) {
+                    await this._repository.Add(new Student(i.firstName, i.lastName, i.email, i.isSuspended ?? false));
+                    count++;
+                } else {
+                    errors.push(new Error("", `Skip existing student ${i.email}`));
+                }
+            });
+            response = new UseCaseResponseMessage("", count == request.Students.length && !errors.length, `${count} students registered successfully`, errors);
+            outputPort.Handle(response);
+            return response.Success;
+        } catch (e) {
+            if (typeof e === "string") {
+                errors.push(new Error("", e));
+                response = new UseCaseResponseMessage("", false, e, errors);
             } else {
-                errors.push(new Error("", `Skip existing student ${i.email}`));
+                errors.push(new Error("", JSON.stringify(e)));
+                response = new UseCaseResponseMessage("", false, "Exception!", errors);
             }
-        });
-        let response: UseCaseResponseMessage = new UseCaseResponseMessage("", count == request.Students.length && !errors.length, `${count} students registered successfully`, errors);
-        outputPort.Handle(response);
-        return response.Success;
+            outputPort.Handle(response);
+            return false;
+        }
     }
 }

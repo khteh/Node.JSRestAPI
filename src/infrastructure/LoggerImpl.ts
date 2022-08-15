@@ -1,7 +1,7 @@
 import { ILogger, LogLevelsType } from "core"
 import { Logger } from "index"
 export class LoggerImpl implements ILogger {
-    Log (level: LogLevelsType, message: string): void {
+    public Log (level: number, message: string): void {
         /*
         error: 0,
         warn: 1,
@@ -9,7 +9,7 @@ export class LoggerImpl implements ILogger {
         http: 3,
         debug: 4,
         */
-        switch (level.key) {
+        switch (level) {
             case 0:
                 Logger.error(message);
                 break;

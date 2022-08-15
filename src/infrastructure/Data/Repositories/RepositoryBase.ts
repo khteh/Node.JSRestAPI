@@ -15,10 +15,10 @@ export abstract class RepositoryBase<T extends EntityBase> implements IRepositor
     public async ListAll (): Promise<T[]> {
         return await this._repository.find();
     }
-    public async Add (entity: T): Promise<T> {
+    public async Add (entity: T): Promise<T | null> {
         return await this._repository.save(entity)
     }
-    public async Update (entity: T): Promise<T> {
+    public async Update (entity: T): Promise<T | null> {
         entity.modified = new Date();
         return await this._repository.save(entity);
     }

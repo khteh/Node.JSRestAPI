@@ -1,7 +1,8 @@
 import { ILogger, LogLevels } from 'core'
 export * from './db'
 export * from "Data/Repositories/StudentRepository"
-export * from "LoggerImp"
+export * from "Data/Repositories/TeacherRepository"
+export * from "./LoggerImpl"
 import winston from 'winston'
 import * as rfs from 'rotating-file-stream'
 const levels = {
@@ -60,5 +61,4 @@ const Logger = winston.createLogger({
     format,
     transports,
 })
-export * from "Data/Repositories/TeacherRepository"
 export { Logger }

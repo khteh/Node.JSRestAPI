@@ -4,7 +4,7 @@ declare namespace winston {
     [key: string]: number;
   }
 */
-export interface LogLevelsType {
+interface LogLevelsType {
   [key: string]: number;
 }
 const LogLevels = {
@@ -14,7 +14,7 @@ const LogLevels = {
   http: 3,
   debug: 4,
 }
-export interface ILogger {
+interface ILogger {
   Log (level: number, message: string): void;
 }
-export { LogLevels }
+export { LogLevels, LogLevelsType, ILogger }

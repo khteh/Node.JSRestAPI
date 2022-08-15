@@ -17,15 +17,28 @@ export class RegisterTeacherUseCase implements IRegisterTeacherUseCase {
     }
     public async Handle (request: RegisterTeacherRequest, outputPort: IOutputPort<UseCaseResponseMessage>): Promise<Boolean> {
         let errors: Error[] = [];
-        this._logger.Log(LogLevels.debug, `Processing teacher: ${request.Email}`);
-        let teacher = this._repository.GetByEmail(request.Email);
-        if (teacher === undefined || teacher === null) {
-            await this._repository.Add(new Teacher(request.FirstName, request.LastName, request.Email));
-        } else {
-            errors.push(new Error("", `Skip existing teacher ${request.Email}`));
+        let response: UseCaseResponseMessage;
+        try {
+            this._logger.Log(LogLevels.debug, `Processing teacher: ${request.Email}`);
+            let teacher = this._repository.GetByEmail(request.Email);
+            if (teacher === undefined || teacher === null) {
+                await this._repository.Add(new Teacher(request.FirstName, request.LastName, request.Email));
+            } else {
+                errors.push(new Error("", `Teacher ${request.Email} registration failed!`));
+            }
+            response = new UseCaseResponseMessage("", !errors.length, `Teacher ${request.Email} registered successfully!`, errors);
+            outputPort.Handle(response);
+            return response.Success;
+        } catch (e) {
+            if (typeof e === "string") {
+                errors.push(new Error("", e));
+                response = new UseCaseResponseMessage("", false, e, errors);
+            } else {
+                errors.push(new Error("", JSON.stringify(e)));
+                response = new UseCaseResponseMessage("", false, "Exception!", errors);
+            }
+            outputPort.Handle(response);
+            return false;
         }
-        let response: UseCaseResponseMessage = new UseCaseResponseMessage("", !errors.length, `Teacher ${request.Email} added successfully!`, errors);
-        outputPort.Handle(response);
-        return response.Success;
     }
 }
