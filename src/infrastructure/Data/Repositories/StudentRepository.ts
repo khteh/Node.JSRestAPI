@@ -11,4 +11,10 @@ export class StudentRepository extends RepositoryBase<Student> implements IStude
         }
         return null;
     }
+    public async RegisteredToTeacher (teacher: Teacher): Promise<Student[]> {
+        if (teacher && teacher.email) {
+            return (await this.ListAll()).filter(i => i.teacher.find(j => j.email == teacher.email));
+        }
+        return [];
+    }
 }

@@ -1,5 +1,5 @@
 import { IOutputPort, UseCaseResponseMessage, Error } from "core"
-export abstract class PresenterBase<T extends UseCaseResponseMessage> implements IOutputPort<T>
+export class PresenterBase<T extends UseCaseResponseMessage> implements IOutputPort<T>
 {
     public Code: number = 200;
     public Message: string = "";

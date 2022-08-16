@@ -1,3 +1,4 @@
+import emailvalidator from 'email-validator'
 import { IRegisterTeacherUseCase } from "Interfaces/UseCases/IRegisterTeacherUseCase"
 import { ITeacherRepository } from "Interfaces/ITeacherRepository"
 import { IOutputPort } from "Interfaces/IOutputPort";
@@ -19,16 +20,23 @@ export class RegisterTeacherUseCase implements IRegisterTeacherUseCase {
         let errors: Error[] = [];
         let response: UseCaseResponseMessage;
         try {
-            this._logger.Log(LogLevels.debug, `Processing teacher: ${request.Email}`);
-            let teacher = this._repository.GetByEmail(request.Email);
-            if (teacher === undefined || teacher === null) {
-                await this._repository.Add(new Teacher(request.FirstName, request.LastName, request.Email));
+            if (emailvalidator.validate(request.Email)) {
+                this._logger.Log(LogLevels.debug, `Processing teacher: ${request.Email}`);
+                let teacher = await this._repository.GetByEmail(request.Email);
+                if (teacher === undefined || teacher === null) {
+                    await this._repository.Add(new Teacher(request.FirstName, request.LastName, request.Email));
+                } else {
+                    errors.push(new Error("", `Teacher ${request.Email} registration failed!`));
+                }
+                response = new UseCaseResponseMessage("", !errors.length, `Teacher ${request.Email} registered successfully!`, errors);
+                outputPort.Handle(response);
+                return response.Success;
             } else {
-                errors.push(new Error("", `Teacher ${request.Email} registration failed!`));
+                errors.push(new Error("", `Invalid teacher's email! ${request.Email}!`));
+                response = new UseCaseResponseMessage("", false, `Invalid teacher's email! ${request.Email}!`, errors);
+                outputPort.Handle(response);
+                return response.Success;
             }
-            response = new UseCaseResponseMessage("", !errors.length, `Teacher ${request.Email} registered successfully!`, errors);
-            outputPort.Handle(response);
-            return response.Success;
         } catch (e) {
             if (typeof e === "string") {
                 errors.push(new Error("", e));

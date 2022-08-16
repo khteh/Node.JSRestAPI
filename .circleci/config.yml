@@ -61,12 +61,12 @@ jobs: # a collection of steps
       - run: # run tests
           name: Javascript Tests
           no_output_timeout: 5m
-          command: export NODE_ENV=test && ./node_modules/.bin/nyc --timeout 10000 --recursive --check-leaks --exit --reporter=lcov --reporter=text --reporter=text-summary --reporter=html ./node_modules/.bin/mocha --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml tests
+          command: export NODE_ENV=test && ./node_modules/.bin/nyc --timeout 10000 --recursive --check-leaks --reporter=lcov --reporter=text --reporter=text-summary --reporter=html ./node_modules/.bin/mocha --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml tests --exit
           when: always
       - run: # run tests
           name: Typescript Tests
           no_output_timeout: 5m
-          command: export NODE_ENV=test && ./node_modules/.bin/nyc --timeout 10000 --recursive --check-leaks --exit --reporter=lcov --reporter=text --reporter=text-summary --reporter=html ./node_modules/.bin/mocha --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml -r ts-node/register tests/**/*.ts
+          command: export NODE_ENV=test && ./node_modules/.bin/nyc --timeout 10000 --recursive --check-leaks --reporter=lcov --reporter=text --reporter=text-summary --reporter=html ./node_modules/.bin/mocha --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml -r ts-node/register tests/**/*.ts --exit
           when: always
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: coverage

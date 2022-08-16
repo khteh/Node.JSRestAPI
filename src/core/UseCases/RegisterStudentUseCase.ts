@@ -1,3 +1,4 @@
+import emailvalidator from 'email-validator'
 import { IRegisterStudentUseCase } from "Interfaces/UseCases/IRegisterStudentUseCase"
 import { IStudentRepository } from "Interfaces/IStudentRepository"
 import { IOutputPort } from "Interfaces/IOutputPort";
@@ -21,13 +22,17 @@ export class RegisterStudentUseCase implements IRegisterStudentUseCase {
         let response: UseCaseResponseMessage;
         try {
             request.Students.forEach(async i => {
-                this._logger.Log(LogLevels.debug, `Processing student: ${i.email}`);
-                let student = this._repository.GetByEmail(i.email);
-                if (student === undefined || student === null) {
-                    await this._repository.Add(new Student(i.firstName, i.lastName, i.email, i.isSuspended ?? false));
-                    count++;
+                if (emailvalidator.validate(i.email)) {
+                    this._logger.Log(LogLevels.debug, `Processing student: ${i.email}`);
+                    let student = await this._repository.GetByEmail(i.email);
+                    if (student === undefined || student === null) {
+                        await this._repository.Add(new Student(i.firstName, i.lastName, i.email, i.isSuspended ?? false));
+                        count++;
+                    } else {
+                        errors.push(new Error("", `Skip existing student ${i.email}`));
+                    }
                 } else {
-                    errors.push(new Error("", `Skip existing student ${i.email}`));
+                    errors.push(new Error("", `Skip student with invalid email: ${i.email}`));
                 }
             });
             response = new UseCaseResponseMessage("", count == request.Students.length && !errors.length, `${count} students registered successfully`, errors);

@@ -1,20 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
 import express from 'express'
 import emailvalidator from 'email-validator'
-import { IAddStudentsToTeacherUseCase, AddStudentsToTeacherRequest, Student, Teacher } from "core"
+import { IAddStudentsToTeacherUseCase, AddStudentsToTeacherRequest, Student, Teacher, UseCaseResponseMessage } from "core"
 import { RegisterStudentModel } from "Models/Request/RegisterStudentModel"
-import { RegisterTeacherModel } from "Models/Request/RegisterTeacherModel"
-import { AddStudentsToTeacherPresenter } from "Presenters/AddStudentsToTeacherPresenter"
-import { fileURLToPath } from 'url';
-import { injectable, inject } from "inversify";
+import { PresenterBase } from "Presenters/PresenterBase"
+import { inject } from "inversify";
 import { UseCaseTypes } from "core";
 var router = express.Router();
 export class AddStudentsToTeacherController {
     private _usecase: IAddStudentsToTeacherUseCase;
-    private presenter: AddStudentsToTeacherPresenter;
+    private presenter: PresenterBase<UseCaseResponseMessage>;
     public constructor(@inject(UseCaseTypes.IAddStudentsToTeacherUseCase) usecase: IAddStudentsToTeacherUseCase) {
         this._usecase = usecase;
-        this.presenter = new AddStudentsToTeacherPresenter();
+        this.presenter = new PresenterBase();
     }
     public async AddStudentsToTeacher (req: Request, res: Response, next: NextFunction) {
         let teacher: Teacher | null = null;
@@ -43,6 +41,9 @@ export class AddStudentsToTeacherController {
                 res.status(this.presenter.Code);
                 res.json({ 'message': this.presenter.Message, "errors": this.presenter.Errors });
             }
+        } else {
+            res.status(400);
+            res.json(message);
         }
     }
 }
