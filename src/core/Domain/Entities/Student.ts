@@ -1,5 +1,6 @@
-import { Entity, Column, ManyToMany } from "typeorm"
+import { Entity, Column, ManyToMany, JoinTable } from "typeorm"
 import { EntityBase } from "./EntityBase"
+import { Teacher } from "./Teacher"
 @Entity()
 export class Student extends EntityBase {
     @Column()
@@ -14,11 +15,16 @@ export class Student extends EntityBase {
     @Column()
     public isSuspended: boolean
 
+    @ManyToMany(() => Teacher)
+    @JoinTable()
+    public teacher: Teacher[]
+
     constructor(first: string, last: string, email: string, isSuspended?: boolean) {
         super();
         this.firstName = first;
         this.lastName = last;
         this.email = email;
         this.isSuspended = isSuspended ?? false;
+        this.teacher = [];
     }
 }

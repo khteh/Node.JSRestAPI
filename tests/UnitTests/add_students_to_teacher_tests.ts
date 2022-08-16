@@ -6,7 +6,7 @@ import chaiHttp from 'chai-http'
 import chaiAsPromised from "chai-as-promised";
 chai.use(chaiAsPromised);
 import * as typeorm from "typeorm";
-import { ILogger, EntityBase, Student, Teacher, IStudentRepository, ITeacherRepository, AddStudentsToTeacherUseCase, IOutputPort, UseCaseResponseMessage, AddStudentsToTeacherRequest } from "core";
+import { ILogger, Student, Teacher, IStudentRepository, ITeacherRepository, AddStudentsToTeacherUseCase, IOutputPort, UseCaseResponseMessage, AddStudentsToTeacherRequest } from "core";
 import { reject } from 'async';
 import { send } from 'process';
 var expect = chai.expect
@@ -46,6 +46,7 @@ describe('Add students to teacher tests', () => {
         mockStudentRepository.verify(i => i.GetByEmail(It.IsAny<string>()), Times.Once());
         mockTeacherRepository.verify(i => i.GetByEmail(It.IsAny<string>()), Times.Once());
         mockTeacherRepository.verify(i => i.AddStudent(It.IsAny<Teacher>(), It.IsAny<Student>()), Times.Once());
+        mockStudentRepository.verify(i => i.AddTeacher(It.IsAny<Student>(), It.IsAny<Teacher>()), Times.Once());
     });
     it('InValid students should fail test', async (done) => {
         // arrange
@@ -77,6 +78,7 @@ describe('Add students to teacher tests', () => {
         mockStudentRepository.verify(i => i.GetByEmail(It.IsAny<string>()), Times.Once());
         mockTeacherRepository.verify(i => i.GetByEmail(It.IsAny<string>()), Times.Once());
         mockTeacherRepository.verify(i => i.AddStudent(It.IsAny<Teacher>(), It.IsAny<Student>()), Times.Never());
+        mockStudentRepository.verify(i => i.AddTeacher(It.IsAny<Student>(), It.IsAny<Teacher>()), Times.Never());
     });
     it('InValid teacher should fail test', async (done) => {
         // arrange
@@ -108,6 +110,7 @@ describe('Add students to teacher tests', () => {
         mockStudentRepository.verify(i => i.GetByEmail(It.IsAny<string>()), Times.Once());
         mockTeacherRepository.verify(i => i.GetByEmail(It.IsAny<string>()), Times.Once());
         mockTeacherRepository.verify(i => i.AddStudent(It.IsAny<Teacher>(), It.IsAny<Student>()), Times.Never());
+        mockStudentRepository.verify(i => i.AddTeacher(It.IsAny<Student>(), It.IsAny<Teacher>()), Times.Never());
     });
     it('Existing students with teacher should fail test', async (done) => {
         // arrange
@@ -140,5 +143,6 @@ describe('Add students to teacher tests', () => {
         mockStudentRepository.verify(i => i.GetByEmail(It.IsAny<string>()), Times.Once());
         mockTeacherRepository.verify(i => i.GetByEmail(It.IsAny<string>()), Times.Once());
         mockTeacherRepository.verify(i => i.AddStudent(It.IsAny<Teacher>(), It.IsAny<Student>()), Times.Never());
+        mockStudentRepository.verify(i => i.AddTeacher(It.IsAny<Student>(), It.IsAny<Teacher>()), Times.Never());
     });
 });

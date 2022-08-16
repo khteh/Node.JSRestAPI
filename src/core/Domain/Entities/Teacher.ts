@@ -14,12 +14,13 @@ export class Teacher extends EntityBase {
 
     @ManyToMany(() => Student)
     @JoinTable()
-    student: Student[]
+    public student: Student[]
 
     constructor(first: string, last: string, email: string) {
         super();
         this.firstName = first;
         this.lastName = last;
         this.email = email;
+        this.student = [];
     }
 }

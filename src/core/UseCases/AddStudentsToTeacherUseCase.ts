@@ -11,25 +11,25 @@ import { ILogger, LogLevels } from "Interfaces/ILogger";
 import e from "express";
 @injectable()
 export class AddStudentsToTeacherUseCase implements IAddStudentsToTeacherUseCase {
-    private readonly _repository: ITeacherRepository;
+    private readonly _teacherRepository: ITeacherRepository;
     private readonly _studentRepository: IStudentRepository;
     private _logger: ILogger;
     public constructor(logger: ILogger, repo: ITeacherRepository, studentRepo: IStudentRepository) {
         this._logger = logger;
-        this._repository = repo;
+        this._teacherRepository = repo;
         this._studentRepository = studentRepo;
     }
     public async Handle (request: AddStudentsToTeacherRequest, outputPort: IOutputPort<UseCaseResponseMessage>): Promise<Boolean> {
         let count: number = 0;
         let errors: Error[] = [];
         let response: UseCaseResponseMessage;
-        let teacher: Teacher | null = await this._repository.GetByEmail(request.Teacher.email);
+        let teacher: Teacher | null = await this._teacherRepository.GetByEmail(request.Teacher.email);
         if (teacher !== null)
             try {
                 request.Students.forEach(async i => {
                     if (await this._studentRepository.GetByEmail(i.email) !== null && teacher!.student.find(s => s.email == i.email) == null) {
                         this._logger.Log(LogLevels.debug, `Adding student: ${i.email} to teacher ${request.Teacher.email}`);
-                        if (await this._repository.AddStudent(request.Teacher, i))
+                        if (await this._teacherRepository.AddStudent(request.Teacher, i) && await this._studentRepository.AddTeacher(i, request.Teacher))
                             count++;
                     } else
                         errors.push(new Error("", `Failed to add student ${i.email} to teacher ${request.Teacher.email}`));

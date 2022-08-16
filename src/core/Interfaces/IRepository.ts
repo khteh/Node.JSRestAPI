@@ -1,4 +1,4 @@
-import { EntityBase } from "../Domain/Entities/EntityBase";
+import { EntityBase } from "Domain/Entities/EntityBase";
 export interface IRepository<T extends EntityBase> {
     GetById (id: number): Promise<T | null>;
     GetByEmail (email: string): Promise<T | null>;

@@ -40,7 +40,7 @@
     "@types/debug": "^4.1.7",
     "@types/http-errors": "^1.8.2",
     "@types/morgan": "^1.9.3",
-    "@types/node": "^18.7.3",
+    "@types/node": "^18.7.5",
     "@types/spdy": "^3.4.5",
     "nodemon": "^2.0.19",
     "rollup": "^2.78.0",
