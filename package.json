@@ -10,6 +10,8 @@
   },
   "scripts": {
     "graph": "nx graph",
+    "typeorm": "typeorm-ts-node-esm",
+    "run_migration": "npx typeorm-ts-node-esm migration:run",
     "build": "npx tsc",
     "clean": "rimraf build src/core/build src/infrastructure/build src/webapi/build",
     "copy-assets": "ts-node --esm tools/copyAssets.ts",

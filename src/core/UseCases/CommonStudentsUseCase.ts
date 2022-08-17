@@ -30,11 +30,12 @@ export class CommonStudentsUseCase implements ICommonStudentsUseCase {
         let studentsDTO: StudentDTO[] = [];
         let response: CommonStudentsResponse;
         if (request.Teachers !== undefined && request.Teachers.length > 0) {
+            let counter: number = 0;
             request.Teachers.forEach(async i => {
                 if (emailvalidator.validate(i)) {
                     let teacher: Teacher | null = await this._teacherRepository.GetByEmail(i);
                     if (teacher) {
-                        students = students.filter(student => teacher!.student.includes(student));
+                        students = !counter++ ? teacher.students : students.filter(student => teacher!.students.includes(student));
                     } else
                         errors.push(new Error("", `Invalid teacher! ${i}!`));
                 } else

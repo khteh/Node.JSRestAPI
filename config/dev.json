@@ -3,5 +3,26 @@
 	"Port": "30001",
 	"Database" : "school",
 	"Username": "guest",
-	"Password": "P*ssw0rd"
+	"Password": "P*ssw0rd",
+	"typeorm": {
+		"type": "mysql",
+		"host": "localhost",
+		"port": 30001,
+		"username": "guest",
+		"password": "P*ssw0rd",
+		"database": "school",
+		"logging": true,
+		"synchronize": true,
+		"entities": [
+			"src/core/Domain/Entities/*.ts"
+		],
+		"migrations": [
+			"migration/*.js"
+		],
+		"cli": {
+			"entitiesDir": "src/core/Domain/Entities",
+			"migrationsDir": "migrations",
+			"subscribersDir": "subscribers"
+		}
+	}
 }

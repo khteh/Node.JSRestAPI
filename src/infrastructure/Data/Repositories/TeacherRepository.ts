@@ -7,9 +7,25 @@ export class TeacherRepository extends RepositoryBase<Teacher> implements ITeach
         super(Teacher);
         this._studentRepository = studentRepo;
     }
+    public override async GetById (id: number): Promise<Teacher | null> {
+        return await this._repository.findOneOrFail({
+            where: { id: id },
+            relations: ["students"]
+        });
+    }
+    public override async GetByEmail (email: string): Promise<Teacher | null> {
+        return await this._repository.findOneOrFail({
+            where: { email: email },
+            relations: ["students"]
+        });
+    }
+    public override async ListAll (): Promise<Teacher[]> {
+        return await this._repository.find({ relations: ["teachers"] });
+    }
+
     public async AddStudent (teacher: Teacher, student: Student): Promise<Teacher | null> {
         if (teacher && student) {
-            teacher.student.push(student);
+            teacher.students.push(student);
             return await this.Update(teacher);
         }
         return null;

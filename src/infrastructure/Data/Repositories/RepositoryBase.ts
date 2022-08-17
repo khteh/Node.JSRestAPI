@@ -7,10 +7,14 @@ export abstract class RepositoryBase<T extends EntityBase> implements IRepositor
         this._repository = Database.AppDataSource.getRepository(entity);
     }
     public async GetById (id: number): Promise<T | null> {
-        return await this._repository.findOneByOrFail(id);
+        return await this._repository.findOneOrFail({
+            where: { id: id }
+        });
     }
     public async GetByEmail (email: string): Promise<T | null> {
-        return await this._repository.findOneByOrFail(email);
+        return await this._repository.findOneOrFail({
+            where: { email: email },
+        });
     }
     public async ListAll (): Promise<T[]> {
         return await this._repository.find();
@@ -19,7 +23,6 @@ export abstract class RepositoryBase<T extends EntityBase> implements IRepositor
         return await this._repository.save(entity)
     }
     public async Update (entity: T): Promise<T | null> {
-        entity.modified = new Date();
         return await this._repository.save(entity);
     }
     public async Delete (id: number): Promise<Number> {

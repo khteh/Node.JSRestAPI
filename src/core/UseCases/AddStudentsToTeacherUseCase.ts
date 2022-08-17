@@ -27,7 +27,7 @@ export class AddStudentsToTeacherUseCase implements IAddStudentsToTeacherUseCase
         if (teacher !== null)
             try {
                 request.Students.forEach(async i => {
-                    if (await this._studentRepository.GetByEmail(i.email) !== null && teacher!.student.find(s => s.email == i.email) == null) {
+                    if (await this._studentRepository.GetByEmail(i.email) !== null && teacher!.students.find(s => s.email == i.email) == null) {
                         this._logger.Log(LogLevels.debug, `Adding student: ${i.email} to teacher ${request.Teacher.email}`);
                         if (await this._teacherRepository.AddStudent(request.Teacher, i) && await this._studentRepository.AddTeacher(i, request.Teacher))
                             count++;

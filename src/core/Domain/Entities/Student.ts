@@ -3,21 +3,21 @@ import { EntityBase } from "./EntityBase"
 import { Teacher } from "./Teacher"
 @Entity()
 export class Student extends EntityBase {
-    @Column()
+    @Column({ length: 256 })
     public firstName: string
 
-    @Column()
+    @Column({ length: 256 })
     public lastName: string
 
-    @Column({ unique: true })
+    @Column({ unique: true, length: 256 })
     public email: string
 
     @Column()
     public isSuspended: boolean
 
-    @ManyToMany(() => Teacher)
+    @ManyToMany((type) => Teacher, (teacher) => teacher.students)
     @JoinTable()
-    public teacher: Teacher[]
+    public teachers: Teacher[]
 
     constructor(first: string, last: string, email: string, isSuspended?: boolean) {
         super();
@@ -25,6 +25,6 @@ export class Student extends EntityBase {
         this.lastName = last;
         this.email = email;
         this.isSuspended = isSuspended ?? false;
-        this.teacher = [];
+        this.teachers = [];
     }
 }
