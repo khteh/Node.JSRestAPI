@@ -7,9 +7,7 @@ export abstract class RepositoryBase<T extends EntityBase> implements IRepositor
         this._repository = Database.AppDataSource.getRepository(entity);
     }
     public async GetById (id: number): Promise<T | null> {
-        return await this._repository.findOneOrFail({
-            where: { id: id }
-        });
+        return await this._repository.findOneByOrFail({ id: id });
     }
     public async GetByEmail (email: string): Promise<T | null> {
         return await this._repository.findOneOrFail({

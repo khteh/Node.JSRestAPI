@@ -6,6 +6,7 @@
   "license": "ISC",
   "private": true,
   "type": "module",
+  "exports": "./build/index.js",
   "scripts": {
     "build": "tsc --project tsconfig.json && npm run rollup",
     "build:watch": "nodemon -e ts --exec \"npm run build\" --ignore build/** --ignore tests/**",
@@ -22,10 +23,10 @@
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-typescript": "^8.3.4",
     "@types/express": "^4.17.13",
-    "@types/node": "^18.7.3",
+    "@types/node": "^18.7.6",
     "nodemon": "^2.0.19",
     "rollup": "^2.78.0",
-    "rollup-plugin-dts": "^4.2.2",
+    "rollup-plugin-ts": "^3.0.2",
     "tslib": "^2.4.0",
     "typescript": "^4.7.4"
   },
@@ -33,6 +34,6 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "engines": {
-    "node": ">=18.4.0"
+    "node": ">=18.7.0"
   }
 }

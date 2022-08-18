@@ -1,6 +1,6 @@
 import json from '@rollup/plugin-json';
 import typescript from '@rollup/plugin-typescript';
-import dts from 'rollup-plugin-dts';
+import ts from "rollup-plugin-ts";
 import tsConfig from './tsconfig.json';
 const config = [
     {
@@ -16,10 +16,10 @@ const config = [
         ]
     },
     {
-        input: 'build/index.d.ts',
+        input: "index.ts",
         output: [{ file: "build/index.d.ts", "format": "es" }],
         plugins: [
-            dts(
+            ts(
                 {
                     compilerOptions: {
                         baseUrl: tsConfig.compilerOptions.baseUrl
