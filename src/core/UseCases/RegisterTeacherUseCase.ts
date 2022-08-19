@@ -1,18 +1,19 @@
 import emailvalidator from 'email-validator'
-import { IRegisterTeacherUseCase } from "Interfaces/UseCases/IRegisterTeacherUseCase"
-import { ITeacherRepository } from "Interfaces/ITeacherRepository"
-import { IOutputPort } from "Interfaces/IOutputPort";
-import { UseCaseResponseMessage } from "DTO/UseCaseResponse/UseCaseResponseMessage"
-import { RegisterTeacherRequest } from "DTO/UseCaseRequests/RegisterTeacherRequest"
-import { Teacher } from "Domain/Entities/Teacher";
-import { Error } from "DTO/Error"
+import { IRegisterTeacherUseCase } from "../Interfaces/UseCases/IRegisterTeacherUseCase"
+import { ITeacherRepository } from "../Interfaces/ITeacherRepository"
+import { IOutputPort } from "../Interfaces/IOutputPort";
+import { UseCaseResponseMessage } from "../DTO/UseCaseResponse/UseCaseResponseMessage"
+import { RegisterTeacherRequest } from "../DTO/UseCaseRequests/RegisterTeacherRequest"
+import { Teacher } from "../Domain/Entities/Teacher";
+import { Error } from "../DTO/Error"
 import { injectable, inject } from "inversify";
-import { ILogger, LogLevels } from "Interfaces/ILogger";
+import { ILogger, LogLevels } from "../Interfaces/ILogger";
+import { LoggerTypes, RepositoryTypes } from '../types';
 @injectable()
 export class RegisterTeacherUseCase implements IRegisterTeacherUseCase {
     private readonly _repository: ITeacherRepository;
     private _logger: ILogger;
-    public constructor(logger: ILogger, repo: ITeacherRepository) {
+    public constructor(@inject(LoggerTypes.ILogger) logger: ILogger, @inject(RepositoryTypes.ITeacherRepository) repo: ITeacherRepository) {
         this._logger = logger;
         this._repository = repo;
     }

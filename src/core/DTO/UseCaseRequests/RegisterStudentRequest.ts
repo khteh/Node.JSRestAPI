@@ -1,6 +1,6 @@
-import { Student } from "Domain/Entities/Student";
-import { IUseCaseRequest } from "Interfaces/IUseCaseRequest";
-import { UseCaseResponseMessage } from "DTO/UseCaseResponse/UseCaseResponseMessage";
+import { Student } from "../../Domain/Entities/Student";
+import { IUseCaseRequest } from "../../Interfaces/IUseCaseRequest";
+import { UseCaseResponseMessage } from "../UseCaseResponse/UseCaseResponseMessage";
 export class RegisterStudentRequest implements IUseCaseRequest<UseCaseResponseMessage>
 {
     public Students: Student[];

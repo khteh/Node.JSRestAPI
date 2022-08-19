@@ -1,6 +1,8 @@
 import { IRepository, EntityBase } from "core"
 import { Database } from "../../db"
 import { EntityTarget, Repository } from "typeorm"
+import { injectable, inject } from "inversify";
+@injectable()
 export abstract class RepositoryBase<T extends EntityBase> implements IRepository<T> {
     protected _repository: Repository<T>;
     constructor(entity: EntityTarget<T>) {

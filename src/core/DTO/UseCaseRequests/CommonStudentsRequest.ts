@@ -1,5 +1,5 @@
-import { IUseCaseRequest } from "Interfaces/IUseCaseRequest";
-import { UseCaseResponseMessage } from "DTO/UseCaseResponse/UseCaseResponseMessage";
+import { IUseCaseRequest } from "../../Interfaces/IUseCaseRequest";
+import { UseCaseResponseMessage } from "../UseCaseResponse/UseCaseResponseMessage";
 export class CommonStudentsRequest implements IUseCaseRequest<UseCaseResponseMessage>
 {
     public Teachers: string[]; // Teacher's email

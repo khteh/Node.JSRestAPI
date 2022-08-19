@@ -1,5 +1,7 @@
 import { ILogger, LogLevelsType } from "core"
-import { Logger } from "index"
+import { Logger } from "./index"
+import { injectable, inject } from "inversify";
+@injectable()
 export class LoggerImpl implements ILogger {
     public Log (level: number, message: string): void {
         /*

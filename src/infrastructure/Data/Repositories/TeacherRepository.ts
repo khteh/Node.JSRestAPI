@@ -1,6 +1,8 @@
 import { Student, Teacher, ITeacherRepository } from "core"
 import { RepositoryBase } from "./RepositoryBase"
 import { IStudentRepository } from "core"
+import { injectable, inject } from "inversify";
+@injectable()
 export class TeacherRepository extends RepositoryBase<Teacher> implements ITeacherRepository {
     private _studentRepository: IStudentRepository;
     constructor(studentRepo: IStudentRepository) {

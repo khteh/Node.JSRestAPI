@@ -1,5 +1,5 @@
-import { IUseCaseRequest } from "Interfaces/IUseCaseRequest";
-import { UseCaseResponseMessage } from "DTO/UseCaseResponse/UseCaseResponseMessage";
+import { IUseCaseRequest } from "../../Interfaces/IUseCaseRequest";
+import { UseCaseResponseMessage } from "../UseCaseResponse/UseCaseResponseMessage";
 export class RegisterTeacherRequest implements IUseCaseRequest<UseCaseResponseMessage>
 {
     public FirstName: string;

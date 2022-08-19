@@ -1,25 +1,26 @@
 import emailvalidator from 'email-validator'
-import { ICommonStudentsUseCase } from "Interfaces/UseCases/ICommonStudentsUseCase"
-import { IStudentRepository } from "Interfaces/IStudentRepository"
-import { ITeacherRepository } from "Interfaces/ITeacherRepository"
-import { IOutputPort } from "Interfaces/IOutputPort";
-import { CommonStudentsResponse } from "DTO/UseCaseResponse/CommonStudentsResponse"
-import { CommonStudentsRequest } from "DTO/UseCaseRequests/CommonStudentsRequest"
-import { Teacher } from "Domain/Entities/Teacher";
-import { Student } from 'Domain/Entities/Student';
-import { StudentDTO } from "DTO/StudentDTO";
-import { Error } from "DTO/Error"
+import { ICommonStudentsUseCase } from "../Interfaces/UseCases/ICommonStudentsUseCase"
+import { IStudentRepository } from "../Interfaces/IStudentRepository"
+import { ITeacherRepository } from "../Interfaces/ITeacherRepository"
+import { IOutputPort } from "../Interfaces/IOutputPort";
+import { CommonStudentsResponse } from "../DTO/UseCaseResponse/CommonStudentsResponse"
+import { CommonStudentsRequest } from "../DTO/UseCaseRequests/CommonStudentsRequest"
+import { Teacher } from "../Domain/Entities/Teacher";
+import { Student } from '../Domain/Entities/Student';
+import { StudentDTO } from "../DTO/StudentDTO";
+import { Error } from "../DTO/Error"
 import { injectable, inject } from "inversify";
-import { ILogger, LogLevels } from "Interfaces/ILogger";
+import { ILogger, LogLevels } from "../Interfaces/ILogger";
+import { LoggerTypes, RepositoryTypes } from '../types';
 import e from "express";
 @injectable()
 export class CommonStudentsUseCase implements ICommonStudentsUseCase {
     private readonly _teacherRepository: ITeacherRepository;
     private readonly _studentRepository: IStudentRepository;
     private _logger: ILogger;
-    public constructor(logger: ILogger, repo: ITeacherRepository, studentRepo: IStudentRepository) {
+    public constructor(@inject(LoggerTypes.ILogger) logger: ILogger, @inject(RepositoryTypes.IStudentRepository) studentRepo: IStudentRepository, @inject(RepositoryTypes.ITeacherRepository) teacherRepo: ITeacherRepository) {
         this._logger = logger;
-        this._teacherRepository = repo;
+        this._teacherRepository = teacherRepo;
         this._studentRepository = studentRepo;
     }
     // Retrieve students who are registered to ALL of the given teachers:

@@ -1,5 +1,5 @@
 import { Error } from "../Error"
-import { StudentDTO } from "DTO/StudentDTO"
+import { StudentDTO } from "../StudentDTO"
 import { UseCaseResponseMessage } from "./UseCaseResponseMessage"
 export class CommonStudentsResponse extends UseCaseResponseMessage {
     public Students: StudentDTO[];

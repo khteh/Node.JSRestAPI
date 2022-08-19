@@ -1,7 +1,7 @@
 import { ILogger, LogLevels } from 'core'
 export * from './db'
-export * from "Data/Repositories/StudentRepository"
-export * from "Data/Repositories/TeacherRepository"
+export * from "./Data/Repositories/StudentRepository"
+export * from "./Data/Repositories/TeacherRepository"
 export * from "./LoggerImpl"
 import winston from 'winston'
 import * as rfs from 'rotating-file-stream'

@@ -1,22 +1,22 @@
-import { IAddStudentsToTeacherUseCase } from "Interfaces/UseCases/IAddStudentsToTeacherUseCase"
-import { IStudentRepository } from "Interfaces/IStudentRepository"
-import { ITeacherRepository } from "Interfaces/ITeacherRepository"
-import { IOutputPort } from "Interfaces/IOutputPort";
-import { UseCaseResponseMessage } from "DTO/UseCaseResponse/UseCaseResponseMessage"
-import { AddStudentsToTeacherRequest } from "DTO/UseCaseRequests/AddStudentsToTeacherRequest"
-import { Teacher } from "Domain/Entities/Teacher";
-import { Error } from "DTO/Error"
+import { IAddStudentsToTeacherUseCase } from "../Interfaces/UseCases/IAddStudentsToTeacherUseCase"
+import { IStudentRepository } from "../Interfaces/IStudentRepository"
+import { ITeacherRepository } from "../Interfaces/ITeacherRepository"
+import { IOutputPort } from "../Interfaces/IOutputPort";
+import { UseCaseResponseMessage } from "../DTO/UseCaseResponse/UseCaseResponseMessage"
+import { AddStudentsToTeacherRequest } from "../DTO/UseCaseRequests/AddStudentsToTeacherRequest"
+import { Teacher } from "../Domain/Entities/Teacher";
+import { Error } from "../DTO/Error"
 import { injectable, inject } from "inversify";
-import { ILogger, LogLevels } from "Interfaces/ILogger";
-import e from "express";
+import { ILogger, LogLevels } from "../Interfaces/ILogger";
+import { LoggerTypes, RepositoryTypes } from '../types';
 @injectable()
 export class AddStudentsToTeacherUseCase implements IAddStudentsToTeacherUseCase {
     private readonly _teacherRepository: ITeacherRepository;
     private readonly _studentRepository: IStudentRepository;
     private _logger: ILogger;
-    public constructor(logger: ILogger, repo: ITeacherRepository, studentRepo: IStudentRepository) {
+    public constructor(@inject(LoggerTypes.ILogger) logger: ILogger, @inject(RepositoryTypes.IStudentRepository) studentRepo: IStudentRepository, @inject(RepositoryTypes.ITeacherRepository) teacherRepo: ITeacherRepository) {
         this._logger = logger;
-        this._teacherRepository = repo;
+        this._teacherRepository = teacherRepo;
         this._studentRepository = studentRepo;
     }
     public async Handle (request: AddStudentsToTeacherRequest, outputPort: IOutputPort<UseCaseResponseMessage>): Promise<Boolean> {

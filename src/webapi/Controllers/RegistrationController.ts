@@ -2,10 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import express from 'express'
 import emailvalidator from 'email-validator'
 import { RegisterStudentRequest, RegisterTeacherRequest } from "core"
-import { RegisterStudentModel } from "Models/Request/RegisterStudentModel"
-import { RegisterTeacherModel } from "Models/Request/RegisterTeacherModel"
+import { RegisterStudentModel } from "../Models/Request/RegisterStudentModel"
+import { RegisterTeacherModel } from "../Models/Request/RegisterTeacherModel"
 import { IRegisterStudentUseCase, IRegisterTeacherUseCase, Student } from "core"
-import { RegisterUserPresenter } from "Presenters/RegisterUserPresenter"
+import { RegisterUserPresenter } from "../Presenters/RegisterUserPresenter"
 import { inject } from "inversify";
 import { UseCaseTypes } from "core";
 export class RegistrationController {
