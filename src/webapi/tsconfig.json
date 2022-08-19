@@ -11,31 +11,7 @@
     "compilerOptions": {
         "baseUrl": ".",
         "rootDir": ".",
-        "module": "ES2022",
-        "target": "ES2022",
-        "moduleResolution": "node",
-        "composite": false,
-        "declaration": true,
-        "declarationMap": true,
-        "incremental": true,
         "outDir": "build/",
-        "sourceMap": true,
-        "strict": true,
-        "esModuleInterop": false,
-        "skipLibCheck": true,
-        "noEmitOnError": true,
-        "forceConsistentCasingInFileNames": true,
-        "allowSyntheticDefaultImports": true,
-        "importHelpers": true,
-        "noImplicitOverride": true,
-        "noPropertyAccessFromIndexSignature": false,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,        
-        "lib": [
-            "ES2022"
-        ],  
         "plugins": [
             {
                 "name": "@rollup/plugin-json"
