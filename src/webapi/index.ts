@@ -25,20 +25,22 @@ app.set('view engine', 'ejs');
 //if (config.util.getEnv('NODE_ENV') !== "test")
 //  Database.init();
 // create a rotating write stream
-var accessLogStream = rfs.createStream('access.log', {
-  interval: '1d', // rotate daily
-  path: "/var/log/node.js"
-})
-var format: string = ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent - :response-time ms"';
-// log only 4xx and 5xx responses to console
-app.use(logger("combined", {
-  skip: function (req, res) { return res.statusCode < 400 },
-}))
+if (config.util.getEnv('NODE_ENV') !== "test") {
+  var accessLogStream = rfs.createStream('access.log', {
+    interval: '1d', // rotate daily
+    path: "/var/log/node.js"
+  })
+  var format: string = ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent - :response-time ms"';
+  // log only 4xx and 5xx responses to console
+  app.use(logger("combined", {
+    skip: function (req, res) { return res.statusCode < 400 },
+  }))
 
-// log all requests to access.log
-app.use(logger(format, {
-  stream: accessLogStream,
-}))
+  // log all requests to access.log
+  app.use(logger(format, {
+    stream: accessLogStream,
+  }))
+}
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

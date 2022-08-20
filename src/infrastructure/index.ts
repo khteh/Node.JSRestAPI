@@ -1,4 +1,4 @@
-import { ILogger, LogLevels } from 'core'
+import config from 'config';
 export * from './db'
 export * from "./Data/Repositories/StudentRepository"
 export * from "./Data/Repositories/TeacherRepository"
@@ -29,11 +29,11 @@ const colors = {
 }
 
 winston.addColors(colors);
-
+var path: string = (config.util.getEnv('NODE_ENV') === "test") ? "/tmp/node.js/test" : "/var/log/node.js";
 // create a rotating write stream
 var accessLogStream = rfs.createStream('application.log', {
     interval: '1d', // rotate daily
-    path: "/var/log/node.js"
+    path: path
 })
 const format = winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),

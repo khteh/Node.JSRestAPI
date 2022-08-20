@@ -87,7 +87,7 @@ describe.skip('Valid data should succeed tests', () => {
             });
     });
 });
-describe('InValid data should fail tests', () => {
+describe.skip('InValid data should fail tests', () => {
     /*
       * Test the /POST /api/register/student passes with valid student data
       */
