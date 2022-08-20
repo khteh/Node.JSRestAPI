@@ -21,7 +21,7 @@ export class Teacher extends EntityBase {
         this.firstName = first;
         this.lastName = last;
         this.email = email;
-        this.students = [];
+        //this.students = []; TypeORM initialization failed! InitializedRelationError: Array initializations are not allowed in entity relations
     }
 }
 //export type TeacherDTO = Pick<Teacher, { [K in keyof Teacher]: Teacher[K] extends Function ? never : K }[keyof Teacher]>;
