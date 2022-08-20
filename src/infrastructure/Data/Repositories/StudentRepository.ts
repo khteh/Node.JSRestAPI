@@ -1,11 +1,13 @@
 import { Student, Teacher, IStudentRepository } from "core"
 import { RepositoryBase } from "./RepositoryBase"
 import { injectable, inject } from "inversify";
+import { DatabaseTypes } from "../../types";
+import { Database } from "../../db"
 @injectable()
 export class StudentRepository extends RepositoryBase<Student> implements IStudentRepository {
-    /*constructor() {
-        super(Student);
-    }*/
+    constructor(@inject(DatabaseTypes.DatabaseService) db: Database) {
+        super(Student, db);
+    }
     public override async GetById (id: number): Promise<Student | null> {
         return await this._repository.findOneOrFail({
             where: { id: id },

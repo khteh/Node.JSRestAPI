@@ -3,6 +3,7 @@ export * from './db'
 export * from "./Data/Repositories/StudentRepository"
 export * from "./Data/Repositories/TeacherRepository"
 export * from "./LoggerImpl"
+export * from "./types"
 import winston from 'winston'
 import * as rfs from 'rotating-file-stream'
 const levels = {

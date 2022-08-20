@@ -23,7 +23,7 @@ var verifyClientError = function (err: any, res: any) {
     //console.log("/POST /api/register err: "+JSON.stringify(err));
 }
 // WIP. Mock doesn't work for integration tests!
-describe('Add students to teacher tests', () => {
+describe.skip('Add students to teacher tests', () => {
     /*
       * Test the /POST /api/addstudents passes with valid student data
       */

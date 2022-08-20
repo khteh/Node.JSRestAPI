@@ -16,21 +16,21 @@ chai.use(chaiHttp)
 //console.log("NODE_ENV: "+config.util.getEnv('NODE_ENV')+ " : "+process.env.NODE_ENV)
 expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
 describe('Valid data should succeed tests', () => {
-    it('Valid student should succeed test', async (done) => {
+    it('Valid student should succeed test', async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>()));
+        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let student = new Student("First Name", "LastName", "student@gmail.com");
         var mockRepository = new Mock<IStudentRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(null);
         mockRepository.setup(i => i.Add(It.IsAny<Student>())).returnsAsync(student);
         // 2. The use case and star of this test
-        var useCase = new RegisterStudentUseCase(logger, mockRepository);
+        var useCase = new RegisterStudentUseCase(logger, mockRepository.object());
 
         // 3. The output port is the mechanism to pass response data from the use case to a Presenter 
         // for final preparation to deliver back to the UI/web page/api response etc.
         var mockOutputPort = new Mock<IOutputPort<UseCaseResponseMessage>>()
-            .setup(outputPort => outputPort.Handle(It.IsAny<UseCaseResponseMessage>()));
+            .setup(outputPort => outputPort.Handle(It.IsAny<UseCaseResponseMessage>())).returnsAsync().object();
 
         // act
         // 4. We need a request model to carry data into the use case from the upper layer (UI, Controller etc.)
@@ -42,21 +42,21 @@ describe('Valid data should succeed tests', () => {
         mockRepository.verify(i => i.GetByEmail(It.IsAny<string>()), Times.Once());
         mockRepository.verify(i => i.Add(It.IsAny<string>()), Times.Once());
     });
-    it('Valid teacher should succeed test', async (done) => {
+    it('Valid teacher should succeed test', async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>()));
+        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let teacher = new Teacher("First Name", "LastName", "teacher@gmail.com");
         var mockRepository = new Mock<ITeacherRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(null);
         mockRepository.setup(i => i.Add(It.IsAny<Teacher>())).returnsAsync(teacher);
         // 2. The use case and star of this test
-        var useCase = new RegisterTeacherUseCase(logger, mockRepository);
+        var useCase = new RegisterTeacherUseCase(logger, mockRepository.object());
 
         // 3. The output port is the mechanism to pass response data from the use case to a Presenter 
         // for final preparation to deliver back to the UI/web page/api response etc.
         var mockOutputPort = new Mock<IOutputPort<UseCaseResponseMessage>>()
-            .setup(outputPort => outputPort.Handle(It.IsAny<UseCaseResponseMessage>()));
+            .setup(outputPort => outputPort.Handle(It.IsAny<UseCaseResponseMessage>())).returnsAsync().object();
 
         // act
         // 4. We need a request model to carry data into the use case from the upper layer (UI, Controller etc.)
@@ -69,21 +69,21 @@ describe('Valid data should succeed tests', () => {
     });
 });
 describe('InValid data should fail tests', () => {
-    it('InValid student should fail test', async (done) => {
+    it('InValid student should fail test', async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>()));
+        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let student = new Student("First Name", "LastName", "student@gmail.com");
         var mockRepository = new Mock<IStudentRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(It.IsAny<Student>());
         mockRepository.setup(i => i.Add(It.IsAny<Student>())).returnsAsync(null);
         // 2. The use case and star of this test
-        var useCase = new RegisterStudentUseCase(logger, mockRepository);
+        var useCase = new RegisterStudentUseCase(logger, mockRepository.object());
 
         // 3. The output port is the mechanism to pass response data from the use case to a Presenter 
         // for final preparation to deliver back to the UI/web page/api response etc.
         var mockOutputPort = new Mock<IOutputPort<UseCaseResponseMessage>>()
-            .setup(outputPort => outputPort.Handle(It.IsAny<UseCaseResponseMessage>()));
+            .setup(outputPort => outputPort.Handle(It.IsAny<UseCaseResponseMessage>())).returnsAsync().object();
 
         // act
         // 4. We need a request model to carry data into the use case from the upper layer (UI, Controller etc.)
@@ -95,21 +95,21 @@ describe('InValid data should fail tests', () => {
         mockRepository.verify(i => i.GetByEmail(It.IsAny<string>()), Times.Once());
         mockRepository.verify(i => i.Add(It.IsAny<string>()), Times.Never());
     });
-    it('InValid teacher should fail test', async (done) => {
+    it('InValid teacher should fail test', async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>()));
+        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let teacher = new Teacher("First Name", "LastName", "teacher@gmail.com");
         var mockRepository = new Mock<ITeacherRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(It.IsAny<Teacher>());
         mockRepository.setup(i => i.Add(It.IsAny<Teacher>())).returnsAsync(null);
         // 2. The use case and star of this test
-        var useCase = new RegisterTeacherUseCase(logger, mockRepository);
+        var useCase = new RegisterTeacherUseCase(logger, mockRepository.object());
 
         // 3. The output port is the mechanism to pass response data from the use case to a Presenter 
         // for final preparation to deliver back to the UI/web page/api response etc.
         var mockOutputPort = new Mock<IOutputPort<UseCaseResponseMessage>>()
-            .setup(outputPort => outputPort.Handle(It.IsAny<UseCaseResponseMessage>()));
+            .setup(outputPort => outputPort.Handle(It.IsAny<UseCaseResponseMessage>())).returnsAsync().object();
 
         // act
         // 4. We need a request model to carry data into the use case from the upper layer (UI, Controller etc.)
@@ -120,21 +120,21 @@ describe('InValid data should fail tests', () => {
         mockRepository.verify(i => i.GetByEmail(It.IsAny<string>()), Times.Once());
         mockRepository.verify(i => i.Add(It.IsAny<string>()), Times.Never());
     });
-    it("InValid student's email should fail test", async (done) => {
+    it("InValid student's email should fail test", async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>()));
+        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let student = new Student("First Name", "LastName", "Hello World!!!");
         var mockRepository = new Mock<IStudentRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(It.IsAny<Student>());
         mockRepository.setup(i => i.Add(It.IsAny<Student>())).returnsAsync(It.IsAny<Student>());
         // 2. The use case and star of this test
-        var useCase = new RegisterStudentUseCase(logger, mockRepository);
+        var useCase = new RegisterStudentUseCase(logger, mockRepository.object());
 
         // 3. The output port is the mechanism to pass response data from the use case to a Presenter 
         // for final preparation to deliver back to the UI/web page/api response etc.
         var mockOutputPort = new Mock<IOutputPort<UseCaseResponseMessage>>()
-            .setup(outputPort => outputPort.Handle(It.IsAny<UseCaseResponseMessage>()));
+            .setup(outputPort => outputPort.Handle(It.IsAny<UseCaseResponseMessage>())).returnsAsync().object();
 
         // act
         // 4. We need a request model to carry data into the use case from the upper layer (UI, Controller etc.)
@@ -146,21 +146,21 @@ describe('InValid data should fail tests', () => {
         mockRepository.verify(i => i.GetByEmail(It.IsAny<string>()), Times.Never());
         mockRepository.verify(i => i.Add(It.IsAny<string>()), Times.Never());
     });
-    it('InValid teacher should fail test', async (done) => {
+    it('InValid teacher should fail test', async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>()));
+        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let teacher = new Teacher("First Name", "LastName", "Hello World!!!");
         var mockRepository = new Mock<ITeacherRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(It.IsAny<Teacher>());
         mockRepository.setup(i => i.Add(It.IsAny<Teacher>())).returnsAsync(It.IsAny<Teacher>());
         // 2. The use case and star of this test
-        var useCase = new RegisterTeacherUseCase(logger, mockRepository);
+        var useCase = new RegisterTeacherUseCase(logger, mockRepository.object());
 
         // 3. The output port is the mechanism to pass response data from the use case to a Presenter 
         // for final preparation to deliver back to the UI/web page/api response etc.
         var mockOutputPort = new Mock<IOutputPort<UseCaseResponseMessage>>()
-            .setup(outputPort => outputPort.Handle(It.IsAny<UseCaseResponseMessage>()));
+            .setup(outputPort => outputPort.Handle(It.IsAny<UseCaseResponseMessage>())).returnsAsync().object();
 
         // act
         // 4. We need a request model to carry data into the use case from the upper layer (UI, Controller etc.)

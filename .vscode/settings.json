@@ -1,0 +1,6 @@
+{
+    "mochaExplorer.files": "src/**/*.test.ts",
+    "mochaExplorer.require": "ts-node/register",
+    "mochaExplorer.autoload": true,
+    "mochaExplorer.esmLoader": false
+}

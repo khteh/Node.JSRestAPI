@@ -2,15 +2,22 @@ import mysql2 from 'mysql2'
 import { createPool, Pool } from 'mysql2';
 import config from 'config'
 import "reflect-metadata"
-import { DataSource } from "typeorm"
-import { Student, Teacher } from "core"
+import { DataSource, EntityTarget, Repository } from "typeorm"
+import { injectable, inject } from "inversify";
+import { Student, Teacher, ILogger, LogLevels, LoggerTypes, EntityBase } from "core"
 import { Logger } from "./index"
+
+@injectable()
 export class Database {
+	private _logger: ILogger;
 	private static _pool: Pool;
-	public static AppDataSource: DataSource;
-	static init () {
+	public static _dataSource: DataSource;
+	public constructor(@inject(LoggerTypes.ILogger) logger: ILogger) { this._logger = logger; }
+	public getRepository<T extends EntityBase> (repository: EntityTarget<T>): Repository<T> {
+		if (Database._dataSource instanceof DataSource)
+			return Database._dataSource.getRepository(repository);
 		try {
-			Database.AppDataSource = new DataSource({
+			Database._dataSource = new DataSource({
 				type: "mysql",
 				host: process.env.MYSQL_HOST || config.get('DBHost'),
 				port: Number(process.env.MYSQL_PORT || config.get('Port')),
@@ -20,16 +27,24 @@ export class Database {
 				entities: [Student, Teacher],
 				synchronize: true,
 				logging: false,
-			})
+			});
+			Database._dataSource.initialize()
+				.then(() => {
+					// here you can start to work with your database
+					this._logger.Log(LogLevels.info, "TypeORM initialized successfully!")
+				})
+				.catch((error) => this._logger.Log(LogLevels.error, `TypeORM initialization failed! ${error}`))
+		} catch (error) {
+			this._logger.Log(LogLevels.error, `[mysql.connector][init][Error]: ${error}`);
+			throw new Error('failed to initialized pool');
+		}
+		return Database._dataSource.getRepository(repository);
+	}
+	static init () {
+		try {
 			// to initialize initial connection with the database, register all entities
 			// and "synchronize" database schema, call "initialize()" method of a newly created database
 			// once in your application bootstrap
-			Database.AppDataSource.initialize()
-				.then(() => {
-					// here you can start to work with your database
-					Logger.info("TypeORM initialized successfully!")
-				})
-				.catch((error) => console.error(`TypeORM initialization failed! ${error}`))
 			Database._pool = createPool({
 				connectionLimit: process.env.MY_SQL_DB_CONNECTION_LIMIT ? parseInt(process.env.MY_SQL_DB_CONNECTION_LIMIT) : 4,
 				host: process.env.MYSQL_HOST || config.get('DBHost'),

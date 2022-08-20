@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express'
 import express from 'express'
 import emailvalidator from 'email-validator'
 import { IAddStudentsToTeacherUseCase, AddStudentsToTeacherRequest, Student, Teacher, UseCaseResponseMessage } from "core"

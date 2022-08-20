@@ -6,7 +6,7 @@ import chaiHttp from 'chai-http'
 import chaiAsPromised from "chai-as-promised";
 chai.use(chaiAsPromised);
 import * as typeorm from "typeorm";
-import { EntityBase, Student, IStudentRepository, ITeacherRepository, Teacher } from "core";
+import { EntityBase, Student, StudentDTO, IStudentRepository, ITeacherRepository, Teacher } from "core";
 import { reject } from 'async';
 import { send } from 'process';
 var expect = chai.expect
@@ -23,7 +23,7 @@ var verifyClientError = function (err: any, res: any) {
     //console.log("/POST /api/register err: "+JSON.stringify(err));
 }
 // WIP. Mock doesn't work for integration tests!
-describe('Valid data should succeed tests', () => {
+describe.skip('Valid data should succeed tests', () => {
     /*
       * Test the /POST /api/register/student passes with valid student data
       */
@@ -60,16 +60,16 @@ describe('Valid data should succeed tests', () => {
       * Test the /POST /api/register/teacher passes with valid student data
       */
     it('Valid teacher should succeed test', (done) => {
-        let teacher: Teacher =
-        {
+        let teacher: Teacher = new Teacher("First Name", "Last Name", "teacher@example.com");
+        /*{
             "id": 123,
             "firstName": "First Name",
             "lastName": "LastName",
             "email": "teacher@example.com",
             "created": new Date(),
             "modified": new Date(),
-            "student": []
-        };
+            "students": []
+        };*/
         var mockRepository = new Mock<ITeacherRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(null);
@@ -124,16 +124,16 @@ describe('InValid data should fail tests', () => {
       * Test the /POST /api/register/teacher passes with valid student data
       */
     it('InValid teacher should fail test', (done) => {
-        let teacher: Teacher =
-        {
+        let teacher: Teacher = new Teacher("First Name", "Last Name", "teacher@example.com");
+        /*{
             "id": 123,
             "firstName": "First Name",
             "lastName": "LastName",
             "email": "teacher@example.com",
             "created": new Date(),
             "modified": new Date(),
-            "student": []
-        };
+            "students": []
+        };*/
         var mockRepository = new Mock<ITeacherRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(It.IsAny<Teacher>());

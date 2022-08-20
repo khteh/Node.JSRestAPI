@@ -1,7 +1,7 @@
 // Set env variable to test during the tests
 import config from 'config'
 //import app from '../app.js'
-import app from "../src/webapi/index"
+import { app } from "../src/webapi/index"
 //import assert from 'assert'
 import chai from 'chai'
 import chaiHttp from 'chai-http'
@@ -29,21 +29,21 @@ describe('Greetings API tests', () => {
                 .end((err, res) => {
                     expect(res).to.have.status(200);
                     expect(err).to.be.null;
-					expect(res).to.have.property('body');
-					expect(res.body).to.have.property('message');
-					expect(res.body.message).to.not.be.empty;
-					let now = new Date();
-					let time = now.toLocaleString("en-SG", {
-						timeZone: 'Asia/Singapore',
-						day: 'numeric',
-						month: 'numeric',
-						year: 'numeric',
-						hour: '2-digit',
-						minute: '2-digit',
-						second: '2-digit',
-					})
-					let expects = "Hello! It's " + time + " now.";
-					assert.strictEqual(res.body.message, expects, 'Expects the greetings message including timestamp to be strictly equal');
+                    expect(res).to.have.property('body');
+                    expect(res.body).to.have.property('message');
+                    expect(res.body.message).to.not.be.empty;
+                    let now = new Date();
+                    let time = now.toLocaleString("en-SG", {
+                        timeZone: 'Asia/Singapore',
+                        day: 'numeric',
+                        month: 'numeric',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                    })
+                    let expects = "Hello! It's " + time + " now.";
+                    assert.strictEqual(res.body.message, expects, 'Expects the greetings message including timestamp to be strictly equal');
                     done();
                 });
         });
@@ -59,23 +59,23 @@ describe('Greetings API tests', () => {
                 .end((err, res) => {
                     expect(res).to.have.status(200);
                     expect(err).to.be.null;
-					expect(res).to.have.property('body');
-					expect(res.body).to.have.property('message');
-					expect(res.body.message).to.not.be.empty;
-					let now = new Date();
-					let time = now.toLocaleString("en-SG", {
-						timeZone: 'Asia/Singapore',
-						day: 'numeric',
-						month: 'numeric',
-						year: 'numeric',
-						hour: '2-digit',
-						minute: '2-digit',
-						second: '2-digit',
-					})
-					let expects = "Hello Mickey Mouse! It's " + time + " now.";
-					assert.strictEqual(res.body.message, expects, 'Expects the greetings message including timestamp to be strictly equal');
+                    expect(res).to.have.property('body');
+                    expect(res.body).to.have.property('message');
+                    expect(res.body.message).to.not.be.empty;
+                    let now = new Date();
+                    let time = now.toLocaleString("en-SG", {
+                        timeZone: 'Asia/Singapore',
+                        day: 'numeric',
+                        month: 'numeric',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                    })
+                    let expects = "Hello Mickey Mouse! It's " + time + " now.";
+                    assert.strictEqual(res.body.message, expects, 'Expects the greetings message including timestamp to be strictly equal');
                     done();
                 });
         });
-    });	
+    });
 });

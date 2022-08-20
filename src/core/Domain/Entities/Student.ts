@@ -28,3 +28,4 @@ export class Student extends EntityBase {
         this.teachers = [];
     }
 }
+//export type StudentDTO = Pick<Student, { [K in keyof Student]: Student[K] extends Function ? never : K }[keyof Student]>;

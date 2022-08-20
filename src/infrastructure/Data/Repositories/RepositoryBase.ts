@@ -1,12 +1,16 @@
 import { IRepository, EntityBase } from "core"
 import { Database } from "../../db"
 import { EntityTarget, Repository } from "typeorm"
-import { injectable, inject } from "inversify";
+import { injectable, unmanaged, inject } from "inversify";
+import { DatabaseTypes } from "../../types";
+import { timingSafeEqual } from "crypto";
 @injectable()
 export abstract class RepositoryBase<T extends EntityBase> implements IRepository<T> {
     protected _repository: Repository<T>;
-    constructor(entity: EntityTarget<T>) {
-        this._repository = Database.AppDataSource.getRepository(entity);
+    protected _db: Database;
+    constructor(@unmanaged() entity: EntityTarget<T>, db: Database) {
+        this._db = db;
+        this._repository = this._db.getRepository(entity);
     }
     public async GetById (id: number): Promise<T | null> {
         throw new Error("Method not implemented.");

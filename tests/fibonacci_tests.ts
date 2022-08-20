@@ -1,6 +1,6 @@
 import config from 'config'
 //import app from '../app.js'
-import app from "../src/webapi/index"
+import { app } from "../src/webapi/index"
 import chai from 'chai'
 import chaiHttp from 'chai-http'
 var expect = chai.expect
@@ -27,11 +27,11 @@ describe('Fibonacci API tests', () => {
                 .end((err, res) => {
                     expect(res).to.have.status(400);
                     expect(err).to.be.null;
-					expect(res).to.have.property('body');
-					expect(res.body).to.have.property('message');
-					expect(res.body.message).to.not.be.empty;
-					let expects = "Please provide a valid integer as query string for fibonacci(n) calculation!";
-					assert.strictEqual(res.body.message, expects, 'Expects the failure message');
+                    expect(res).to.have.property('body');
+                    expect(res.body).to.have.property('message');
+                    expect(res.body.message).to.not.be.empty;
+                    let expects = "Please provide a valid integer as query string for fibonacci(n) calculation!";
+                    assert.strictEqual(res.body.message, expects, 'Expects the failure message');
                     done();
                 });
         });
@@ -46,11 +46,11 @@ describe('Fibonacci API tests', () => {
                 .end((err, res) => {
                     expect(res).to.have.status(400);
                     expect(err).to.be.null;
-					expect(res).to.have.property('body');
-					expect(res.body).to.have.property('message');
-					expect(res.body.message).to.not.be.empty;
-					let expects = "Please provide a valid integer as query string for fibonacci(n) calculation!";
-					assert.strictEqual(res.body.message, expects, 'Expects the failure message');
+                    expect(res).to.have.property('body');
+                    expect(res.body).to.have.property('message');
+                    expect(res.body.message).to.not.be.empty;
+                    let expects = "Please provide a valid integer as query string for fibonacci(n) calculation!";
+                    assert.strictEqual(res.body.message, expects, 'Expects the failure message');
                     done();
                 });
         });
@@ -65,11 +65,11 @@ describe('Fibonacci API tests', () => {
                 .end((err, res) => {
                     expect(res).to.have.status(200);
                     expect(err).to.be.null;
-					expect(res).to.have.property('body');
-					expect(res.body).to.have.property('message');
-					expect(res.body.message).to.not.be.empty;
-					let expects = "Fibonacci(20): 6765";
-					assert.strictEqual(res.body.message, expects, 'Expects the calculated fib(20) value');
+                    expect(res).to.have.property('body');
+                    expect(res.body).to.have.property('message');
+                    expect(res.body.message).to.not.be.empty;
+                    let expects = "Fibonacci(20): 6765";
+                    assert.strictEqual(res.body.message, expects, 'Expects the calculated fib(20) value');
                     done();
                 });
         });

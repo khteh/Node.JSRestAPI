@@ -17,9 +17,9 @@ chai.use(chaiHttp)
 //console.log("NODE_ENV: "+config.util.getEnv('NODE_ENV')+ " : "+process.env.NODE_ENV)
 expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
 describe('Common students among teachers tests', () => {
-    it('Valid students and teacher should have common students test', async (done) => {
+    it('Valid students and teacher should have common students test', async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>()));
+        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let student1 = new Student("First Name1", "LastName1", "student1@gmail.com");
         let student2 = new Student("First Name2", "LastName2", "student2@gmail.com");
         let student3 = new Student("First Name3", "LastName3", "student3@gmail.com");
@@ -28,17 +28,17 @@ describe('Common students among teachers tests', () => {
         let teacher1 = new Teacher("First Name1", "LastName1", "teacher1@gmail.com");
         let teacher2 = new Teacher("First Name2", "LastName2", "teacher2@gmail.com");
         let teacher3 = new Teacher("First Name3", "LastName3", "teacher3@gmail.com");
-        teacher1.student.push(student1);
-        teacher1.student.push(student2);
-        teacher1.student.push(student3);
+        teacher1.students.push(student1);
+        teacher1.students.push(student2);
+        teacher1.students.push(student3);
 
-        teacher2.student.push(student2);
-        teacher2.student.push(student3);
-        teacher2.student.push(student4);
+        teacher2.students.push(student2);
+        teacher2.students.push(student3);
+        teacher2.students.push(student4);
 
-        teacher3.student.push(student3);
-        teacher3.student.push(student4);
-        teacher3.student.push(student5);
+        teacher3.students.push(student3);
+        teacher3.students.push(student4);
+        teacher3.students.push(student5);
         var mockStudentRepository = new Mock<IStudentRepository>()
         var mockTeacherRepository = new Mock<ITeacherRepository>()
             .setup(i => i.GetByEmail("teacher1@gmail.com"))
@@ -48,7 +48,7 @@ describe('Common students among teachers tests', () => {
             .setup(i => i.GetByEmail("teacher3@gmail.com"))
             .returnsAsync(teacher3)
         // 2. The use case and star of this test
-        var useCase = new CommonStudentsUseCase(logger, mockTeacherRepository, mockStudentRepository);
+        var useCase = new CommonStudentsUseCase(logger, mockStudentRepository.object(), mockTeacherRepository.object());
 
         // 3. The output port is the mechanism to pass response data from the use case to a Presenter 
         // for final preparation to deliver back to the UI/web page/api response etc.
@@ -70,9 +70,9 @@ describe('Common students among teachers tests', () => {
         expect(presenter.Students).to.be.an("array").to.have.length(1);
         expect(presenter.Students[0]).to.be.eq(student3);
     });
-    it('Valid students and teacher should NOT have common students test', async (done) => {
+    it('Valid students and teacher should NOT have common students test', async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>()));
+        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let student1 = new Student("First Name1", "LastName1", "student1@gmail.com");
         let student2 = new Student("First Name2", "LastName2", "student2@gmail.com");
         let student3 = new Student("First Name3", "LastName3", "student3@gmail.com");
@@ -81,16 +81,16 @@ describe('Common students among teachers tests', () => {
         let teacher1 = new Teacher("First Name1", "LastName1", "teacher1@gmail.com");
         let teacher2 = new Teacher("First Name2", "LastName2", "teacher2@gmail.com");
         let teacher3 = new Teacher("First Name3", "LastName3", "teacher3@gmail.com");
-        teacher1.student.push(student1);
-        teacher1.student.push(student2);
-        teacher1.student.push(student3);
+        teacher1.students.push(student1);
+        teacher1.students.push(student2);
+        teacher1.students.push(student3);
 
-        teacher2.student.push(student4);
-        teacher2.student.push(student5);
+        teacher2.students.push(student4);
+        teacher2.students.push(student5);
 
-        teacher3.student.push(student3);
-        teacher3.student.push(student4);
-        teacher3.student.push(student5);
+        teacher3.students.push(student3);
+        teacher3.students.push(student4);
+        teacher3.students.push(student5);
         var mockStudentRepository = new Mock<IStudentRepository>()
         var mockTeacherRepository = new Mock<ITeacherRepository>()
             .setup(i => i.GetByEmail("teacher1@gmail.com"))
@@ -100,7 +100,7 @@ describe('Common students among teachers tests', () => {
             .setup(i => i.GetByEmail("teacher3@gmail.com"))
             .returnsAsync(teacher3)
         // 2. The use case and star of this test
-        var useCase = new CommonStudentsUseCase(logger, mockTeacherRepository, mockStudentRepository);
+        var useCase = new CommonStudentsUseCase(logger, mockStudentRepository.object(), mockTeacherRepository.object());
 
         // 3. The output port is the mechanism to pass response data from the use case to a Presenter 
         // for final preparation to deliver back to the UI/web page/api response etc.
