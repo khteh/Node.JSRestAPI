@@ -17,9 +17,12 @@ chai.use(chaiHttp)
 //console.log("NODE_ENV: "+config.util.getEnv('NODE_ENV')+ " : "+process.env.NODE_ENV)
 expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
 describe('Common students among teachers tests', () => {
+    let logger: ILogger;
+    beforeEach(() => {
+        logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
+    });
     it('Valid students and teacher should have common students test', async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let student1 = new Student("First Name1", "LastName1", "student1@gmail.com");
         let student2 = new Student("First Name2", "LastName2", "student2@gmail.com");
         let student3 = new Student("First Name3", "LastName3", "student3@gmail.com");
@@ -72,7 +75,6 @@ describe('Common students among teachers tests', () => {
     });
     it('Valid students and teacher should NOT have common students test', async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let student1 = new Student("First Name1", "LastName1", "student1@gmail.com");
         let student2 = new Student("First Name2", "LastName2", "student2@gmail.com");
         let student3 = new Student("First Name3", "LastName3", "student3@gmail.com");

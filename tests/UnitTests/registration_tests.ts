@@ -1,6 +1,8 @@
 import config from 'config'
 import { Mock, It, Times } from 'moq.ts';
+import { DataSource, EntityTarget, Repository } from "typeorm"
 import { app } from "webapi"
+import { Database } from 'infrastructure';
 import chai from 'chai'
 import chaiHttp from 'chai-http'
 import chaiAsPromised from "chai-as-promised";
@@ -16,9 +18,15 @@ chai.use(chaiHttp)
 //console.log("NODE_ENV: "+config.util.getEnv('NODE_ENV')+ " : "+process.env.NODE_ENV)
 expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
 describe('Valid data should succeed tests', () => {
+    let logger: ILogger, studentDB, teacherDB;
+    beforeEach(() => {
+        logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
+        // public getRepository<T extends EntityBase> (repository: EntityTarget<T>): Repository<T> {
+        studentDB = new Mock<Database>().prototypeof(Database.prototype).setup(i => i.getRepository<Student>(It.IsAny<Student>())).returns(It.IsAny<Repository<Student>>());
+        teacherDB = new Mock<Database>().prototypeof(Database.prototype).setup(i => i.getRepository<Teacher>(It.IsAny<Teacher>())).returns(It.IsAny<Repository<Teacher>>());
+    });
     it('Valid student should succeed test', async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let student = new Student("First Name", "LastName", "student@gmail.com");
         var mockRepository = new Mock<IStudentRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))
@@ -44,7 +52,6 @@ describe('Valid data should succeed tests', () => {
     });
     it('Valid teacher should succeed test', async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let teacher = new Teacher("First Name", "LastName", "teacher@gmail.com");
         var mockRepository = new Mock<ITeacherRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))
@@ -69,9 +76,15 @@ describe('Valid data should succeed tests', () => {
     });
 });
 describe('InValid data should fail tests', () => {
+    let logger: ILogger, studentDB, teacherDB;
+    beforeEach(() => {
+        logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
+        // public getRepository<T extends EntityBase> (repository: EntityTarget<T>): Repository<T> {
+        studentDB = new Mock<Database>().prototypeof(Database.prototype).setup(i => i.getRepository<Student>(It.IsAny<Student>())).returns(It.IsAny<Repository<Student>>());
+        teacherDB = new Mock<Database>().prototypeof(Database.prototype).setup(i => i.getRepository<Teacher>(It.IsAny<Teacher>())).returns(It.IsAny<Repository<Teacher>>());
+    });
     it('InValid student should fail test', async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let student = new Student("First Name", "LastName", "student@gmail.com");
         var mockRepository = new Mock<IStudentRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))
@@ -97,7 +110,6 @@ describe('InValid data should fail tests', () => {
     });
     it('InValid teacher should fail test', async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let teacher = new Teacher("First Name", "LastName", "teacher@gmail.com");
         var mockRepository = new Mock<ITeacherRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))
@@ -122,7 +134,6 @@ describe('InValid data should fail tests', () => {
     });
     it("InValid student's email should fail test", async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let student = new Student("First Name", "LastName", "Hello World!!!");
         var mockRepository = new Mock<IStudentRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))
@@ -148,7 +159,6 @@ describe('InValid data should fail tests', () => {
     });
     it('InValid teacher should fail test', async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let teacher = new Teacher("First Name", "LastName", "Hello World!!!");
         var mockRepository = new Mock<ITeacherRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))

@@ -16,9 +16,12 @@ chai.use(chaiHttp)
 //console.log("NODE_ENV: "+config.util.getEnv('NODE_ENV')+ " : "+process.env.NODE_ENV)
 expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
 describe('Add students to teacher tests', () => {
+    let logger: ILogger;
+    beforeEach(() => {
+        logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
+    });
     it('Valid students and teacher should succeed test', async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let student = new Student("First Name", "LastName", "student@gmail.com");
         let teacher = new Teacher("First Name", "LastName", "teacher@gmail.com");
         var mockStudentRepository = new Mock<IStudentRepository>()
@@ -50,7 +53,6 @@ describe('Add students to teacher tests', () => {
     });
     it('InValid students should fail test', async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let student = new Student("First Name", "LastName", "student@gmail.com");
         let teacher = new Teacher("First Name", "LastName", "teacher@gmail.com");
         var mockStudentRepository = new Mock<IStudentRepository>()
@@ -82,7 +84,6 @@ describe('Add students to teacher tests', () => {
     });
     it('InValid teacher should fail test', async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let student = new Student("First Name", "LastName", "student@gmail.com");
         let teacher = new Teacher("First Name", "LastName", "teacher@gmail.com");
         var mockStudentRepository = new Mock<IStudentRepository>()
@@ -114,7 +115,6 @@ describe('Add students to teacher tests', () => {
     });
     it('Existing students with teacher should fail test', async () => {
         // arrange
-        let logger = new Mock<ILogger>().setup(i => i.Log(It.IsAny<number>(), It.IsAny<string>())).returns().object();
         let student = new Student("First Name", "LastName", "student@gmail.com");
         let teacher = new Teacher("First Name", "LastName", "teacher@gmail.com");
         teacher.students.push(student);

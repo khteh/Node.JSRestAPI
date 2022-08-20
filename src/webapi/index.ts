@@ -22,8 +22,8 @@ const __dirname = dirname(__filename);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-if (config.util.getEnv('NODE_ENV') !== "test")
-  Database.init();
+//if (config.util.getEnv('NODE_ENV') !== "test")
+//  Database.init();
 // create a rotating write stream
 var accessLogStream = rfs.createStream('access.log', {
   interval: '1d', // rotate daily
