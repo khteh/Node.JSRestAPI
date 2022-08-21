@@ -10,14 +10,14 @@ jobs: # a collection of steps
           MYSQL_ALLOW_EMPTY_PASSWORD: true
           MYSQL_USER: $MYSQL_USER
           MYSQL_PASSWORD: $MYSQL_PASSWORD
-      - image: mysql:latest
-        command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci --default-authentication-plugin=mysql_native_password
-        environment:
-          MYSQL_HOST: 127.0.0.1
-          MYSQL_DB: school_test
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
-          MYSQL_USER: $MYSQL_USER
-          MYSQL_PASSWORD: $MYSQL_PASSWORD
+      #- image: mysql:latest
+      #  command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci --default-authentication-plugin=mysql_native_password
+      #  environment:
+      #    MYSQL_HOST: 127.0.0.1
+      #    MYSQL_DB: school_test
+      #    MYSQL_ALLOW_EMPTY_PASSWORD: true
+      #    MYSQL_USER: $MYSQL_USER
+      #    MYSQL_PASSWORD: $MYSQL_PASSWORD
     steps:
       - checkout
       - setup_remote_docker:
@@ -35,12 +35,12 @@ jobs: # a collection of steps
           command: |
             DOCKERIZE_VERSION="v0.6.1"
             wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-      - run:
-          name: Wait for MYSQL Server
-          command: dockerize -wait tcp://localhost:3306 -timeout 1m
-      - run:
-          name: Prepare database for tests
-          command: mysql -h 127.0.0.1 -u root < school_db.sql
+      #- run:
+      #    name: Wait for MYSQL Server
+      #    command: dockerize -wait tcp://localhost:3306 -timeout 1m
+      #- run:
+      #    name: Prepare database for tests
+      #    command: mysql -h 127.0.0.1 -u root < school_db.sql
       - run: mkdir test_reports
       # Download and cache dependencies
       - restore_cache:
