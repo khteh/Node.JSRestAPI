@@ -26,15 +26,23 @@ export class AddStudentsToTeacherUseCase implements IAddStudentsToTeacherUseCase
         let teacher: Teacher | null = await this._teacherRepository.GetByEmail(request.Teacher.email);
         if (teacher !== null)
             try {
-                request.Students.forEach(async i => {
-                    if (await this._studentRepository.GetByEmail(i.email) !== null && teacher!.students.find(s => s.email == i.email) == null) {
+                for (let i of request.Students) {
+                    if (await this._studentRepository.GetByEmail(i.email) !== null && (teacher!.students.length === 0 || teacher!.students.find(s => s.email == i.email) == null)) {
                         this._logger.Log(LogLevels.debug, `Adding student: ${i.email} to teacher ${request.Teacher.email}`);
-                        if (await this._teacherRepository.AddStudent(request.Teacher, i) && await this._studentRepository.AddTeacher(i, request.Teacher))
+                        let [teacher, student] = await Promise.allSettled([this._teacherRepository.AddStudent(request.Teacher, i),
+                        this._studentRepository.AddTeacher(i, request.Teacher)]);
+                        if (teacher !== null && student !== null)
                             count++;
+                        else {
+                            if (!teacher)
+                                errors.push(new Error("", `Failed to add student ${i.email} to teacher ${request.Teacher.email}`));
+                            if (!student)
+                                errors.push(new Error("", `Failed to add teacher ${request.Teacher.email} to student ${i.email}`));
+                        }
                     } else
                         errors.push(new Error("", `Failed to add student ${i.email} to teacher ${request.Teacher.email}`));
-                });
-                response = new UseCaseResponseMessage("", count == request.Students.length && !errors.length, `${count} students added successfully to teacher ${request.Teacher.email}!`, errors);
+                };
+                response = new UseCaseResponseMessage("", count === request.Students.length && errors.length === 0, `${count} students added successfully to teacher ${request.Teacher.email}!`, errors);
                 outputPort.Handle(response);
                 return response.Success;
             } catch (e) {
@@ -51,6 +59,7 @@ export class AddStudentsToTeacherUseCase implements IAddStudentsToTeacherUseCase
         else {
             errors.push(new Error("", `Invalid Teacher ${request.Teacher.email}!`));
             response = new UseCaseResponseMessage("", false, `Invalid Teacher ${request.Teacher.email}!`, errors);
+            outputPort.Handle(response);
             return false;
         }
     }

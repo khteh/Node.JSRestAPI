@@ -1,11 +1,11 @@
 import config from 'config'
 import express from 'express'
 import { Container } from "inversify";
-import { FibonacciController } from '../Controllers/FibonacciController';
-import { GreetingsController } from '../Controllers/GreetingsController';
-import { RegistrationController } from '../Controllers/RegistrationController';
-import { AddStudentsToTeacherController } from '../Controllers/AddStudentsToTeacherController';
-import { CommonStudentsController } from '../Controllers/CommonStudentsController';
+import { FibonacciController } from '../Controllers/FibonacciController.js';
+import { GreetingsController } from '../Controllers/GreetingsController.js';
+import { RegistrationController } from '../Controllers/RegistrationController.js';
+import { AddStudentsToTeacherController } from '../Controllers/AddStudentsToTeacherController.js';
+import { CommonStudentsController } from '../Controllers/CommonStudentsController.js';
 import { IRegisterStudentUseCase, IRegisterTeacherUseCase, IAddStudentsToTeacherUseCase, ICommonStudentsUseCase, Student, UseCaseTypes } from "core"
 import { IStudentRepository, ITeacherRepository, RepositoryTypes, LoggerTypes } from 'core';
 import { RegisterStudentUseCase, RegisterTeacherUseCase, AddStudentsToTeacherUseCase, CommonStudentsUseCase } from 'core';

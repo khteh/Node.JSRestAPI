@@ -1,8 +1,6 @@
 // Set env variable to test during the tests
 import config from 'config'
-//import app from '../app.js'
 import { app } from "../src/webapi/index"
-//import assert from 'assert'
 import chai from 'chai'
 import chaiHttp from 'chai-http'
 var expect = chai.expect

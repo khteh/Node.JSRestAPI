@@ -22,7 +22,7 @@ export class RegisterStudentUseCase implements IRegisterStudentUseCase {
         let errors: Error[] = [];
         let response: UseCaseResponseMessage;
         try {
-            request.Students.forEach(async i => {
+            for (let i of request.Students) {
                 if (emailvalidator.validate(i.email)) {
                     this._logger.Log(LogLevels.debug, `Processing student: ${i.email}`);
                     let student = await this._repository.GetByEmail(i.email);
@@ -35,7 +35,7 @@ export class RegisterStudentUseCase implements IRegisterStudentUseCase {
                 } else {
                     errors.push(new Error("", `Skip student with invalid email: ${i.email}`));
                 }
-            });
+            };
             response = new UseCaseResponseMessage("", count == request.Students.length && !errors.length, `${count} students registered successfully`, errors);
             outputPort.Handle(response);
             return response.Success;

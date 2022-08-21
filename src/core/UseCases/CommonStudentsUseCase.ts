@@ -32,16 +32,18 @@ export class CommonStudentsUseCase implements ICommonStudentsUseCase {
         let response: CommonStudentsResponse;
         if (request.Teachers !== undefined && request.Teachers.length > 0) {
             let counter: number = 0;
-            request.Teachers.forEach(async i => {
+            for (let i of request.Teachers) {
                 if (emailvalidator.validate(i)) {
                     let teacher: Teacher | null = await this._teacherRepository.GetByEmail(i);
                     if (teacher) {
-                        students = !counter++ ? teacher.students : students.filter(student => teacher!.students.includes(student));
+                        students = !counter++ ? teacher.students : students.filter(student => teacher!.students.includes(student)).filter(function (e, i, c) { // extra step to remove duplicates
+                            return c.indexOf(e) === i;
+                        });
                     } else
                         errors.push(new Error("", `Invalid teacher! ${i}!`));
                 } else
                     errors.push(new Error("", `Invalid teacher's email! ${i}!`));
-            });
+            };
         } else {
             response = new CommonStudentsResponse("", false, studentsDTO, `Invalid request!`, errors);
             outputPort.Handle(response);

@@ -1,5 +1,4 @@
 import config from 'config'
-//import app from '../app.js'
 import { app } from "../src/webapi/index"
 import chai from 'chai'
 import chaiHttp from 'chai-http'
