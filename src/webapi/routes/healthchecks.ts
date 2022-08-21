@@ -7,16 +7,6 @@ var healthchecks = express.Router();
 var db = new Database(di.get<ILogger>(LoggerTypes.ILogger));
 /* k8s readiness check */
 healthchecks.get('/ready', function (req, res, next) {
-  //var db_query = `select count(*) from students`;
-  //Logger.debug(`teacher_query: ${teacher_query}`);
-  /*
-  Database.Query(db_query, function (error: Error, result: any) {
-    if (error) {
-      res.status(500).send('Readiness health check did not pass!');
-    } else {
-      res.send('OK')
-    }
-  });*/
   if (di.get<IStudentRepository>(RepositoryTypes.IStudentRepository) !== null && di.get<ITeacherRepository>(RepositoryTypes.ITeacherRepository) !== null)
     res.send('OK');
   else
