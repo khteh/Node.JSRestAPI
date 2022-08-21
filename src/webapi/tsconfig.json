@@ -12,6 +12,14 @@
         "baseUrl": ".",
         "rootDir": ".",
         "outDir": "build/",
+        "paths": {
+            "controllers/*": [
+                "Controllers/*"
+            ],
+            "presenters": [
+                "Presenters/*"
+            ]
+        },
         "plugins": [
             {
                 "name": "@rollup/plugin-json"

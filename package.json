@@ -2,8 +2,8 @@
   "name": "node.jsrestapi",
   "version": "1.0.0",
   "private": true,
+  "exports": "./src/webapi/server.ts",
   "type": "module",
-  "exports": "./bin/www.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/khteh/Node.JSRestAPI.git"
@@ -23,7 +23,7 @@
     "dev": "./node_modules/.bin/nodemon --trace-deprecation --ignore node_modules/ bin/www.js",
     "dev_ts": "export NODE_ENV=dev&& concurrently \"npx tsc --watch\" \"nodemon -q build/src/webapi/server.js\"",
     "start": "export NODE_ENV=dev&& node bin/www.js",
-    "start_ts": "export NODE_ENV=dev&& npx ts-node ./src/webapi/server.ts",
+    "start_ts": "export NODE_ENV=dev&& node --experimental-specifier-resolution=node build/src/webapi/server.js",
     "test": "export NODE_ENV=test&& ./node_modules/.bin/mocha tests --timeout 10000 --recursive --check-leaks --exit --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml",
     "test_ts": "export NODE_ENV=test&& ./node_modules/.bin/mocha -r ts-node/register tests/**/*.ts --timeout 10000 --recursive --check-leaks --exit",
     "cover": "./node_modules/.bin/nyc --reporter=lcov --reporter=text --reporter=text-summary --reporter=html npm test",
@@ -64,6 +64,7 @@
     "mocha": "^10.0.0",
     "mocha-junit-reporter": "^2.0.2",
     "mocha-sonarqube-reporter": "^1.0.2",
+    "module-name": "^0.0.1-security",
     "moq.ts": "^9.0.2",
     "nodemon": "^2.0.19",
     "npm-run-all": "^4.1.5",

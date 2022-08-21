@@ -6,6 +6,13 @@
     "node_modules",
     "build"
   ],
+  "extensions": [
+    "ts"
+  ],
+  "node-option": [
+    "experimental-specifier-resolution=node",
+    "loader=ts-node/esm"
+  ],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
     /* Projects */
@@ -34,6 +41,17 @@
     "moduleResolution": "node", /* Specify how TypeScript looks up a file from a given module specifier. */
     // "baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */
     // "paths": {},                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
+    "paths": {
+      "core/*": [
+        "./src/core/*"
+      ],
+      "infrastructure/*": [
+        "./src/infrastructure/*"
+      ],
+      "webapi/*": [
+        "./src/webapi/*"
+      ]
+    },    
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     "typeRoots": ["node_modules/@types"],                                  /* Specify multiple folders that act like './node_modules/@types'. */
     // "types": [],                                      /* Specify type package names to be included without being referenced in a source file. */
