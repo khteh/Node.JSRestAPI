@@ -1,15 +1,11 @@
 import config from 'config'
 import { Mock, It, Times } from 'moq.ts';
-import { app } from "webapi"
 import chai from 'chai'
 import chaiHttp from 'chai-http'
 import chaiAsPromised from "chai-as-promised";
 chai.use(chaiAsPromised);
-import * as typeorm from "typeorm";
 import { ILogger, Student, Teacher, IStudentRepository, ITeacherRepository, CommonStudentsUseCase, IOutputPort, CommonStudentsResponse, CommonStudentsRequest } from "core";
 import { CommonStudentsPresenter } from "../../src/webapi/Presenters/CommonStudentsPresenter"
-import { reject } from 'async';
-import { send } from 'process';
 var expect = chai.expect
 var assert = chai.assert
 var should = chai.should()

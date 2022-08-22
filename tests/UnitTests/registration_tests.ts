@@ -1,16 +1,12 @@
 import config from 'config'
 import { Mock, It, Times } from 'moq.ts';
 import { DataSource, EntityTarget, Repository } from "typeorm"
-import { app } from "webapi"
 import { Database } from 'infrastructure';
 import chai from 'chai'
 import chaiHttp from 'chai-http'
 import chaiAsPromised from "chai-as-promised";
 chai.use(chaiAsPromised);
-import * as typeorm from "typeorm";
 import { ILogger, EntityBase, Student, Teacher, IStudentRepository, ITeacherRepository, RegisterStudentUseCase, RegisterTeacherUseCase, IOutputPort, UseCaseResponseMessage, RegisterStudentRequest, RegisterTeacherRequest } from "core";
-import { reject } from 'async';
-import { send } from 'process';
 var expect = chai.expect
 var assert = chai.assert
 var should = chai.should()
