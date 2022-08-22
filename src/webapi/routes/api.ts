@@ -7,9 +7,10 @@ import { RegistrationController } from '../Controllers/RegistrationController.js
 import { AddStudentsToTeacherController } from '../Controllers/AddStudentsToTeacherController.js';
 import { CommonStudentsController } from '../Controllers/CommonStudentsController.js';
 import { SuspendStudentController } from '../Controllers/SuspendStudentController.js';
-import { IRegisterStudentUseCase, IRegisterTeacherUseCase, IAddStudentsToTeacherUseCase, ICommonStudentsUseCase, ISuspendStudentUseCase, Student, UseCaseTypes } from "core"
+import { StudentNotificationsController } from '../Controllers/StudentNotificationsController.js';
+import { IRegisterStudentUseCase, IRegisterTeacherUseCase, IAddStudentsToTeacherUseCase, ICommonStudentsUseCase, ISuspendStudentUseCase, IStudentNotificationsUseCase, Student, UseCaseTypes } from "core"
 import { IStudentRepository, ITeacherRepository, RepositoryTypes, LoggerTypes } from 'core';
-import { RegisterStudentUseCase, SuspendStudentUseCase, RegisterTeacherUseCase, AddStudentsToTeacherUseCase, CommonStudentsUseCase } from 'core';
+import { RegisterStudentUseCase, SuspendStudentUseCase, RegisterTeacherUseCase, AddStudentsToTeacherUseCase, CommonStudentsUseCase, StudentNotificationsUseCase } from 'core';
 import { StudentRepository, TeacherRepository, LoggerImpl, DatabaseTypes, Database } from "infrastructure"
 import { ILogger } from 'core';
 var api = express.Router();
@@ -19,6 +20,7 @@ di.bind<ISuspendStudentUseCase>(UseCaseTypes.ISuspendStudentUseCase).to(SuspendS
 di.bind<IRegisterTeacherUseCase>(UseCaseTypes.IRegisterTeacherUseCase).to(RegisterTeacherUseCase);
 di.bind<IAddStudentsToTeacherUseCase>(UseCaseTypes.IAddStudentsToTeacherUseCase).to(AddStudentsToTeacherUseCase);
 di.bind<ICommonStudentsUseCase>(UseCaseTypes.ICommonStudentsUseCase).to(CommonStudentsUseCase);
+di.bind<IStudentNotificationsUseCase>(UseCaseTypes.IStudentNotificationsUseCase).to(StudentNotificationsUseCase);
 di.bind<IStudentRepository>(RepositoryTypes.IStudentRepository).to(StudentRepository);
 di.bind<ITeacherRepository>(RepositoryTypes.ITeacherRepository).to(TeacherRepository);
 di.bind<ILogger>(LoggerTypes.ILogger).to(LoggerImpl);
@@ -29,6 +31,7 @@ var registration = new RegistrationController(di.get<IRegisterStudentUseCase>(Us
 var addStudentsToTeacher = new AddStudentsToTeacherController(di.get<IAddStudentsToTeacherUseCase>(UseCaseTypes.IAddStudentsToTeacherUseCase));
 var commonStudents = new CommonStudentsController(di.get<ICommonStudentsUseCase>(UseCaseTypes.ICommonStudentsUseCase));
 var suspendStudent = new SuspendStudentController(di.get<ISuspendStudentUseCase>(UseCaseTypes.ISuspendStudentUseCase));
+var studentNotifications = new StudentNotificationsController(di.get<IStudentNotificationsUseCase>(UseCaseTypes.IStudentNotificationsUseCase));
 //import registration from '../BusinessLogic/registration.js'
 //import notifications from '../BusinessLogic/notifications.js'
 //import suspend from '../BusinessLogic/suspend.js'
@@ -41,7 +44,8 @@ api.post('/register/student', function (req, res, next) { registration.RegisterS
 api.post('/register/teacher', function (req, res, next) { registration.RegisterTeacher(req, res, next); });
 api.post('/addstudents', function (req, res, next) { addStudentsToTeacher.AddStudentsToTeacher(req, res, next); });
 api.post('/commonstudents', function (req, res, next) { commonStudents.CommonStudents(req, res, next); });
-api.post('/suspendStudent', function (req, res, next) { suspendStudent.SuspendStudent(req, res, next); })
+api.post('/suspendstudent', function (req, res, next) { suspendStudent.SuspendStudent(req, res, next); })
+api.post('/notifystudents', function (req, res, next) { studentNotifications.NotifyStudents(req, res, next); })
 //router.post('/retrievefornotifications', function (req, res, next) { notifications(req, res, next); });
 //router.get('/commonstudents', function (req, res, next) { commonstudents(req, res, next); });
 //router.post('/suspend', function (req, res, next) { suspend(req, res, next); });

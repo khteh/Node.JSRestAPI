@@ -14,6 +14,12 @@ function Notifications(req, res, next) {
         message.message += ' with invalid teacher email address!';
     else
         teacher = req.body.teacher;
+	/*
+	{
+		"teacher":  "teacherken@gmail.com",
+		"notification": "Hello students! @studentagnes@gmail.com @studentmiche@gmail.com"
+	}
+	*/
     if (req.body.notification !== undefined && teacher !== '' && req.body.notification.length > 0) {
         var notifications = req.body.notification.split(' @').splice(1);
         //console.log("notifications: " + JSON.stringify(notifications));
