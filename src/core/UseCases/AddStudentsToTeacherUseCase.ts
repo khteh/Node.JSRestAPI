@@ -29,9 +29,8 @@ export class AddStudentsToTeacherUseCase implements IAddStudentsToTeacherUseCase
                 for (let i of request.Students) {
                     if (await this._studentRepository.GetByEmail(i.email) !== null && (teacher!.students.length === 0 || teacher!.students.find(s => s.email == i.email) == null)) {
                         this._logger.Log(LogLevels.debug, `Adding student: ${i.email} to teacher ${request.Teacher.email}`);
-                        let [teacher, student] = await Promise.allSettled([this._teacherRepository.AddStudent(request.Teacher, i),
-                        this._studentRepository.AddTeacher(i, request.Teacher)]);
-                        if (teacher !== null && student !== null)
+                        let [teacher, student] = await Promise.allSettled([this._teacherRepository.AddStudent(request.Teacher, i), this._studentRepository.AddTeacher(i, request.Teacher)]);
+                        if (teacher.status === "fulfilled" && student.status === "fulfilled" && teacher.value !== null && student.value !== null)
                             count++;
                         else {
                             if (!teacher)
