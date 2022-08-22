@@ -2,7 +2,8 @@ const UseCaseTypes = {
     IRegisterStudentUseCase: Symbol.for("IRegisterStudentUseCase"),
     IRegisterTeacherUseCase: Symbol.for("IRegisterTeacherUseCase"),
     IAddStudentsToTeacherUseCase: Symbol.for("IAddStudentsToTeacherUseCase"),
-    ICommonStudentsUseCase: Symbol.for("ICommonStudentsUseCase")
+    ICommonStudentsUseCase: Symbol.for("ICommonStudentsUseCase"),
+    ISuspendStudentUseCase: Symbol.for("ISuspendStudentUseCase")
 };
 const RepositoryTypes = {
     IStudentRepository: Symbol.for("IStudentRepository"),
