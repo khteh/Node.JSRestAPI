@@ -44,12 +44,12 @@ jobs: # a collection of steps
       - run: mkdir test_reports
       # Download and cache dependencies
       - restore_cache:
-          key: v1-{{ checksum "package.json" }}
+          key: v1-dependencies-{{ .Branch }}-{{ checksum "package-lock.json" }}
       - run:
           name: Install dependencies
           command: npm install
       - save_cache:
-          key: v1-{{ checksum "package.json" }}
+          key: v1-dependencies-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
       - run:
