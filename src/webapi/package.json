@@ -53,7 +53,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "engines": {
-    "node": ">=18.7.0"
+    "node": ">=18.8.0"
   },
   "nx": {
     "targets": {

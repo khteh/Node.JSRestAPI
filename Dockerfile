@@ -1,7 +1,6 @@
 FROM node:18
 MAINTAINER Kok How, Teh <funcoolgeek@gmail.com>
 WORKDIR /app
-ADD package.json .
 ADD tsconfig.json .
 ADD node_modules node_modules
 ADD build .
