@@ -9,7 +9,7 @@ import spdy from 'spdy'
 import http2 from 'http2';
 import d from 'debug';
 var debug = d('teachersapi:server');
-
+var port = normalizePort(process.env.PORT || '4433');
 /*
 https://stackoverflow.com/questions/59534717/how-to-integrate-http2-with-expressjs-using-nodejs-module-http2
 expressjs still does not officially support Node http2
@@ -17,19 +17,22 @@ const server = http2.createSecureServer({
   key: fs.readFileSync('server.key'),
   cert: fs.readFileSync('server.crt')
 });*/
+const server = http2.createSecureServer({
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.crt')
+});
 // https://github.com/spdy-http2/node-spdy
+/*
 const options = {
   key: fs.readFileSync('server.key'),
   cert: fs.readFileSync('server.crt')
-};
+};*/
 //console.log(options)
 /**
  * Get port from environment and store in Express.
  */
-
-var port = normalizePort(process.env.PORT || '4433');
 //app.set('port', port);
-var server = spdy.createServer(options, app);
+//var server = spdy.createServer(options, app);
 /**
  * Create HTTP server.
  */
