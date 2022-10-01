@@ -1,6 +1,6 @@
 {
 	"DBHost": "10.152.183.151",
-	"Port": "5432",
+	"DBPort": "5432",
 	"Database" : "school",
 	"Username": "guest",
 	"Password": "P@$$w0rd",
