@@ -16,36 +16,39 @@ expressjs still does not officially support Node http2
 const server = http2.createSecureServer({
   key: fs.readFileSync('server.key'),
   cert: fs.readFileSync('server.crt')
-});*/
-const server = http2.createSecureServer({
-  key: fs.readFileSync('server.key'),
-  cert: fs.readFileSync('server.crt')
-});
+}, app);
+var server = http.createServer(app);
+*/
 // https://github.com/spdy-http2/node-spdy
-/*
 const options = {
   key: fs.readFileSync('server.key'),
   cert: fs.readFileSync('server.crt')
-};*/
+};
 //console.log(options)
 /**
  * Get port from environment and store in Express.
  */
-//app.set('port', port);
-//var server = spdy.createServer(options, app);
+app.set('port', port);
+var server = spdy.createServer(options, app);
 /**
  * Create HTTP server.
  */
 
-//var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
+server.on('error', onError);
+server.on('stream', (stream, headers) => {
+  // stream is a Duplex
+  stream.respond({
+    'content-type': 'text/html; charset=utf-8',
+    ':status': 200
+  });
+  stream.end('<h1>Hello World</h1>');
+});
 server.listen(port);
-//server.on('error', onError);
-//server.on('listening', onListening);
 
 /**
  * Normalize a port into a number, string, or false.
@@ -70,8 +73,7 @@ function normalizePort (val: string) {
 /**
  * Event listener for HTTP server "error" event.
  */
-/*
-function onError(error: any) {
+function onError (error: any) {
   if (error.syscall !== 'listen') {
     throw error;
   }
@@ -91,16 +93,4 @@ function onError(error: any) {
     default:
       throw error;
   }
-}*/
-
-/**
- * Event listener for HTTP server "listening" event.
- */
-/*
-function onListening() {
-  var addr = spdy.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
-}*/
+}
