@@ -9,7 +9,7 @@ import spdy from 'spdy'
 import http2 from 'http2';
 import d from 'debug';
 var debug = d('teachersapi:server');
-var port = normalizePort(process.env.PORT || '4433');
+var port = normalizePort(process.env.PORT || '443');
 /*
 https://stackoverflow.com/questions/59534717/how-to-integrate-http2-with-expressjs-using-nodejs-module-http2
 expressjs still does not officially support Node http2
