@@ -118,7 +118,7 @@ jobs: # a collection of steps
             - .
 
   deploy-eks:
-    executor: node
+    executor: aws-cli/default
     <<: *defaults
     steps:
       - *attach_workspace
