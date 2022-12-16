@@ -124,6 +124,8 @@ jobs: # a collection of steps
       - *attach_workspace
       - setup_remote_docker:
           docker_layer_caching: true
+      - aws-cli/setup:
+          profile-name: default
       - run:
           name: Use the saved build number here
           command: |
