@@ -127,18 +127,6 @@ jobs: # a collection of steps
             . $BASH_ENV
             echo CIRCLE_BUILD_NUM_DOCKER: $CIRCLE_BUILD_NUM_DOCKER
       - run:
-          name: Set Default AWS Region
-          command: aws configure set default.region $AWS_REGION
-      - run:
-          name: Set AWS Access Key
-          command: aws configure set aws_access_key_id $AWS_ACCESS_KEY
-      - run:
-          name: Set AWS Secret Key
-          command: aws configure set aws_secret_access_key $AWS_SECRET_KEY
-      - run:
-          name: Update Kubectl Configuration with cluster name
-          command: aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
-      - run:
           name: Update Node.JS RestAPI application
           command: |
             kubectl patch statefulset nodejsrestapi --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"'$AWS_ACCOUNT_ID'.dkr.ecr.ap-southeast-1.amazonaws.com/nodejsrestapi:'$CIRCLE_BUILD_NUM_DOCKER'"}]'
