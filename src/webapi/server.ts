@@ -10,35 +10,22 @@ import http2 from 'http2';
 import d from 'debug';
 var debug = d('teachersapi:server');
 var port = normalizePort(process.env.PORT || '443');
-/*
-https://stackoverflow.com/questions/59534717/how-to-integrate-http2-with-expressjs-using-nodejs-module-http2
+/*https://stackoverflow.com/questions/59534717/how-to-integrate-http2-with-expressjs-using-nodejs-module-http2
 expressjs still does not officially support Node http2
+https://github.com/expressjs/express/issues/5061
 const server = http2.createSecureServer({
   key: fs.readFileSync('server.key'),
   cert: fs.readFileSync('server.crt')
 }, app);
-var server = http.createServer(app);
 */
-// https://github.com/spdy-http2/node-spdy
+/* https://github.com/spdy-http2/node-spdy */
 const options = {
   key: fs.readFileSync('server.key'),
   cert: fs.readFileSync('server.crt')
 };
 //console.log(options)
-/**
- * Get port from environment and store in Express.
- */
 app.set('port', port);
 var server = spdy.createServer(options, app);
-/**
- * Create HTTP server.
- */
-
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
 server.on('error', onError);
 server.on('stream', (stream, headers) => {
   // stream is a Duplex
@@ -49,7 +36,6 @@ server.on('stream', (stream, headers) => {
   stream.end('<h1>Hello World</h1>');
 });
 server.listen(port);
-
 /**
  * Normalize a port into a number, string, or false.
  */

@@ -123,7 +123,7 @@ jobs: # a collection of steps
       - run:
           name: Use the saved build number here
           command: |
-            echo 'export CIRCLE_BUILD_NUM_DOCKER="$(cat /tmp/docker-build_number.txt)"' >> $BASH_ENV
+            echo 'export CIRCLE_BUILD_NUM_DOCKER="$(cat docker-build_number.txt)"' >> $BASH_ENV
             . $BASH_ENV
             echo CIRCLE_BUILD_NUM_DOCKER: $CIRCLE_BUILD_NUM_DOCKER
       - run:

@@ -11,6 +11,8 @@
         "baseUrl": ".",
         "rootDir": ".",
         "outDir": "build/",
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
         "plugins": [
             {
                 "name": "@rollup/plugin-typescript"

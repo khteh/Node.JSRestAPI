@@ -41,11 +41,20 @@ if (config.util.getEnv('NODE_ENV') !== "test") {
     stream: accessLogStream,
   }))
 }
+const shouldCompress = (req: Request, res: Response) => {
+  // don't compress responses asking explicitly not
+  if (req.headers['x-no-compression']) {
+    return false
+  }
+  // use compression filter function
+  return compression.filter(req, res)
+}
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(compression()); // compresses all the responses
+app.use(compression({ filter: shouldCompress }));
 app.use(helmet()); // adding set of security middlewares
 app.use(cors()); // enable all CORS request
 
