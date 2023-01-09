@@ -34,7 +34,7 @@ if (config.util.getEnv('NODE_ENV') !== "test") {
   //var format: string = ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent - :response-time ms"';
   const format = json({
     IP: ':remote-addr',
-    User: 'remote-user',
+    User: ':remote-user',
     Timestamp: ':date[clf]',
     Method: ':method',
     Path: ':url',
