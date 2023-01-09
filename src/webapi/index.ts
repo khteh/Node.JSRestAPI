@@ -35,16 +35,16 @@ if (config.util.getEnv('NODE_ENV') !== "test") {
   const format = json({
     IP: ':remote-addr',
     User: 'remote-user',
-    Timestamp: '[:date[clf]]',
+    Timestamp: ':date[clf]',
     Method: ':method',
     Path: ':url',
     Protocol: 'HTTP/:http-version',
     Status: ':status',
     ContentLength: ':res[content-length]',
     Referrer: ':referrer',
-    Agent: 'user-agent',
-    ResponseTime: ':response-time ms'
-  });
+    Agent: ':user-agent',
+    ResponseTime: ':response-time ms',
+  })
   // log only 4xx and 5xx responses to console
   app.use(logger("combined", {
     skip: function (req, res) { return res.statusCode < 400 },
