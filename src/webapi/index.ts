@@ -12,6 +12,7 @@ import fs from 'fs'
 import * as rfs from 'rotating-file-stream'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
+import json from 'morgan-json'
 import indexRoute from './routes/index.js'
 import healthchecks from './routes/healthchecks.js'
 import { api } from './routes/api.js'
@@ -30,7 +31,20 @@ if (config.util.getEnv('NODE_ENV') !== "test") {
     interval: '1d', // rotate daily
     path: "/var/log/node.js"
   })
-  var format: string = ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent - :response-time ms"';
+  //var format: string = ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent - :response-time ms"';
+  const format = json({
+    IP: ':remote-addr',
+    User: 'remote-user',
+    Timestamp: '[:date[clf]]',
+    Method: ':method',
+    Path: ':url',
+    Protocol: 'HTTP/:http-version',
+    Status: ':status',
+    ContentLength: ':res[content-length]',
+    Referrer: ':referrer',
+    Agent: 'user-agent',
+    ResponseTime: ':response-time ms'
+  });
   // log only 4xx and 5xx responses to console
   app.use(logger("combined", {
     skip: function (req, res) { return res.statusCode < 400 },
