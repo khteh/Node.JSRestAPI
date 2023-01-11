@@ -29,7 +29,7 @@ app.set('view engine', 'ejs');
 if (config.util.getEnv('NODE_ENV') !== "test") {
   var accessLogStream = rfs.createStream('access.log', {
     interval: '1d', // rotate daily
-    path: "/var/log/node.js"
+    path: "/var/log/nodejs"
   })
   //var format: string = ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent - :response-time ms"';
   const format = json({
