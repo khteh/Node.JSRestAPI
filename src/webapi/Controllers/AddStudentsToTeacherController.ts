@@ -3,7 +3,7 @@ import express from 'express'
 import emailvalidator from 'email-validator'
 import { IAddStudentsToTeacherUseCase, AddStudentsToTeacherRequest, Student, Teacher, UseCaseResponseMessage } from "core"
 import { RegisterStudentModel } from "../Models/Request/RegisterStudentModel"
-import { PresenterBase } from "../Presenters/PresenterBase"
+import { PresenterBase } from "../Presenters/PresenterBase.js"
 import { inject } from "inversify";
 import { UseCaseTypes } from "core";
 var router = express.Router();

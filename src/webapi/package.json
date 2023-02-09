@@ -11,7 +11,7 @@
     "build": "tsc --project tsconfig.json && npm run rollup",
     "build:watch": "nodemon -e ts --exec \"npm run build\" --ignore build/** --ignore tests/**",
     "rollup": "rollup -c",
-    "dev": "export NODE_ENV=dev&& concurrently \"npx tsc --watch\" \"nodemon -q build/server.js\"",
+    "dev": "export NODE_ENV=development&& concurrently \"npx tsc --watch\" \"nodemon -q build/server.js\"",
     "start": "node build/server.js"
   },
   "dependencies": {

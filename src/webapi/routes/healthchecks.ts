@@ -2,7 +2,7 @@
 import express from 'express'
 import { Database } from "infrastructure"
 import { IStudentRepository, ITeacherRepository, RepositoryTypes, ILogger, LoggerTypes, Student, Teacher } from 'core';
-import { di } from "./api"
+import { di } from "./api.js"
 var healthchecks = express.Router();
 var db = new Database(di.get<ILogger>(LoggerTypes.ILogger));
 /* k8s readiness check */

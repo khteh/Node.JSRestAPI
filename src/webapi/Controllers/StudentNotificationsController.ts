@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import emailvalidator from 'email-validator'
 import { IStudentNotificationsUseCase, StudentNotificationsRequest, StudentNotificationsResponse, Student, Teacher } from "core"
-import { StudentNotificationsPresenter } from "../Presenters/StudentNotificationsPresenter"
+import { StudentNotificationsPresenter } from "../Presenters/StudentNotificationsPresenter.js"
 import { inject } from "inversify";
 import { UseCaseTypes } from "core";
 export class StudentNotificationsController {

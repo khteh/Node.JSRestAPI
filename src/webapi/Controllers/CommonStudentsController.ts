@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import emailvalidator from 'email-validator'
 import { ICommonStudentsUseCase, CommonStudentsRequest, Student, Teacher } from "core"
-import { CommonStudentsPresenter } from "../Presenters/CommonStudentsPresenter"
+import { CommonStudentsPresenter } from "../Presenters/CommonStudentsPresenter.js"
 import { inject } from "inversify";
 import { UseCaseTypes } from "core";
 export class CommonStudentsController {

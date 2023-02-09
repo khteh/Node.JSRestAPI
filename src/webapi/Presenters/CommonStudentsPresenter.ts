@@ -1,5 +1,5 @@
 import { StudentDTO, CommonStudentsResponse } from "core"
-import { PresenterBase } from "./PresenterBase"
+import { PresenterBase } from "./PresenterBase.js"
 export class CommonStudentsPresenter extends PresenterBase<CommonStudentsResponse>
 {
     public Students: StudentDTO[] = [];

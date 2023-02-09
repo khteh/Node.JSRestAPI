@@ -1,5 +1,5 @@
 import { UseCaseResponseMessage } from "core"
-import { PresenterBase } from "./PresenterBase"
+import { PresenterBase } from "./PresenterBase.js"
 export class RegisterUserPresenter extends PresenterBase<UseCaseResponseMessage>
 {
     public override async Handle (response: UseCaseResponseMessage): Promise<void> {
