@@ -73,7 +73,7 @@ app.use(helmet()); // adding set of security middlewares
 app.use(cors()); // enable all CORS request
 
 app.use('/', indexRoute);
-app.use('/healthchecks', healthchecks);
+app.use('/health', healthchecks);
 app.use('/api', api);
 // catch 404 and forward to error handler
 app.use(function (req: Request, res: Response, next: NextFunction) {

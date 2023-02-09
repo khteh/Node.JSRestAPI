@@ -6,7 +6,7 @@ orbs:
 executors:
   node:
     docker:
-      - image: node:18
+      - image: node:latest
 
 references:
   workspace_root: &workspace_root ~/workspace
