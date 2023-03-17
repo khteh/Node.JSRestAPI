@@ -85,13 +85,11 @@ export class StateContext {
             this._state.handle();
     }
     public async ChangeState (state?: State) {
-        console.log(`Current state: ${this._state?.Name()}`);
-        this._logger.Log(LogLevels.debug, `Transitioning from state ${this._state?.Name()} to ${state?.Name()}`);
+        this._logger.Log(LogLevels.debug, `Current state ${this._state?.Name()}`);
         this._state = state;
-        console.log(`New state: ${this._state?.Name()}`);
+        this._logger.Log(LogLevels.debug, `New state ${this._state?.Name()}`);
     }
     public State (): StatusEnum | null {
-        console.log(`State(): ${this._state?.Name()}`);
         return this._state ? this._state.Name() : null;
     }
 }
