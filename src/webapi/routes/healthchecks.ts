@@ -1,7 +1,7 @@
 //var express = require('express');
 import express from 'express'
 import { Database } from "infrastructure"
-import { IStudentRepository, ITeacherRepository, RepositoryTypes, ILogger, LoggerTypes, Student, Teacher } from 'core';
+import { IStudentRepository, ITeacherRepository, RepositoryTypes, ILogger, LoggerTypes, Student, Teacher } from "webapi.core";
 import { di } from "./api.js"
 var healthchecks = express.Router();
 var db = new Database(di.get<ILogger>(LoggerTypes.ILogger));

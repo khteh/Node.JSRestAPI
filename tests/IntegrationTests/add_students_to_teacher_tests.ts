@@ -6,7 +6,7 @@ import chaiHttp from 'chai-http'
 import chaiAsPromised from "chai-as-promised";
 chai.use(chaiAsPromised);
 import * as typeorm from "typeorm";
-import { EntityBase, Student, IStudentRepository, ITeacherRepository, Teacher } from "core";
+import { EntityBase, Student, IStudentRepository, ITeacherRepository, Teacher } from "webapi.core";
 import { reject } from 'async';
 import { send } from 'process';
 var expect = chai.expect

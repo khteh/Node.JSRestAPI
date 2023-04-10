@@ -1,4 +1,4 @@
-import { ILogger, LogLevelsType } from "core"
+import { ILogger, LogLevelsType } from "webapi.core"
 import { Logger } from "./index"
 import { injectable, inject } from "inversify";
 @injectable()

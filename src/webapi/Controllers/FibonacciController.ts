@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { Fibonacci } from 'core';
+import { Fibonacci } from "webapi.core";
 import url from 'url'
 import { Logger } from "infrastructure"
 export class FibonacciController {

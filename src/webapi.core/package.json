@@ -1,5 +1,5 @@
 {
-  "name": "core",
+  "name": "webapi.core",
   "version": "1.0.0",
   "description": "Web API Core module",
   "author": "Teh Kok How",
@@ -17,23 +17,20 @@
     "express": "^4.18.2",
     "inversify": "^6.0.1",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.3.12"
+    "typeorm": "^0.3.14"
   },
   "devDependencies": {
     "@rollup/plugin-json": "^6.0.0",
-    "@rollup/plugin-typescript": "^11.0.0",
+    "@rollup/plugin-typescript": "^11.1.0",
     "@types/express": "^4.17.17",
-    "@types/node": "^18.15.3",
-    "nodemon": "^2.0.21",
-    "rollup": "^3.19.1",
+    "@types/node": "^18.15.11",
+    "nodemon": "^2.0.22",
+    "rollup": "^3.20.2",
     "rollup-plugin-ts": "^3.2.0",
     "tslib": "^2.5.0",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.4"
   },
   "keywords": [],
   "main": "build/index.js",
-  "types": "build/index.d.ts",
-  "engines": {
-    "node": ">=18.8.0"
-  }
+  "types": "build/index.d.ts"
 }

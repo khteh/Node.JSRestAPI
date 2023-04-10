@@ -1,4 +1,4 @@
-import { StudentNotificationsResponse } from "core"
+import { StudentNotificationsResponse } from "webapi.core"
 import { PresenterBase } from "./PresenterBase.js"
 export class StudentNotificationsPresenter extends PresenterBase<StudentNotificationsResponse>
 {

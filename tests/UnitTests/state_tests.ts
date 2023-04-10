@@ -6,7 +6,7 @@ import chai from 'chai'
 import chaiHttp from 'chai-http'
 import chaiAsPromised from "chai-as-promised";
 chai.use(chaiAsPromised);
-import { ILogger, LogLevels, StateContext, StatusEnum, NewState, QuotedState, ApprovedState, RejectedState } from "core";
+import { ILogger, LogLevels, StateContext, StatusEnum, NewState, QuotedState, ApprovedState, RejectedState } from "webapi.core";
 var expect = chai.expect
 var assert = chai.assert
 var should = chai.should()

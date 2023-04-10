@@ -4,7 +4,7 @@ import chai from 'chai'
 import chaiHttp from 'chai-http'
 import chaiAsPromised from "chai-as-promised";
 chai.use(chaiAsPromised);
-import { ILogger, Student, Teacher, IStudentRepository, ITeacherRepository, CommonStudentsUseCase, IOutputPort, CommonStudentsResponse, CommonStudentsRequest } from "core";
+import { ILogger, Student, Teacher, IStudentRepository, ITeacherRepository, CommonStudentsUseCase, IOutputPort, CommonStudentsResponse, CommonStudentsRequest } from "webapi.core";
 import { CommonStudentsPresenter } from "../../src/webapi/Presenters/CommonStudentsPresenter"
 var expect = chai.expect
 var assert = chai.assert

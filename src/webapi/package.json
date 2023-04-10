@@ -17,43 +17,40 @@
   "dependencies": {
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
-    "core": "^1.0.113",
     "cors": "^2.8.5",
     "debug": "^4.3.4",
     "express": "^4.18.2",
-    "helmet": "^6.0.1",
+    "helmet": "^6.1.2",
     "http-errors": "^2.0.0",
     "infrastructure": "^1.4.4",
     "inversify": "^6.0.1",
     "morgan": "^1.10.0",
     "reflect-metadata": "^0.1.13",
     "rotating-file-stream": "^3.1.0",
-    "spdy": "^4.0.2"
+    "spdy": "^4.0.2",
+    "webapi.core": "^1.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-json": "^6.0.0",
-    "@rollup/plugin-typescript": "^11.0.0",
+    "@rollup/plugin-typescript": "^11.1.0",
     "@types/compression": "^1.7.2",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.13",
     "@types/debug": "^4.1.7",
     "@types/http-errors": "^2.0.1",
     "@types/morgan": "^1.9.4",
-    "@types/node": "^18.15.3",
+    "@types/node": "^18.15.11",
     "@types/spdy": "^3.4.5",
-    "nodemon": "^2.0.21",
-    "rollup": "^3.19.1",
+    "nodemon": "^2.0.22",
+    "rollup": "^3.20.2",
     "rollup-plugin-ts": "^3.2.0",
     "ts-node": "^10.9.1",
     "tslib": "^2.5.0",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.4"
   },
   "keywords": [],
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "engines": {
-    "node": ">=18.8.0"
-  },
   "nx": {
     "targets": {
       "build": {

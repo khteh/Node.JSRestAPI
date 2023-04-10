@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import express from 'express'
 import emailvalidator from 'email-validator'
-import { RegisterStudentRequest, RegisterTeacherRequest } from "core"
+import { RegisterStudentRequest, RegisterTeacherRequest } from "webapi.core"
 import { RegisterStudentModel } from "../Models/Request/RegisterStudentModel"
 import { RegisterTeacherModel } from "../Models/Request/RegisterTeacherModel"
-import { IRegisterStudentUseCase, IRegisterTeacherUseCase, Student } from "core"
+import { IRegisterStudentUseCase, IRegisterTeacherUseCase, Student } from "webapi.core"
 import { RegisterUserPresenter } from "../Presenters/RegisterUserPresenter.js"
 import { inject } from "inversify";
-import { UseCaseTypes } from "core";
+import { UseCaseTypes } from "webapi.core";
 export class RegistrationController {
     private studentUseCase: IRegisterStudentUseCase;
     private teacherUseCase: IRegisterTeacherUseCase;

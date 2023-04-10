@@ -1,4 +1,4 @@
-import { Error } from "core";
+import { Error } from "webapi.core";
 export class ResponseBase {
     public Success: boolean;
     public Errors: Error[];

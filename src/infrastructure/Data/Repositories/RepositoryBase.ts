@@ -1,4 +1,4 @@
-import { IRepository, EntityBase } from "core"
+import { IRepository, EntityBase } from "webapi.core"
 import { Database } from "../../db"
 import { EntityTarget, Repository } from "typeorm"
 import { injectable, unmanaged, inject } from "inversify";

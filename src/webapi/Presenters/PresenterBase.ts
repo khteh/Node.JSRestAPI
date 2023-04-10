@@ -1,4 +1,4 @@
-import { IOutputPort, UseCaseResponseMessage, Error } from "core"
+import { IOutputPort, UseCaseResponseMessage, Error } from "webapi.core"
 export class PresenterBase<T extends UseCaseResponseMessage> implements IOutputPort<T>
 {
     public Code: number = 200;

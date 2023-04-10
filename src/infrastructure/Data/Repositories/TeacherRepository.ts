@@ -1,6 +1,6 @@
-import { Student, Teacher, ITeacherRepository } from "core"
+import { Student, Teacher, ITeacherRepository } from "webapi.core"
 import { RepositoryBase } from "./RepositoryBase"
-import { IStudentRepository, RepositoryTypes } from "core"
+import { IStudentRepository, RepositoryTypes } from "webapi.core"
 import { injectable, inject } from "inversify";
 import { DatabaseTypes } from "../../types";
 import { Database } from "../../db"

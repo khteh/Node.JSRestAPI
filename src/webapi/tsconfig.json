@@ -31,7 +31,7 @@
     },
     "references": [
         {
-            "path": "../core"
+            "path": "../webapi.core"
         },
         {
             "path": "../infrastructure"

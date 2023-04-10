@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import emailvalidator from 'email-validator'
-import { ICommonStudentsUseCase, CommonStudentsRequest, Student, Teacher } from "core"
+import { ICommonStudentsUseCase, CommonStudentsRequest, Student, Teacher } from "webapi.core"
 import { CommonStudentsPresenter } from "../Presenters/CommonStudentsPresenter.js"
 import { inject } from "inversify";
-import { UseCaseTypes } from "core";
+import { UseCaseTypes } from "webapi.core";
 export class CommonStudentsController {
     private _usecase: ICommonStudentsUseCase;
     private presenter: CommonStudentsPresenter;

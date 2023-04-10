@@ -1,4 +1,4 @@
-import { StudentDTO, CommonStudentsResponse } from "core"
+import { StudentDTO, CommonStudentsResponse } from "webapi.core"
 import { PresenterBase } from "./PresenterBase.js"
 export class CommonStudentsPresenter extends PresenterBase<CommonStudentsResponse>
 {

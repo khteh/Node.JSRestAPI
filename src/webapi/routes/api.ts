@@ -8,11 +8,11 @@ import { AddStudentsToTeacherController } from '../Controllers/AddStudentsToTeac
 import { CommonStudentsController } from '../Controllers/CommonStudentsController.js';
 import { SuspendStudentController } from '../Controllers/SuspendStudentController.js';
 import { StudentNotificationsController } from '../Controllers/StudentNotificationsController.js';
-import { IRegisterStudentUseCase, IRegisterTeacherUseCase, IAddStudentsToTeacherUseCase, ICommonStudentsUseCase, ISuspendStudentUseCase, IStudentNotificationsUseCase, Student, UseCaseTypes } from "core"
-import { IStudentRepository, ITeacherRepository, RepositoryTypes, LoggerTypes } from 'core';
-import { RegisterStudentUseCase, SuspendStudentUseCase, RegisterTeacherUseCase, AddStudentsToTeacherUseCase, CommonStudentsUseCase, StudentNotificationsUseCase } from 'core';
+import { IRegisterStudentUseCase, IRegisterTeacherUseCase, IAddStudentsToTeacherUseCase, ICommonStudentsUseCase, ISuspendStudentUseCase, IStudentNotificationsUseCase, Student, UseCaseTypes } from "webapi.core"
+import { IStudentRepository, ITeacherRepository, RepositoryTypes, LoggerTypes } from "webapi.core";
+import { RegisterStudentUseCase, SuspendStudentUseCase, RegisterTeacherUseCase, AddStudentsToTeacherUseCase, CommonStudentsUseCase, StudentNotificationsUseCase } from "webapi.core";
 import { StudentRepository, TeacherRepository, LoggerImpl, DatabaseTypes, Database } from "infrastructure"
-import { ILogger } from 'core';
+import { ILogger } from "webapi.core";
 var api = express.Router();
 const di = new Container();
 di.bind<IRegisterStudentUseCase>(UseCaseTypes.IRegisterStudentUseCase).to(RegisterStudentUseCase);

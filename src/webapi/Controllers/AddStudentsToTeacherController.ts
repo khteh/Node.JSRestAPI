@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express'
 import express from 'express'
 import emailvalidator from 'email-validator'
-import { IAddStudentsToTeacherUseCase, AddStudentsToTeacherRequest, Student, Teacher, UseCaseResponseMessage } from "core"
+import { IAddStudentsToTeacherUseCase, AddStudentsToTeacherRequest, Student, Teacher, UseCaseResponseMessage } from "webapi.core"
 import { RegisterStudentModel } from "../Models/Request/RegisterStudentModel"
 import { PresenterBase } from "../Presenters/PresenterBase.js"
 import { inject } from "inversify";
-import { UseCaseTypes } from "core";
+import { UseCaseTypes } from "webapi.core";
 var router = express.Router();
 export class AddStudentsToTeacherController {
     private _usecase: IAddStudentsToTeacherUseCase;

@@ -2,7 +2,7 @@ import config from 'config'
 import "reflect-metadata"
 import { DataSource, EntityTarget, Repository } from "typeorm"
 import { injectable, inject } from "inversify";
-import { Student, Teacher, ILogger, LogLevels, LoggerTypes, EntityBase } from "core"
+import { Student, Teacher, ILogger, LogLevels, LoggerTypes, EntityBase } from "webapi.core"
 import { Logger } from "./index"
 
 @injectable()

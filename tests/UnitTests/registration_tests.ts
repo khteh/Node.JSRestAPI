@@ -6,7 +6,7 @@ import chai from 'chai'
 import chaiHttp from 'chai-http'
 import chaiAsPromised from "chai-as-promised";
 chai.use(chaiAsPromised);
-import { ILogger, EntityBase, Student, Teacher, IStudentRepository, ITeacherRepository, RegisterStudentUseCase, RegisterTeacherUseCase, IOutputPort, UseCaseResponseMessage, RegisterStudentRequest, RegisterTeacherRequest } from "core";
+import { ILogger, EntityBase, Student, Teacher, IStudentRepository, ITeacherRepository, RegisterStudentUseCase, RegisterTeacherUseCase, IOutputPort, UseCaseResponseMessage, RegisterStudentRequest, RegisterTeacherRequest } from "webapi.core";
 var expect = chai.expect
 var assert = chai.assert
 var should = chai.should()

@@ -5,7 +5,7 @@ import chaiHttp from 'chai-http'
 import chaiAsPromised from "chai-as-promised";
 chai.use(chaiAsPromised);
 import { DataSource, EntityTarget, Repository } from "typeorm"
-import { ILogger, Student, Teacher, IStudentRepository, ITeacherRepository, SuspendStudentUseCase, IOutputPort, SuspendStudentRequest, UseCaseResponseMessage } from "core";
+import { ILogger, Student, Teacher, IStudentRepository, ITeacherRepository, SuspendStudentUseCase, IOutputPort, SuspendStudentRequest, UseCaseResponseMessage } from "webapi.core";
 import { Database } from 'infrastructure';
 var expect = chai.expect
 var assert = chai.assert

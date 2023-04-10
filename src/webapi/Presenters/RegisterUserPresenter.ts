@@ -1,4 +1,4 @@
-import { UseCaseResponseMessage } from "core"
+import { UseCaseResponseMessage } from "webapi.core"
 import { PresenterBase } from "./PresenterBase.js"
 export class RegisterUserPresenter extends PresenterBase<UseCaseResponseMessage>
 {
