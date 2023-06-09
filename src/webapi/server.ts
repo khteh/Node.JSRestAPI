@@ -1,4 +1,14 @@
 #!/usr/bin/env node
+var apm = require('elastic-apm-node').start({
+  // Override service name from package.json
+  // Allowed characters: a-z, A-Z, 0-9, -, _, and space
+  serviceName: 'buyerportal-apm',
+  // Set custom APM Server URL (default: http://127.0.0.1:8200)
+  serverUrl: 'https://my-apm-http:8200',
+  // Only activate the agent if it's running in production
+  active: process.env.NODE_ENV === 'production',
+  verifyServerCert: false
+})
 
 /**
  * Module dependencies.
