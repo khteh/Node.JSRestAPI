@@ -1,4 +1,5 @@
 {
+    "window.zoomLevel": -1,
     "mochaExplorer.files": "tests/**/*_tests.ts",
     "mochaExplorer.require": "ts-node/register",
     "mochaExplorer.autoload": true,
