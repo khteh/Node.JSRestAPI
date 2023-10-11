@@ -11,7 +11,7 @@ import path from 'path'
 import fs from 'fs'
 import * as rfs from 'rotating-file-stream'
 import cookieParser from 'cookie-parser'
-import logger from 'morgan'
+import morgan from 'morgan'
 import json from 'morgan-json'
 import indexRoute from './routes/index.js'
 import healthchecks from './routes/healthchecks.js'
@@ -50,7 +50,7 @@ if (config.util.getEnv('NODE_ENV') !== "test") {
     ResponseTime: ':response-time ms',
   })
   // log only 4xx and 5xx responses to console
-  app.use(logger("combined", {
+  app.use(morgan("combined", {
     skip: function (req, res) { return res.statusCode < 400 },
   }))
 
@@ -58,24 +58,24 @@ if (config.util.getEnv('NODE_ENV') !== "test") {
   /*app.use(logger(format, {
     stream: accessLogStream,
   }))*/
-  expressApp.use(expressWinston.logger({
+  /*expressApp.use(expressWinston.logger({
     level: 'info',
     meta: true, // optional: control whether you want to log the meta data about the request (default to true)
     msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
     expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
     colorize: false, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
-    ignoreRoute: function (req, res) { 
+    ignoreRoute: function (req, res) {
       return req?.url?.includes('health') || req?.url?.includes('robots.txt')
     }, // optional: allows to skip some log messages based on request and/or response
     format: winston.format.combine(
       winston.format.splat(),
       winston.format.timestamp(),
       winston.format.json()
-    ),            
+    ),
     defaultMeta: { service: 'user-service' },
     requestWhitelist: ['headers', 'query'],  //these are not included in the standard StackDriver httpRequest
     responseWhitelist: ['body'], // this populates the `res.body` so we can get the response size (not required)        
-    dynamicMeta:  (req, res) => {
+    dynamicMeta: (req, res) => {
       const httpRequest = {}
       const meta = {}
       if (req) {
@@ -96,7 +96,7 @@ if (config.util.getEnv('NODE_ENV') !== "test") {
         httpRequest.status = res.statusCode
         httpRequest.latency = {
           seconds: Math.floor(res.responseTime / 1000),
-          nanos: ( res.responseTime % 1000 ) * 1000000
+          nanos: (res.responseTime % 1000) * 1000000
         }
         if (res.body) {
           if (typeof res.body === 'object') {
@@ -107,31 +107,31 @@ if (config.util.getEnv('NODE_ENV') !== "test") {
         }
       }
       return meta
-    },        
+    },
     transports: [
-        new DailyRotateFile({
-            level: 'info',
-            filename: '/var/log/kyberlife/log-%DATE%',
-            handleExceptions: true,
-            format: winston.format.combine(
-                winston.format.splat(),
-                winston.format.timestamp(),
-                winston.format.json()
-              ),            
-            maxSize: '100m',
-            maxFiles: '14d'
-        }),
-        new winston.transports.Console({
-            level: 'debug',
-            handleExceptions: true,
-            format: winston.format.combine(
-                winston.format.colorize(),
-                winston.format.simple()
-              )
-        })
+      new DailyRotateFile({
+        level: 'info',
+        filename: '/var/log/kyberlife/log-%DATE%',
+        handleExceptions: true,
+        format: winston.format.combine(
+          winston.format.splat(),
+          winston.format.timestamp(),
+          winston.format.json()
+        ),
+        maxSize: '100m',
+        maxFiles: '14d'
+      }),
+      new winston.transports.Console({
+        level: 'debug',
+        handleExceptions: true,
+        format: winston.format.combine(
+          winston.format.colorize(),
+          winston.format.simple()
+        )
+      })
     ],
     exitOnError: false,
-  }))
+  }))*/
 }
 const shouldCompress = (req: Request, res: Response) => {
   // don't compress responses asking explicitly not
@@ -168,4 +168,4 @@ app.use(function (err: any, req: Request, res: Response, next: NextFunction) {
   res.render('error');
 });
 
-export { app, logger };
+export { app, morgan };
