@@ -12,6 +12,7 @@
         "baseUrl": ".",
         "rootDir": ".",
         "outDir": "build/",
+        "tsBuildInfoFile": "./.tsbuildinfo",
         "paths": {
             "controllers/*": [
                 "Controllers/*"

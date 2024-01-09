@@ -1,8 +1,11 @@
 *.swp
 *.crt
 *.key
+.nx
+.nyc_output
 node_modules
 **/build
+**/.tsbuildinfo
 **/.rollup.cache
 test_reports
 .nyc_output
