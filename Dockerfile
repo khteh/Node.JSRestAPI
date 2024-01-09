@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:21
 MAINTAINER Kok How, Teh <funcoolgeek@gmail.com>
 WORKDIR /app
 ADD package.json .
