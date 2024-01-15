@@ -16,7 +16,7 @@
     "run_migration": "npx typeorm-ts-node-esm migration:run"
   },
   "dependencies": {
-    "config": "^3.3.9",
+    "config": "^3.3.10",
     "inversify": "^6.0.2",
     "reflect-metadata": "^0.2.1",
     "typeorm": "^0.3.19",
@@ -25,11 +25,11 @@
   },
   "devDependencies": {
     "@rollup/plugin-json": "^6.1.0",
-    "@rollup/plugin-typescript": "^11.1.5",
+    "@rollup/plugin-typescript": "^11.1.6",
     "@types/config": "^3.3.3",
-    "@types/node": "^20.10.6",
+    "@types/node": "^20.11.1",
     "nodemon": "^3.0.2",
-    "rollup": "^4.9.4",
+    "rollup": "^4.9.5",
     "rollup-plugin-dts": "^6.1.0",
     "rollup-plugin-ts": "^3.2.0",
     "tslib": "^2.5.3",
