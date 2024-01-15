@@ -12,6 +12,8 @@
         "baseUrl": ".",
         "rootDir": ".",
         "outDir": "build/",
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
         "tsBuildInfoFile": "./.tsbuildinfo",
         "paths": {
             "controllers/*": [

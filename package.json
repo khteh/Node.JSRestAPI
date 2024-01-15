@@ -13,7 +13,7 @@
     "typeorm": "typeorm-ts-node-esm",
     "run_migration": "npx typeorm-ts-node-esm migration:run",
     "clean": "tsc --build --clean && rimraf build src/webapi.core/build src/infrastructure/build src/webapi/build",
-    "copy-assets": "ts-node --esm tools/copyAssets.ts",
+    "copy-assets": "npx tsx tools/copyAssets.ts",
     "build": "npx tsc",
     "build_core": "npm run build --workspace=webapi.core",
     "build_infra": "npm run build --workspace=infrastructure",

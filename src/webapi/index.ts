@@ -5,7 +5,7 @@ import { dirname } from 'path'
 import createError from 'http-errors'
 import express from 'express'
 import compression from 'compression'
-import helmet from 'helmet'
+//import helmet from 'helmet'
 import cors from 'cors'
 import path from 'path'
 import fs from 'fs'
@@ -147,7 +147,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(compression({ filter: shouldCompress }));
-app.use(helmet()); // adding set of security middlewares
+//app.use(helmet()); // adding set of security middlewares
 app.use(cors()); // enable all CORS request
 
 app.use('/', indexRoute);
