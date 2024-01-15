@@ -1,10 +1,10 @@
 import { ILogger, LogLevels } from "../../Interfaces/ILogger";
 import { injectable, inject } from "inversify";
 import { LoggerTypes } from '../../types';
-import { StateContext } from "./StateContext";
+import StateContext from "./StateContext";
 import { StatusEnum, StatusColors } from "./StateEnums";
 
-export abstract class State {
+export default abstract class State {
     protected readonly _logger: ILogger;
     protected readonly _name: StatusEnum;
     protected readonly _colour: string;

@@ -1,10 +1,10 @@
 import { ILogger, LogLevels } from "../../Interfaces/ILogger";
 import { injectable, inject } from "inversify";
 import { LoggerTypes } from '../../types';
-import { State } from "./State";
+import State from "./State";
 import { StatusEnum } from "./StateEnums";
 
-export class StateContext {
+export default class StateContext {
     private readonly _logger: ILogger;
     private _state?: State;
     public constructor(@inject(LoggerTypes.ILogger) logger: ILogger, state?: State) {
