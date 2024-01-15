@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import 'elastic-apm-node/start'
+import 'elastic-apm-node/start.js'
 
 /**
  * Module dependencies.
