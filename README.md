@@ -75,7 +75,7 @@ $ npm start
 - To run the application listening on different port:
 
 ```
-$ set PORT=8888 & npm start
+$ export PORT=4433 && npm start
 ```
 
 # Use Cases

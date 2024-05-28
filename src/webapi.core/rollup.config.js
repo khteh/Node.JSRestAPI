@@ -1,6 +1,6 @@
 import json from '@rollup/plugin-json';
 import typescript from '@rollup/plugin-typescript';
-import tsConfig from './tsconfig.json' assert { type: "json" };
+import tsConfig from './tsconfig.json' with { type: "json" };
 
 const config = [
     {
