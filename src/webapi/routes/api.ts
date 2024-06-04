@@ -25,8 +25,8 @@ di.bind<IStudentRepository>(RepositoryTypes.IStudentRepository).to(StudentReposi
 di.bind<ITeacherRepository>(RepositoryTypes.ITeacherRepository).to(TeacherRepository);
 di.bind<ILogger>(LoggerTypes.ILogger).to(LoggerImpl);
 di.bind(DatabaseTypes.DatabaseService).to(Database);
-var fibonacci = new FibonacciController();
-var greetings = new GreetingsController();
+var fibonacci = new FibonacciController(di.get<ILogger>(LoggerTypes.ILogger));
+var greetings = new GreetingsController(di.get<ILogger>(LoggerTypes.ILogger));
 var registration = new RegistrationController(di.get<IRegisterStudentUseCase>(UseCaseTypes.IRegisterStudentUseCase), di.get<IRegisterTeacherUseCase>(UseCaseTypes.IRegisterTeacherUseCase));
 var addStudentsToTeacher = new AddStudentsToTeacherController(di.get<IAddStudentsToTeacherUseCase>(UseCaseTypes.IAddStudentsToTeacherUseCase));
 var commonStudents = new CommonStudentsController(di.get<ICommonStudentsUseCase>(UseCaseTypes.ICommonStudentsUseCase));

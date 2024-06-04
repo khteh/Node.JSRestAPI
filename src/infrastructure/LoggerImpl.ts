@@ -27,7 +27,6 @@ export class LoggerImpl implements ILogger {
             case 4:
                 Logger.debug(message);
                 break;
-
         }
     }
 }

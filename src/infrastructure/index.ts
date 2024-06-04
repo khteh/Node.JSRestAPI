@@ -1,5 +1,5 @@
 import config from 'config';
-export * from './db'
+export * from "./db"
 export * from "./Data/Repositories/StudentRepository"
 export * from "./Data/Repositories/TeacherRepository"
 export * from "./LoggerImpl"
@@ -62,4 +62,5 @@ const Logger = winston.createLogger({
     format,
     transports,
 })
-export { Logger }
+//export { Logger }
+module.exports

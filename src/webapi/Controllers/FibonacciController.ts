@@ -1,26 +1,29 @@
+import { injectable, inject } from "inversify";
 import { Request, Response, NextFunction } from 'express';
-import { Fibonacci } from "webapi.core";
+import { ILogger, LoggerTypes, LogLevels, LogLevelsType, Fibonacci } from "webapi.core";
 import url from 'url'
-import { Logger } from "infrastructure"
+//import Logger from "infrastructure"
 export class FibonacciController {
     private _fibonacci: Fibonacci;
-    public constructor() {
+    private _logger: ILogger;
+    public constructor(@inject(LoggerTypes.ILogger) logger: ILogger) {
+        this._logger = logger;
         this._fibonacci = new Fibonacci();
     }
     public Fibonacci (req: Request, res: Response, next: NextFunction) {
         var url_parts = url.parse(req.url, true);
         var query = url_parts.query;
         var message = "";
-        Logger.debug('GET /api/fibonacci query: ' + JSON.stringify(query));
+        this._logger.Log(LogLevels.debug, 'GET /api/fibonacci query: ' + JSON.stringify(query));
         if (query.n !== undefined && query.n.length > 0 && !isNaN(Number(query.n))) {
             try {
                 let result = this._fibonacci.fibonacci(+query.n);
-                Logger.debug("fib(" + query.n + "): " + result)
+                this._logger.Log(LogLevels.debug, "fib(" + query.n + "): " + result)
                 message = "Fibonacci(" + query.n + "): " + this._fibonacci.fibonacci(Number(query.n));
                 res.status(200);
                 res.json({ 'message': message });
             } catch (e) {
-                Logger.debug("Exception! " + e)
+                this._logger.Log(LogLevels.debug, "Exception! " + e)
                 res.status(500);
                 res.json({ 'message': e });
             }

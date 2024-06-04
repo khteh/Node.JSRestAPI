@@ -64,6 +64,7 @@
     "@types/shelljs": "^0.8.15",
     "@types/sinon": "^17.0.3",
     "chai": "^5.1.1",
+    "chai-as-promised": "^7.1.2",
     "chai-http": "^4.4.0",
     "concurrently": "^8.2.2",
     "eslint": "^9.4.0",
