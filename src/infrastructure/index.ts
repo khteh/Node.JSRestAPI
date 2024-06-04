@@ -31,7 +31,7 @@ const colors = {
 winston.addColors(colors);
 var path: string = (config.util.getEnv('NODE_ENV') === "test") ? "/tmp/node.js/test" : "/var/log/node.js";
 // create a rotating write stream
-var accessLogStream = rfs.createStream('application.log', {
+var accessLogStream = rfs.createStream('nodejsrestapi.log', {
     interval: '1d', // rotate daily
     path: path
 })

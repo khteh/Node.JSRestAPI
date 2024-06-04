@@ -196,6 +196,10 @@ $ export PORT=4433 && npm start
 }
 ```
 
+# Logs
+
+Logs available at `/var/log/node.js/nodejsrestapi.log`
+
 # Run tests:
 
 - Edit `config/test.json` to configure the database connection parameters.
