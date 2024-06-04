@@ -62,5 +62,4 @@ const Logger = winston.createLogger({
     format,
     transports,
 })
-//export { Logger }
-module.exports
+export { Logger }
