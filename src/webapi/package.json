@@ -26,7 +26,7 @@
     "inversify": "^6.0.2",
     "morgan": "^1.10.0",
     "reflect-metadata": "^0.2.2",
-    "rotating-file-stream": "^3.2.1",
+    "rotating-file-stream": "^3.2.3",
     "spdy": "^4.0.2",
     "webapi.core": "^1.0.0"
   },
@@ -39,15 +39,15 @@
     "@types/debug": "^4.1.12",
     "@types/http-errors": "^2.0.4",
     "@types/morgan": "^1.9.9",
-    "@types/node": "^20.13.0",
+    "@types/node": "^20.14.9",
     "@types/spdy": "^3.4.9",
-    "nodemon": "^3.1.2",
+    "nodemon": "^3.1.4",
     "rollup": "^4.18.0",
     "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-ts": "^3.4.5",
     "ts-node": "^10.9.2",
-    "tslib": "^2.5.3",
-    "typescript": "^5.4.5"
+    "tslib": "^2.6.3",
+    "typescript": "^5.5.3"
   },
   "keywords": [],
   "main": "build/index.js",
