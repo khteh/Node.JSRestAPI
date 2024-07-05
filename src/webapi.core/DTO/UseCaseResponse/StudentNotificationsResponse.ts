@@ -6,8 +6,8 @@
         "studentmiche@gmail.com"
     ]
 }*/
-import { Error } from "../Error"
-import { UseCaseResponseMessage } from "./UseCaseResponseMessage"
+import { Error } from "../Error.js"
+import { UseCaseResponseMessage } from "./UseCaseResponseMessage.js"
 export class StudentNotificationsResponse extends UseCaseResponseMessage {
     public Recipients: string[];
     public constructor(id: string, success: boolean = false, recipients: string[], message?: string, errors?: Array<Error>) {

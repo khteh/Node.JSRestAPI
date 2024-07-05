@@ -1,14 +1,14 @@
 import emailvalidator from 'email-validator'
-import { IRegisterStudentUseCase } from "../Interfaces/UseCases/IRegisterStudentUseCase"
-import { IStudentRepository } from "../Interfaces/IStudentRepository"
-import { IOutputPort } from "../Interfaces/IOutputPort";
-import { UseCaseResponseMessage } from "../DTO/UseCaseResponse/UseCaseResponseMessage"
-import { RegisterStudentRequest } from "../DTO/UseCaseRequests/RegisterStudentRequest"
-import { Student } from "../Domain/Entities/Student";
-import { Error } from "../DTO/Error"
+import { IRegisterStudentUseCase } from "../Interfaces/UseCases/IRegisterStudentUseCase.js"
+import { IStudentRepository } from "../Interfaces/IStudentRepository.js"
+import { IOutputPort } from "../Interfaces/IOutputPort.js";
+import { UseCaseResponseMessage } from "../DTO/UseCaseResponse/UseCaseResponseMessage.js"
+import { RegisterStudentRequest } from "../DTO/UseCaseRequests/RegisterStudentRequest.js"
+import { Student } from "../Domain/Entities/Student.js";
+import { Error } from "../DTO/Error.js"
 import { injectable, inject } from "inversify";
-import { ILogger, LogLevels } from "../Interfaces/ILogger";
-import { LoggerTypes, RepositoryTypes } from '../types';
+import { ILogger, LogLevels } from "../Interfaces/ILogger.js";
+import { LoggerTypes, RepositoryTypes } from "../types.js";
 @injectable()
 export class RegisterStudentUseCase implements IRegisterStudentUseCase {
     private readonly _repository: IStudentRepository;

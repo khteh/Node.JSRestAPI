@@ -16,7 +16,6 @@ import json from 'morgan-json'
 import indexRoute from './routes/index.js'
 import healthchecks from './routes/healthchecks.js'
 import { api } from './routes/api.js'
-import { Database } from "infrastructure"
 import * as winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 
@@ -33,7 +32,7 @@ app.enable("trust proxy");
 if (config.util.getEnv('NODE_ENV') !== "test") {
   var accessLogStream = rfs.createStream('access.log', {
     interval: '1d', // rotate daily
-    path: "/var/log/nodejs"
+    path: "/var/log/node.js"
   })
   //var format: string = ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent - :response-time ms"';
   const format = json({

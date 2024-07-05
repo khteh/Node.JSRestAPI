@@ -1,6 +1,6 @@
 import { Entity, Column, ManyToMany, JoinTable } from "typeorm"
-import { EntityBase } from "./EntityBase"
-import { Teacher } from "./Teacher"
+import { EntityBase } from "./EntityBase.js"
+import { Teacher } from "./Teacher.js"
 @Entity()
 export class Student extends EntityBase {
     @Column({ length: 256 })

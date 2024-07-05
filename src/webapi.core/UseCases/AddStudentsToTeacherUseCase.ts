@@ -1,14 +1,14 @@
-import { IAddStudentsToTeacherUseCase } from "../Interfaces/UseCases/IAddStudentsToTeacherUseCase"
-import { IStudentRepository } from "../Interfaces/IStudentRepository"
-import { ITeacherRepository } from "../Interfaces/ITeacherRepository"
-import { IOutputPort } from "../Interfaces/IOutputPort";
-import { UseCaseResponseMessage } from "../DTO/UseCaseResponse/UseCaseResponseMessage"
-import { AddStudentsToTeacherRequest } from "../DTO/UseCaseRequests/AddStudentsToTeacherRequest"
-import { Teacher } from "../Domain/Entities/Teacher";
-import { Error } from "../DTO/Error"
+import { IAddStudentsToTeacherUseCase } from "../Interfaces/UseCases/IAddStudentsToTeacherUseCase.js"
+import { IStudentRepository } from "../Interfaces/IStudentRepository.js"
+import { ITeacherRepository } from "../Interfaces/ITeacherRepository.js"
+import { IOutputPort } from "../Interfaces/IOutputPort.js";
+import { UseCaseResponseMessage } from "../DTO/UseCaseResponse/UseCaseResponseMessage.js"
+import { AddStudentsToTeacherRequest } from "../DTO/UseCaseRequests/AddStudentsToTeacherRequest.js"
+import { Teacher } from "../Domain/Entities/Teacher.js";
+import { Error } from "../DTO/Error.js"
 import { injectable, inject } from "inversify";
-import { ILogger, LogLevels } from "../Interfaces/ILogger";
-import { LoggerTypes, RepositoryTypes } from '../types';
+import { ILogger, LogLevels } from "../Interfaces/ILogger.js";
+import { LoggerTypes, RepositoryTypes } from "../types.js";
 @injectable()
 export class AddStudentsToTeacherUseCase implements IAddStudentsToTeacherUseCase {
     private readonly _teacherRepository: ITeacherRepository;

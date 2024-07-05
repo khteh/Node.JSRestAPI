@@ -1,8 +1,8 @@
-import { ILogger, LogLevels } from "../../Interfaces/ILogger";
+import { ILogger, LogLevels } from "../../Interfaces/ILogger.js";
 import { injectable, inject } from "inversify";
-import { LoggerTypes } from '../../types';
-import StateContext from "./StateContext";
-import { StatusEnum, StatusColors } from "./StateEnums";
+import { LoggerTypes } from '../../types.js';
+import StateContext from "./StateContext.js";
+import { StatusEnum, StatusColors } from "./StateEnums.js";
 
 export default abstract class State {
     protected readonly _logger: ILogger;

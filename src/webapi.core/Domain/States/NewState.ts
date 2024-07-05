@@ -1,10 +1,10 @@
-import { ILogger, LogLevels } from "../../Interfaces/ILogger";
+import { ILogger, LogLevels } from "../../Interfaces/ILogger.js";
 import { injectable, inject } from "inversify";
-import { LoggerTypes } from '../../types';
-import StateContext from "./StateContext";
-import State from "./State";
-import { StatusEnum } from "./StateEnums";
-import QuotedState from "./QuotedState";
+import { LoggerTypes } from '../../types.js';
+import StateContext from "./StateContext.js";
+import State from "./State.js";
+import { StatusEnum } from "./StateEnums.js";
+import QuotedState from "./QuotedState.js";
 export default class NewState extends State {
     private readonly _quoted: State;
     public constructor(@inject(LoggerTypes.ILogger) logger: ILogger, context: StateContext) {

@@ -1,5 +1,5 @@
 import { ILogger, LogLevelsType } from "webapi.core"
-import { Logger } from "./index"
+import { Logger } from "./index.js"
 import { injectable, inject } from "inversify";
 @injectable()
 export class LoggerImpl implements ILogger {

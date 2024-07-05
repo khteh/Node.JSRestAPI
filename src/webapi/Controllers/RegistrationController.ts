@@ -2,22 +2,25 @@ import { Request, Response, NextFunction } from 'express';
 import express from 'express'
 import emailvalidator from 'email-validator'
 import { RegisterStudentRequest, RegisterTeacherRequest } from "webapi.core"
-import { RegisterStudentModel } from "../Models/Request/RegisterStudentModel"
-import { RegisterTeacherModel } from "../Models/Request/RegisterTeacherModel"
-import { IRegisterStudentUseCase, IRegisterTeacherUseCase, Student } from "webapi.core"
+import { RegisterStudentModel } from "../Models/Request/RegisterStudentModel.js"
+import { RegisterTeacherModel } from "../Models/Request/RegisterTeacherModel.js"
+import { ILogger, LogLevels, LoggerTypes, IRegisterStudentUseCase, IRegisterTeacherUseCase, Student } from "webapi.core"
 import { RegisterUserPresenter } from "../Presenters/RegisterUserPresenter.js"
 import { inject } from "inversify";
 import { UseCaseTypes } from "webapi.core";
 export class RegistrationController {
+    private _logger: ILogger;
     private studentUseCase: IRegisterStudentUseCase;
     private teacherUseCase: IRegisterTeacherUseCase;
     private presenter: RegisterUserPresenter;
-    public constructor(@inject(UseCaseTypes.IRegisterStudentUseCase) student: IRegisterStudentUseCase, @inject(UseCaseTypes.IRegisterStudentUseCase) teacher: IRegisterTeacherUseCase) {
+    public constructor(@inject(LoggerTypes.ILogger) logger: ILogger, @inject(UseCaseTypes.IRegisterStudentUseCase) student: IRegisterStudentUseCase, @inject(UseCaseTypes.IRegisterStudentUseCase) teacher: IRegisterTeacherUseCase) {
+        this._logger = logger;
         this.studentUseCase = student;
         this.teacherUseCase = teacher;
         this.presenter = new RegisterUserPresenter();
     }
     public async RegisterStudent (req: Request, res: Response, next: NextFunction) {
+        this._logger.Log(LogLevels.debug, 'POST /api/register/student query: ' + JSON.stringify(req.body));
         let message = { 'message': 'Calling /api/register' };
         if (!req.body.hasOwnProperty('students') || req.body.students === undefined || !Array.isArray(req.body.students) || !req.body.students.length) {
             message.message += ' without a students specified!';
@@ -40,17 +43,20 @@ export class RegistrationController {
         }
     }
     public async RegisterTeacher (req: Request, res: Response, next: NextFunction) {
-        let message = { 'message': 'Calling /api/register' };
+        this._logger.Log(LogLevels.debug, 'POST /api/register/teacher query: ' + JSON.stringify(req.body));
+        let message = { 'message': '' };
         if (!req.body.hasOwnProperty('teacher') || req.body.teacher === undefined)
-            message.message += ' without a teacher specified!';
-        else if (emailvalidator.validate(req.body.teacher) === false)
-            message.message += ' with invalid teacher email address!';
-        if (message) {
+            message.message += 'Calling /api/register/teacher without a teacher specified!';
+        else if (emailvalidator.validate(req.body.teacher.email) === false)
+            message.message += 'Calling /api/register/teacher with invalid teacher email address! ' + req.body.teacher.email;
+        if (message.message) {
             res.status(400);
             res.json(message);
         } else {
             let model: RegisterTeacherModel = JSON.parse(req.body.teacher);
+            this._logger.Log(LogLevels.debug, 'teacher model: ' + JSON.stringify(model));
             let request = new RegisterTeacherRequest(model.firstname, model.lastname, model.email);
+            this._logger.Log(LogLevels.debug, 'IRegisterTeacherUseCase handle: ' + JSON.stringify(request));
             await this.teacherUseCase.Handle(request, this.presenter);
             res.status(this.presenter.Code);
             res.json({ 'message': this.presenter.Message, "errors": this.presenter.Errors });

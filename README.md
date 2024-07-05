@@ -117,7 +117,7 @@ $ export PORT=4433 && npm start
 
 ```
 {
-  "teacher": "teacherken@gmail.com"
+  "teacher": "teacherken@gmail.com",
   "students":
     [
       "studentjon@gmail.com",

@@ -1,7 +1,6 @@
-import { IUseCaseRequest } from "../../Interfaces/IUseCaseRequest";
-import { UseCaseResponseMessage } from "../UseCaseResponse/UseCaseResponseMessage";
-export class RegisterTeacherRequest implements IUseCaseRequest<UseCaseResponseMessage>
-{
+import { IUseCaseRequest } from "../../Interfaces/IUseCaseRequest.js";
+import { UseCaseResponseMessage } from "../UseCaseResponse/UseCaseResponseMessage.js";
+export class RegisterTeacherRequest implements IUseCaseRequest<UseCaseResponseMessage> {
     public FirstName: string;
     public LastName: string;
     public Email: string;

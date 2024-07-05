@@ -1,8 +1,8 @@
 import { IRepository, EntityBase } from "webapi.core"
-import { Database } from "../../db"
+import { Database } from "../../db.js"
 import { EntityTarget, Repository } from "typeorm"
 import { injectable, unmanaged, inject } from "inversify";
-import { DatabaseTypes } from "../../types";
+import { DatabaseTypes } from "../../types.js";
 import { timingSafeEqual } from "crypto";
 @injectable()
 export abstract class RepositoryBase<T extends EntityBase> implements IRepository<T> {

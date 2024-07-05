@@ -1,5 +1,5 @@
-import { RegisterTeacherRequest } from "../../DTO/UseCaseRequests/RegisterTeacherRequest"
-import { UseCaseResponseMessage } from "../../DTO/UseCaseResponse/UseCaseResponseMessage"
-import { IUseCaseRequestHandler } from "../IUseCaseRequestHandler"
+import { RegisterTeacherRequest } from "../../DTO/UseCaseRequests/RegisterTeacherRequest.js"
+import { UseCaseResponseMessage } from "../../DTO/UseCaseResponse/UseCaseResponseMessage.js"
+import { IUseCaseRequestHandler } from "../IUseCaseRequestHandler.js"
 export interface IRegisterTeacherUseCase extends IUseCaseRequestHandler<RegisterTeacherRequest, UseCaseResponseMessage> {
 }

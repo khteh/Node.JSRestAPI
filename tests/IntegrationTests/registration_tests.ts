@@ -1,6 +1,6 @@
 import config from 'config'
 import { Mock, It, Times } from 'moq.ts';
-import { app } from "../../src/webapi/index"
+import { app } from "../../src/webapi/index.js"
 import chai from 'chai'
 import chaiHttp from 'chai-http'
 import chaiAsPromised from "chai-as-promised";

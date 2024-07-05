@@ -1,4 +1,4 @@
-import { Error } from "../Error"
+import { Error } from "../Error.js"
 export class UseCaseResponseMessage {
     public Id: string;
     public Success: Boolean;

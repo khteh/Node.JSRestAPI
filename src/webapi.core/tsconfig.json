@@ -8,6 +8,7 @@
         "build"
     ],
     "compilerOptions": {
+        "module": "NodeNext",
         "baseUrl": ".",
         "rootDir": ".",
         "outDir": "build/",

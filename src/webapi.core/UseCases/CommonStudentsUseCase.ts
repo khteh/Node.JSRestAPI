@@ -1,17 +1,17 @@
 import emailvalidator from 'email-validator'
-import { ICommonStudentsUseCase } from "../Interfaces/UseCases/ICommonStudentsUseCase"
-import { IStudentRepository } from "../Interfaces/IStudentRepository"
-import { ITeacherRepository } from "../Interfaces/ITeacherRepository"
-import { IOutputPort } from "../Interfaces/IOutputPort";
-import { CommonStudentsResponse } from "../DTO/UseCaseResponse/CommonStudentsResponse"
-import { CommonStudentsRequest } from "../DTO/UseCaseRequests/CommonStudentsRequest"
-import { Teacher } from "../Domain/Entities/Teacher";
-import { Student } from '../Domain/Entities/Student';
-import { StudentDTO } from "../DTO/StudentDTO";
-import { Error } from "../DTO/Error"
+import { ICommonStudentsUseCase } from "../Interfaces/UseCases/ICommonStudentsUseCase.js"
+import { IStudentRepository } from "../Interfaces/IStudentRepository.js"
+import { ITeacherRepository } from "../Interfaces/ITeacherRepository.js"
+import { IOutputPort } from "../Interfaces/IOutputPort.js";
+import { CommonStudentsResponse } from "../DTO/UseCaseResponse/CommonStudentsResponse.js"
+import { CommonStudentsRequest } from "../DTO/UseCaseRequests/CommonStudentsRequest.js"
+import { Teacher } from "../Domain/Entities/Teacher.js";
+import { Student } from '../Domain/Entities/Student.js';
+import { StudentDTO } from "../DTO/StudentDTO.js";
+import { Error } from "../DTO/Error.js"
 import { injectable, inject } from "inversify";
-import { ILogger, LogLevels } from "../Interfaces/ILogger";
-import { LoggerTypes, RepositoryTypes } from '../types';
+import { ILogger, LogLevels } from "../Interfaces/ILogger.js";
+import { LoggerTypes, RepositoryTypes } from "../types.js";
 import e from "express";
 @injectable()
 export class CommonStudentsUseCase implements ICommonStudentsUseCase {

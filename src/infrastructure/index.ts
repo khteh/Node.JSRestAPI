@@ -1,9 +1,9 @@
 import config from 'config';
-export * from "./db"
-export * from "./Data/Repositories/StudentRepository"
-export * from "./Data/Repositories/TeacherRepository"
-export * from "./LoggerImpl"
-export * from "./types"
+export * from "./db.js"
+export * from "./Data/Repositories/StudentRepository.js"
+export * from "./Data/Repositories/TeacherRepository.js"
+export * from "./LoggerImpl.js"
+export * from "./types.js"
 import winston from 'winston'
 import * as rfs from 'rotating-file-stream'
 const levels = {
@@ -63,3 +63,4 @@ const Logger = winston.createLogger({
     transports,
 })
 export { Logger }
+export * from './db.js'

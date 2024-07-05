@@ -1,14 +1,14 @@
 import emailvalidator from 'email-validator'
-import { ISuspendStudentUseCase } from "../Interfaces/UseCases/ISuspendStudentUseCase"
-import { IStudentRepository } from "../Interfaces/IStudentRepository"
-import { IOutputPort } from "../Interfaces/IOutputPort";
-import { UseCaseResponseMessage } from "../DTO/UseCaseResponse/UseCaseResponseMessage"
-import { SuspendStudentRequest } from "../DTO/UseCaseRequests/SuspendStudentRequest"
-import { Student } from "../Domain/Entities/Student";
-import { Error } from "../DTO/Error"
+import { ISuspendStudentUseCase } from "../Interfaces/UseCases/ISuspendStudentUseCase.js"
+import { IStudentRepository } from "../Interfaces/IStudentRepository.js"
+import { IOutputPort } from "../Interfaces/IOutputPort.js";
+import { UseCaseResponseMessage } from "../DTO/UseCaseResponse/UseCaseResponseMessage.js"
+import { SuspendStudentRequest } from "../DTO/UseCaseRequests/SuspendStudentRequest.js"
+import { Student } from "../Domain/Entities/Student.js";
+import { Error } from "../DTO/Error.js"
 import { injectable, inject } from "inversify";
-import { ILogger, LogLevels } from "../Interfaces/ILogger";
-import { LoggerTypes, RepositoryTypes } from '../types';
+import { ILogger, LogLevels } from "../Interfaces/ILogger.js";
+import { LoggerTypes, RepositoryTypes } from "../types.js";
 @injectable()
 export class SuspendStudentUseCase implements ISuspendStudentUseCase {
     private readonly _repository: IStudentRepository;

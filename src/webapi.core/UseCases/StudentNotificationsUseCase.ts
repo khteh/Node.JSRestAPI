@@ -1,15 +1,15 @@
 import emailvalidator from 'email-validator'
-import { IStudentNotificationsUseCase } from "../Interfaces/UseCases/IStudentNotificationsUseCase"
-import { IStudentRepository } from "../Interfaces/IStudentRepository"
-import { ITeacherRepository } from "../Interfaces/ITeacherRepository"
-import { IOutputPort } from "../Interfaces/IOutputPort";
-import { StudentNotificationsResponse } from "../DTO/UseCaseResponse/StudentNotificationsResponse"
-import { StudentNotificationsRequest } from "../DTO/UseCaseRequests/StudentNotificationsRequest"
-import { Student } from "../Domain/Entities/Student";
-import { Error } from "../DTO/Error"
+import { IStudentNotificationsUseCase } from "../Interfaces/UseCases/IStudentNotificationsUseCase.js"
+import { IStudentRepository } from "../Interfaces/IStudentRepository.js"
+import { ITeacherRepository } from "../Interfaces/ITeacherRepository.js"
+import { IOutputPort } from "../Interfaces/IOutputPort.js";
+import { StudentNotificationsResponse } from "../DTO/UseCaseResponse/StudentNotificationsResponse.js"
+import { StudentNotificationsRequest } from "../DTO/UseCaseRequests/StudentNotificationsRequest.js"
+import { Student } from "../Domain/Entities/Student.js";
+import { Error } from "../DTO/Error.js"
 import { injectable, inject } from "inversify";
-import { ILogger, LogLevels } from "../Interfaces/ILogger";
-import { LoggerTypes, RepositoryTypes } from '../types';
+import { ILogger, LogLevels } from "../Interfaces/ILogger.js";
+import { LoggerTypes, RepositoryTypes } from "../types.js";
 @injectable()
 export class StudentNotificationsUseCase implements IStudentNotificationsUseCase {
     private readonly _repository: ITeacherRepository;

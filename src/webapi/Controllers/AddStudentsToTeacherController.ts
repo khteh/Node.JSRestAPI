@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import express from 'express'
 import emailvalidator from 'email-validator'
 import { IAddStudentsToTeacherUseCase, AddStudentsToTeacherRequest, Student, Teacher, UseCaseResponseMessage } from "webapi.core"
-import { RegisterStudentModel } from "../Models/Request/RegisterStudentModel"
+import { RegisterStudentModel } from "../Models/Request/RegisterStudentModel.js"
 import { PresenterBase } from "../Presenters/PresenterBase.js"
 import { inject } from "inversify";
 import { UseCaseTypes } from "webapi.core";

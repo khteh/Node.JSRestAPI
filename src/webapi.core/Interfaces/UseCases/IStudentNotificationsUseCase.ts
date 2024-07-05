@@ -1,5 +1,5 @@
-import { StudentNotificationsRequest } from "../../DTO/UseCaseRequests/StudentNotificationsRequest"
-import { StudentNotificationsResponse } from "../../DTO/UseCaseResponse/StudentNotificationsResponse"
-import { IUseCaseRequestHandler } from "../IUseCaseRequestHandler"
+import { StudentNotificationsRequest } from "../../DTO/UseCaseRequests/StudentNotificationsRequest.js"
+import { StudentNotificationsResponse } from "../../DTO/UseCaseResponse/StudentNotificationsResponse.js"
+import { IUseCaseRequestHandler } from "../IUseCaseRequestHandler.js"
 export interface IStudentNotificationsUseCase extends IUseCaseRequestHandler<StudentNotificationsRequest, StudentNotificationsResponse> {
 }

@@ -1,9 +1,9 @@
 import { Student, Teacher, ITeacherRepository } from "webapi.core"
-import { RepositoryBase } from "./RepositoryBase"
+import { RepositoryBase } from "./RepositoryBase.js"
 import { IStudentRepository, RepositoryTypes } from "webapi.core"
 import { injectable, inject } from "inversify";
-import { DatabaseTypes } from "../../types";
-import { Database } from "../../db"
+import { DatabaseTypes } from "../../types.js";
+import { Database } from "../../db.js"
 @injectable()
 export class TeacherRepository extends RepositoryBase<Teacher> implements ITeacherRepository {
     private _studentRepository: IStudentRepository;

@@ -1,8 +1,8 @@
 import { Student, Teacher, IStudentRepository } from "webapi.core"
-import { RepositoryBase } from "./RepositoryBase"
+import { RepositoryBase } from "./RepositoryBase.js"
 import { injectable, inject } from "inversify";
-import { DatabaseTypes } from "../../types";
-import { Database } from "../../db"
+import { DatabaseTypes } from "../../types.js";
+import { Database } from "../../db.js"
 @injectable()
 export class StudentRepository extends RepositoryBase<Student> implements IStudentRepository {
     constructor(@inject(DatabaseTypes.DatabaseService) db: Database) {
