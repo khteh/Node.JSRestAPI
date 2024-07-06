@@ -10,11 +10,11 @@ Teachers need a system where they can perform administrative functions for their
 
 ## Database:
 
+- Thanks to TypeORM, tables are automatically created when the application is run.
+
 ```
 CREATE DATABASE `school` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */;
 ```
-
-- Thanks to TypeORM, tables are automatically created when the application is run.
 
 ```
 CREATE TABLE `teachers` (

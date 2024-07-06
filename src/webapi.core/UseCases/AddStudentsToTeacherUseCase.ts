@@ -24,17 +24,11 @@ export class AddStudentsToTeacherUseCase implements IAddStudentsToTeacherUseCase
         let count: number = 0;
         let errors: Error[] = [];
         let response: UseCaseResponseMessage;
-        let t: Teacher | null = null;
-        try {
-            t = await this._teacherRepository.GetByEmail(request.Teacher.email);
-        } catch (e) { }
+        let t: Teacher | null = await this._teacherRepository.GetByEmail(request.Teacher.email);
         if (t !== null)
             try {
                 for (let i of request.Students) {
-                    let s: Student | null = null;
-                    try {
-                        s = await this._studentRepository.GetByEmail(i.email);
-                    } catch (e) { }
+                    let s: Student | null = await this._studentRepository.GetByEmail(i.email);
                     if (s !== null && (t!.students.length === 0 || t!.students.find(ss => ss.email == s.email) == null)) {
                         this._logger.Log(LogLevels.debug, `Adding student: ${JSON.stringify(s)} to teacher ${JSON.stringify(t)}`);
                         let [teacher, student] = await Promise.allSettled([this._teacherRepository.AddStudent(t, s), this._studentRepository.AddTeacher(s, t)]);

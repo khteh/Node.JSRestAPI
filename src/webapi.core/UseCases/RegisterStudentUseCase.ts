@@ -25,10 +25,7 @@ export class RegisterStudentUseCase implements IRegisterStudentUseCase {
             for (let i of request.Students) {
                 if (emailvalidator.validate(i.email)) {
                     this._logger.Log(LogLevels.debug, `Processing student: ${i.email}`);
-                    let student: Student | null = null;
-                    try {
-                        student = await this._repository.GetByEmail(i.email);
-                    } catch (e) { }
+                    let student: Student | null = await this._repository.GetByEmail(i.email);
                     if (student === undefined || student === null) {
                         await this._repository.Add(new Student(i.firstName, i.lastName, i.email, i.isSuspended ?? false));
                         count++;

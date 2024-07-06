@@ -9,13 +9,13 @@ export class StudentRepository extends RepositoryBase<Student> implements IStude
         super(Student, db);
     }
     public override async GetById (id: number): Promise<Student | null> {
-        return await this._repository.findOneOrFail({
+        return await this._repository.findOne({
             where: { id: id },
             relations: ["teachers"]
         });
     }
     public override async GetByEmail (email: string): Promise<Student | null> {
-        return await this._repository.findOneOrFail({
+        return await this._repository.findOne({
             where: { email: email },
             relations: ["teachers"]
         });

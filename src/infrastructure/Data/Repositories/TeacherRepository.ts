@@ -12,13 +12,13 @@ export class TeacherRepository extends RepositoryBase<Teacher> implements ITeach
         this._studentRepository = studentRepo;
     }
     public override async GetById (id: number): Promise<Teacher | null> {
-        return await this._repository.findOneOrFail({
+        return await this._repository.findOne({
             where: { id: id },
             relations: { students: true }
         });
     }
     public override async GetByEmail (email: string): Promise<Teacher | null> {
-        return await this._repository.findOneOrFail({
+        return await this._repository.findOne({
             where: { email: email },
             relations: { students: true }
         });

@@ -23,11 +23,7 @@ export class RegisterTeacherUseCase implements IRegisterTeacherUseCase {
         try {
             if (emailvalidator.validate(request.Email)) {
                 this._logger.Log(LogLevels.debug, `Processing teacher: ${request.Email}`);
-                let teacher: Teacher | null = null;
-                try {
-                    teacher = await this._repository.GetByEmail(request.Email);
-                } catch (e) {
-                }
+                let teacher: Teacher | null = await this._repository.GetByEmail(request.Email);
                 if (teacher === undefined || teacher === null) {
                     this._logger.Log(LogLevels.debug, `Adding teacher: ${request.Email}, ${request.FirstName}, ${request.LastName}`);
                     await this._repository.Add(new Teacher(request.FirstName, request.LastName, request.Email));
