@@ -25,8 +25,10 @@ export class StudentRepository extends RepositoryBase<Student> implements IStude
     }
     public async AddTeacher (student: Student, teacher: Teacher): Promise<Student | null> {
         if (teacher && student) {
-            student.teachers.push(teacher);
-            return await this.Update(student);
+            try {
+                student.teachers.push(teacher);
+                return await this.Update(student);
+            } catch (e) { console.log(e); }
         }
         return null;
     }

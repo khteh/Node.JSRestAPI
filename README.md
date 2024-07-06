@@ -10,11 +10,11 @@ Teachers need a system where they can perform administrative functions for their
 
 ## Database:
 
-- Thanks to TypeORM, database and tables are automatically created when the application is run.
-
 ```
 CREATE DATABASE `school` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */;
 ```
+
+- Thanks to TypeORM, tables are automatically created when the application is run.
 
 ```
 CREATE TABLE `teachers` (
@@ -113,15 +113,53 @@ $ export PORT=4433 && npm start
 
 ## Register one or more students to a specified teacher.
 
-- `POST /api/register`
+- `POST /api/register/teacher`
 
 ```
 {
-  "teacher": "teacherken@gmail.com",
+  "teacher": {
+      "email": "teacherken@gmail.com",
+      "firstName": "One",
+      "lastName": "Teacher"
+   },
   "students":
     [
-      "studentjon@gmail.com",
-      "studenthon@gmail.com"
+      "student1@gmail.com",
+      "student2@gmail.com"
+    ]
+}
+```
+
+- `POST /api/register/students`
+
+```
+{
+"students": [
+    {
+        "firstName": "One",
+        "lastName": "Student",
+        "email": "student1@example.com"
+    },
+    {
+        "firstName": "Two",
+        "lastName": "Student",
+        "email": "student2@example.com"
+    }
+]
+}
+```
+
+- `POST /api/addstudents`
+
+```
+{
+  "teacher": {
+      "email": "teacher1@gmail.com"
+   },
+  "students":
+    [
+      "student1@gmail.com",
+      "student2@gmail.com"
     ]
 }
 ```

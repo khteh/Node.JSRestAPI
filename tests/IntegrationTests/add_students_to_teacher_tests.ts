@@ -1,11 +1,12 @@
 import config from 'config'
 import { Mock, It, Times } from 'moq.ts';
 import { app } from "../../src/webapi/index.js"
-import chaiModule from 'chai'
+import chai from 'chai'
 import chaiHttp from 'chai-http'
 import chaiAsPromised from "chai-as-promised";
-const chai = chaiModule.use(chaiHttp).use(chaiAsPromised)
-//chai.use(chaiAsPromised);
+//const chai = chaiModule.use(chaiHttp).use(chaiAsPromised)
+chai.use(chaiAsPromised);
+chai.use(chaiHttp)
 import * as typeorm from "typeorm";
 import { EntityBase, Student, IStudentRepository, ITeacherRepository, Teacher } from "webapi.core";
 import { reject } from 'async';
@@ -13,7 +14,6 @@ import { send } from 'process';
 var expect = chai.expect
 var assert = chai.assert
 var should = chai.should()
-//chai.use(chaiHttp)
 //console.log("NODE_ENV: "+config.util.getEnv('NODE_ENV')+ " : "+process.env.NODE_ENV)
 expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
 var verifyClientError = function (err: any, res: any) {

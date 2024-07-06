@@ -12,9 +12,9 @@ export class Teacher extends EntityBase {
     @Column({ unique: true, length: 256 })
     public email: string
 
-    @ManyToMany((type) => Student, (student) => student.teachers)
+    @ManyToMany((type) => Student, (student) => student.teachers, { nullable: true })
     @JoinTable()
-    public students: Student[]
+    public students!: Student[]
 
     constructor(first: string, last: string, email: string) {
         super();

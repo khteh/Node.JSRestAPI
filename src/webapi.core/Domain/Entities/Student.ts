@@ -15,9 +15,9 @@ export class Student extends EntityBase {
     @Column()
     public isSuspended: boolean
 
-    @ManyToMany((type) => Teacher, (teacher) => teacher.students)
+    @ManyToMany((type) => Teacher, (teacher) => teacher.students, { nullable: true })
     @JoinTable()
-    public teachers: Teacher[]
+    public teachers!: Teacher[]
 
     constructor(first: string, last: string, email: string, isSuspended?: boolean) {
         super();

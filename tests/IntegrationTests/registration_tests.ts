@@ -20,7 +20,6 @@ var verifyClientError = function (err: any, res: any) {
     expect(res).to.have.property('body');
     expect(res.body).to.have.property('message');
     expect(res.body.message).to.not.be.empty;
-    //console.log("/POST /api/register err: "+JSON.stringify(err));
 }
 // WIP. Mock doesn't work for integration tests!
 describe.skip('Valid data should succeed tests', () => {
@@ -28,24 +27,25 @@ describe.skip('Valid data should succeed tests', () => {
       * Test the /POST /api/register/student passes with valid student data
       */
     it('Valid student should succeed test', (done) => {
-        let students = [
-            {
-                "firstName": "First Name",
-                "lastName": "LastName",
-                "email": "student1@example.com"
-            },
-            {
-                "firstName": "First Name",
-                "lastName": "LastName",
-                "email": "student2@example.com"
-            }
-        ];
+        let students = {
+            "students": [
+                {
+                    "firstName": "One",
+                    "lastName": "Student",
+                    "email": "student1@example.com"
+                },
+                {
+                    "firstName": "Two",
+                    "lastName": "Student",
+                    "email": "student2@example.com"
+                }
+            ]
+        };
         var mockRepository = new Mock<IStudentRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(null);
         mockRepository.setup(i => i.Add(It.IsAny<Student>())).returnsAsync(It.IsAny<Student>());
-
-        chai.request(app)
+        chai.request.execute(app)
             .post('/api/register/student')
             .send(students)
             .end((err, res) => {
@@ -60,7 +60,7 @@ describe.skip('Valid data should succeed tests', () => {
       * Test the /POST /api/register/teacher passes with valid student data
       */
     it('Valid teacher should succeed test', (done) => {
-        let teacher: Teacher = new Teacher("First Name", "Last Name", "teacher@example.com");
+        let teacher: Teacher = new Teacher("One", "Teacher", "teacher@example.com");
         /*{
             "id": 123,
             "firstName": "First Name",
@@ -74,8 +74,7 @@ describe.skip('Valid data should succeed tests', () => {
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(null);
         mockRepository.setup(i => i.Add(It.IsAny<Teacher>())).returnsAsync(It.IsAny<Teacher>());
-
-        chai.request(app)
+        chai.request.execute(app)
             .post('/api/register/teacher')
             .send(teacher)
             .end((err, res) => {
@@ -92,24 +91,25 @@ describe.skip('InValid data should fail tests', () => {
       * Test the /POST /api/register/student passes with valid student data
       */
     it('InValid student should fail test', (done) => {
-        let students = [
-            {
-                "firstName": "First Name",
-                "lastName": "LastName",
-                "email": "student1@example.com"
-            },
-            {
-                "firstName": "First Name",
-                "lastName": "LastName",
-                "email": "student1@example.com"
-            }
-        ];
+        let students = {
+            "students": [
+                {
+                    "firstName": "One",
+                    "lastName": "Student",
+                    "email": "student1@example.com"
+                },
+                {
+                    "firstName": "Two",
+                    "lastName": "Student",
+                    "email": "student2@example.com"
+                }
+            ]
+        };
         var mockRepository = new Mock<IStudentRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(It.IsAny<Student>());
         mockRepository.setup(i => i.Add(It.IsAny<Student>())).returnsAsync(null);
-
-        chai.request(app)
+        chai.request.execute(app)
             .post('/api/register/student')
             .send(students)
             .end((err, res) => {
@@ -124,7 +124,7 @@ describe.skip('InValid data should fail tests', () => {
       * Test the /POST /api/register/teacher passes with valid student data
       */
     it('InValid teacher should fail test', (done) => {
-        let teacher: Teacher = new Teacher("First Name", "Last Name", "teacher@example.com");
+        let teacher: Teacher = new Teacher("One", "Teacher", "teacher@example.com");
         /*{
             "id": 123,
             "firstName": "First Name",
@@ -138,8 +138,7 @@ describe.skip('InValid data should fail tests', () => {
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(It.IsAny<Teacher>());
         mockRepository.setup(i => i.Add(It.IsAny<Teacher>())).returnsAsync(null);
-
-        chai.request(app)
+        chai.request.execute(app)
             .post('/api/register/teacher')
             .send(teacher)
             .end((err, res) => {

@@ -13,7 +13,6 @@ var verifyClientError = function (err: any, res: any) {
     expect(res).to.have.property('body');
     expect(res.body).to.have.property('message');
     expect(res.body.message).to.not.be.empty;
-    //console.log("/POST /api/register err: "+JSON.stringify(err));
 }
 describe('Fibonacci API tests', () => {
     /*
@@ -21,7 +20,7 @@ describe('Fibonacci API tests', () => {
       */
     describe('/GET /api/fibonacci', () => {
         it('It should fail with response containing failure message!', (done) => {
-            chai.request(app)
+            chai.request.execute(app)
                 .get('/api/fibonacci')
                 .end((err, res) => {
                     expect(res).to.have.status(400);
@@ -40,7 +39,7 @@ describe('Fibonacci API tests', () => {
       */
     describe('/GET /api/fibonacci?n=Hello', () => {
         it('It should fail with response containing failure message!', (done) => {
-            chai.request(app)
+            chai.request.execute(app)
                 .get('/api/fibonacci?n=Hello')
                 .end((err, res) => {
                     expect(res).to.have.status(400);
@@ -59,7 +58,7 @@ describe('Fibonacci API tests', () => {
       */
     describe('/GET /api/fibonacci?n=20', () => {
         it('It should succeed with response containing the calculated fib(20)!', (done) => {
-            chai.request(app)
+            chai.request.execute(app)
                 .get('/api/fibonacci?n=20')
                 .end((err, res) => {
                     expect(res).to.have.status(200);

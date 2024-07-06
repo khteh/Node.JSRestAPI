@@ -25,7 +25,10 @@ export class RegisterStudentUseCase implements IRegisterStudentUseCase {
             for (let i of request.Students) {
                 if (emailvalidator.validate(i.email)) {
                     this._logger.Log(LogLevels.debug, `Processing student: ${i.email}`);
-                    let student = await this._repository.GetByEmail(i.email);
+                    let student: Student | null = null;
+                    try {
+                        student = await this._repository.GetByEmail(i.email);
+                    } catch (e) { }
                     if (student === undefined || student === null) {
                         await this._repository.Add(new Student(i.firstName, i.lastName, i.email, i.isSuspended ?? false));
                         count++;
@@ -41,9 +44,11 @@ export class RegisterStudentUseCase implements IRegisterStudentUseCase {
             return response.Success;
         } catch (e) {
             if (typeof e === "string") {
+                this._logger.Log(LogLevels.error, `Exception: ${e}`);
                 errors.push(new Error("", e));
                 response = new UseCaseResponseMessage("", false, e, errors);
             } else {
+                this._logger.Log(LogLevels.error, `Exception: ${JSON.stringify(e)}`);
                 errors.push(new Error("", JSON.stringify(e)));
                 response = new UseCaseResponseMessage("", false, "Exception!", errors);
             }

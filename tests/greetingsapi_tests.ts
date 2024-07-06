@@ -14,7 +14,6 @@ var verifyClientError = function (err: any, res: any) {
     expect(res).to.have.property('body');
     expect(res.body).to.have.property('message');
     expect(res.body.message).to.not.be.empty;
-    //console.log("/POST /api/register err: "+JSON.stringify(err));
 }
 describe('Greetings API tests', () => {
     /*
@@ -22,7 +21,7 @@ describe('Greetings API tests', () => {
       */
     describe('/GET /api/greetings', () => {
         it('It should succeed with response containing current timestamp!', (done) => {
-            chai.request(app)
+            chai.request.execute(app)
                 .get('/api/greetings')
                 .end((err, res) => {
                     expect(res).to.have.status(200);
@@ -51,7 +50,7 @@ describe('Greetings API tests', () => {
       */
     describe('/GET /api/greetings?name=Mickey%20Mouse', () => {
         it('It should succeed with response containing name and current timestamp!', (done) => {
-            chai.request(app)
+            chai.request.execute(app)
                 .get('/api/greetings')
                 .query({ "name": "Mickey Mouse" })
                 .end((err, res) => {

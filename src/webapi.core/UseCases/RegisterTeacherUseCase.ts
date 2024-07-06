@@ -23,8 +23,13 @@ export class RegisterTeacherUseCase implements IRegisterTeacherUseCase {
         try {
             if (emailvalidator.validate(request.Email)) {
                 this._logger.Log(LogLevels.debug, `Processing teacher: ${request.Email}`);
-                let teacher = await this._repository.GetByEmail(request.Email);
+                let teacher: Teacher | null = null;
+                try {
+                    teacher = await this._repository.GetByEmail(request.Email);
+                } catch (e) {
+                }
                 if (teacher === undefined || teacher === null) {
+                    this._logger.Log(LogLevels.debug, `Adding teacher: ${request.Email}, ${request.FirstName}, ${request.LastName}`);
                     await this._repository.Add(new Teacher(request.FirstName, request.LastName, request.Email));
                 } else {
                     this._logger.Log(LogLevels.error, `Teacher ${request.Email} registration failed!`);
@@ -43,9 +48,11 @@ export class RegisterTeacherUseCase implements IRegisterTeacherUseCase {
             }
         } catch (e) {
             if (typeof e === "string") {
+                this._logger.Log(LogLevels.error, `Exception: ${e}`);
                 errors.push(new Error("", e));
                 response = new UseCaseResponseMessage("", false, e, errors);
             } else {
+                this._logger.Log(LogLevels.error, `Exception: ${JSON.stringify(e)}`);
                 errors.push(new Error("", JSON.stringify(e)));
                 response = new UseCaseResponseMessage("", false, "Exception!", errors);
             }

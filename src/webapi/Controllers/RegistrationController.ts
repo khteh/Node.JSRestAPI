@@ -8,6 +8,7 @@ import { ILogger, LogLevels, LoggerTypes, IRegisterStudentUseCase, IRegisterTeac
 import { RegisterUserPresenter } from "../Presenters/RegisterUserPresenter.js"
 import { inject } from "inversify";
 import { UseCaseTypes } from "webapi.core";
+import { forEach } from 'async';
 export class RegistrationController {
     private _logger: ILogger;
     private studentUseCase: IRegisterStudentUseCase;
@@ -20,46 +21,51 @@ export class RegistrationController {
         this.presenter = new RegisterUserPresenter();
     }
     public async RegisterStudent (req: Request, res: Response, next: NextFunction) {
-        this._logger.Log(LogLevels.debug, 'POST /api/register/student query: ' + JSON.stringify(req.body));
-        let message = { 'message': 'Calling /api/register' };
-        if (!req.body.hasOwnProperty('students') || req.body.students === undefined || !Array.isArray(req.body.students) || !req.body.students.length) {
-            message.message += ' without a students specified!';
-            res.status(400);
-            res.json(message);
-        } else {
-            let models: RegisterStudentModel[] = JSON.parse(req.body.students);
-            let students: Student[] = [];
-            models.map(i => {
-                if (emailvalidator.validate(i.email)) {
-                    students.push(new Student(i.firstname, i.lastname, i.email))
+        try {
+            this._logger.Log(LogLevels.debug, 'POST /api/register/students query: ' + JSON.stringify(req.body));
+            let message = { 'message': 'Calling /api/register/students' };
+            if (!req.body.hasOwnProperty('students') || req.body.students === undefined || !Array.isArray(req.body.students) || !req.body.students.length) {
+                message.message += ' without a students specified!';
+                res.status(400);
+                res.json(message);
+            } else {
+                let students: Student[] = [];
+                req.body.students.map((i: RegisterStudentModel) => {
+                    if (emailvalidator.validate(i.email)) {
+                        students.push(new Student(i.firstName, i.lastName, i.email))
+                    }
+                });
+                if (students.length) {
+                    let request = new RegisterStudentRequest(students);
+                    await this.studentUseCase.Handle(request, this.presenter);
+                    res.status(this.presenter.Code);
+                    res.json({ 'message': this.presenter.Message, "errors": this.presenter.Errors });
                 }
-            });
-            if (students.length) {
-                let request = new RegisterStudentRequest(students);
-                await this.studentUseCase.Handle(request, this.presenter);
-                res.status(this.presenter.Code);
-                res.json({ 'message': this.presenter.Message, "errors": this.presenter.Errors });
             }
+        } catch (e) {
+            console.error(e);
         }
     }
     public async RegisterTeacher (req: Request, res: Response, next: NextFunction) {
-        this._logger.Log(LogLevels.debug, 'POST /api/register/teacher query: ' + JSON.stringify(req.body));
-        let message = { 'message': '' };
-        if (!req.body.hasOwnProperty('teacher') || req.body.teacher === undefined)
-            message.message += 'Calling /api/register/teacher without a teacher specified!';
-        else if (emailvalidator.validate(req.body.teacher.email) === false)
-            message.message += 'Calling /api/register/teacher with invalid teacher email address! ' + req.body.teacher.email;
-        if (message.message) {
-            res.status(400);
-            res.json(message);
-        } else {
-            let model: RegisterTeacherModel = JSON.parse(req.body.teacher);
-            this._logger.Log(LogLevels.debug, 'teacher model: ' + JSON.stringify(model));
-            let request = new RegisterTeacherRequest(model.firstname, model.lastname, model.email);
-            this._logger.Log(LogLevels.debug, 'IRegisterTeacherUseCase handle: ' + JSON.stringify(request));
-            await this.teacherUseCase.Handle(request, this.presenter);
-            res.status(this.presenter.Code);
-            res.json({ 'message': this.presenter.Message, "errors": this.presenter.Errors });
+        try {
+            this._logger.Log(LogLevels.debug, 'POST /api/register/teacher query: ' + JSON.stringify(req.body));
+            let message = { 'message': '' };
+            if (!req.body.hasOwnProperty('teacher') || req.body.teacher === undefined)
+                message.message += 'Calling /api/register/teacher without a teacher specified!';
+            else if (emailvalidator.validate(req.body.teacher.email) === false)
+                message.message += 'Calling /api/register/teacher with invalid teacher email address! ' + req.body.teacher.email;
+            if (message["message"]) {
+                res.status(400);
+                res.json(message);
+            } else {
+                let model: RegisterTeacherModel = new RegisterTeacherModel(req.body.teacher.firstName, req.body.teacher.lastName, req.body.teacher.email);
+                let request = new RegisterTeacherRequest(model.firstName, model.lastName, model.email);
+                await this.teacherUseCase.Handle(request, this.presenter);
+                res.status(this.presenter.Code);
+                res.json({ 'message': this.presenter.Message, "errors": this.presenter.Errors });
+            }
+        } catch (e) {
+            console.error(e);
         }
     }
 }
