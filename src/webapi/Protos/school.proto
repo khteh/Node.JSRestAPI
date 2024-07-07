@@ -1,6 +1,7 @@
 syntax = "proto3";
 import "Protos/student.proto";
 import "Protos/teacher.proto";
+package school;
 service School {
     rpc Register (RegisterRequest) returns (Response);
     rpc AddStudentsToTeacher (AddStudentsToTeacherRequest) return (Response);

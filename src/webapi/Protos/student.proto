@@ -1,5 +1,6 @@
 syntax = "proto3";
 import "Protos/teacher.proto";
+package school;
 message student {
     string firstName = 1;
     string lastName = 2;
