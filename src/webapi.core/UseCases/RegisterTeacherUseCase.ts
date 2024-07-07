@@ -2,6 +2,7 @@ import emailvalidator from 'email-validator'
 import { IRegisterTeacherUseCase } from "../Interfaces/UseCases/IRegisterTeacherUseCase.js"
 import { ITeacherRepository } from "../Interfaces/ITeacherRepository.js"
 import { IOutputPort } from "../Interfaces/IOutputPort.js";
+import { RegistrationRequest } from '../DTO/UseCaseRequests/RegistrationRequest.js';
 import { UseCaseResponseMessage } from "../DTO/UseCaseResponse/UseCaseResponseMessage.js"
 import { RegisterTeacherRequest } from "../DTO/UseCaseRequests/RegisterTeacherRequest.js"
 import { Teacher } from "../Domain/Entities/Teacher.js";
@@ -17,31 +18,28 @@ export class RegisterTeacherUseCase implements IRegisterTeacherUseCase {
         this._logger = logger;
         this._repository = repo;
     }
-    public async Handle (request: RegisterTeacherRequest, outputPort: IOutputPort<UseCaseResponseMessage>): Promise<Boolean> {
+    public async Handle (request: RegistrationRequest<Teacher>, outputPort: IOutputPort<UseCaseResponseMessage>): Promise<Boolean> {
+        let count: number = 0;
         let errors: Error[] = [];
         let response: UseCaseResponseMessage;
         try {
-            if (emailvalidator.validate(request.Email)) {
-                this._logger.Log(LogLevels.debug, `Processing teacher: ${request.Email}`);
-                let teacher: Teacher | null = await this._repository.GetByEmail(request.Email);
-                if (teacher === undefined || teacher === null) {
-                    this._logger.Log(LogLevels.debug, `Adding teacher: ${request.Email}, ${request.FirstName}, ${request.LastName}`);
-                    await this._repository.Add(new Teacher(request.FirstName, request.LastName, request.Email));
+            for (let i of request.Entities) {
+                if (emailvalidator.validate(i.email)) {
+                    this._logger.Log(LogLevels.debug, `Processing teacher: ${i.email}`);
+                    let teacher: Teacher | null = await this._repository.GetByEmail(i.email);
+                    if (teacher === undefined || teacher === null) {
+                        await this._repository.Add(new Teacher(i.firstName, i.lastName, i.email));
+                        count++;
+                    } else {
+                        errors.push(new Error("", `Skip existing teacher ${i.email}`));
+                    }
                 } else {
-                    this._logger.Log(LogLevels.error, `Teacher ${request.Email} registration failed!`);
-                    errors.push(new Error("", `Teacher ${request.Email} registration failed!`));
+                    errors.push(new Error("", `Skip teacher with invalid email: ${i.email}`));
                 }
-                this._logger.Log(LogLevels.debug, `Teacher ${request.Email} registered successfully!`);
-                response = new UseCaseResponseMessage("", !errors.length, `Teacher ${request.Email} registered successfully!`, errors);
-                outputPort.Handle(response);
-                return response.Success;
-            } else {
-                this._logger.Log(LogLevels.error, `Invalid teacher's email! ${request.Email}!`);
-                errors.push(new Error("", `Invalid teacher's email! ${request.Email}!`));
-                response = new UseCaseResponseMessage("", false, `Invalid teacher's email! ${request.Email}!`, errors);
-                outputPort.Handle(response);
-                return response.Success;
-            }
+            };
+            response = new UseCaseResponseMessage("", count == request.Entities.length && !errors.length, `${count} teachers registered successfully`, errors);
+            outputPort.Handle(response);
+            return response.Success;
         } catch (e) {
             if (typeof e === "string") {
                 this._logger.Log(LogLevels.error, `Exception: ${e}`);

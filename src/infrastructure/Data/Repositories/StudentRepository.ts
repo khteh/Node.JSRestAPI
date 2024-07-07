@@ -10,14 +10,14 @@ export class StudentRepository extends RepositoryBase<Student> implements IStude
     }
     public override async GetById (id: number): Promise<Student | null> {
         return await this._repository.findOne({
-            where: { id: id },
-            relations: ["teachers"]
+            relations: { teachers: true },
+            where: { id: id }
         });
     }
     public override async GetByEmail (email: string): Promise<Student | null> {
         return await this._repository.findOne({
-            where: { email: email },
-            relations: ["teachers"]
+            relations: { teachers: true },
+            where: { email: email }
         });
     }
     public override async ListAll (): Promise<Student[]> {

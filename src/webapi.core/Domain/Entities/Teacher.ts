@@ -12,9 +12,9 @@ export class Teacher extends EntityBase {
     @Column({ unique: true, length: 256 })
     public email: string
 
-    @ManyToMany((type) => Student, (student) => student.teachers, { nullable: true })
-    @JoinTable()
-    public students!: Student[]
+    @ManyToMany((type) => Student, (student) => student.teachers)
+    //@JoinTable()// Note that the inverse relation does not have a @JoinTable. @JoinTable must be only on one side of the relation.
+    public students: Student[]
 
     constructor(first: string, last: string, email: string) {
         super();

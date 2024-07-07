@@ -15,9 +15,9 @@ export class Student extends EntityBase {
     @Column()
     public isSuspended: boolean
 
-    @ManyToMany((type) => Teacher, (teacher) => teacher.students, { nullable: true })
-    @JoinTable()
-    public teachers!: Teacher[]
+    @ManyToMany((type) => Teacher, (teacher) => teacher.students, { cascade: true })
+    @JoinTable() // Note that the inverse relation does not have a @JoinTable. @JoinTable must be only on one side of the relation.
+    public teachers: Teacher[]
 
     constructor(first: string, last: string, email: string, isSuspended?: boolean) {
         super();

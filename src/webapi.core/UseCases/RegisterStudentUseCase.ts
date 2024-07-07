@@ -2,6 +2,7 @@ import emailvalidator from 'email-validator'
 import { IRegisterStudentUseCase } from "../Interfaces/UseCases/IRegisterStudentUseCase.js"
 import { IStudentRepository } from "../Interfaces/IStudentRepository.js"
 import { IOutputPort } from "../Interfaces/IOutputPort.js";
+import { RegistrationRequest } from '../DTO/UseCaseRequests/RegistrationRequest.js';
 import { UseCaseResponseMessage } from "../DTO/UseCaseResponse/UseCaseResponseMessage.js"
 import { RegisterStudentRequest } from "../DTO/UseCaseRequests/RegisterStudentRequest.js"
 import { Student } from "../Domain/Entities/Student.js";
@@ -17,12 +18,12 @@ export class RegisterStudentUseCase implements IRegisterStudentUseCase {
         this._logger = logger;
         this._repository = repo;
     }
-    public async Handle (request: RegisterStudentRequest, outputPort: IOutputPort<UseCaseResponseMessage>): Promise<Boolean> {
+    public async Handle (request: RegistrationRequest<Student>, outputPort: IOutputPort<UseCaseResponseMessage>): Promise<Boolean> {
         let count: number = 0;
         let errors: Error[] = [];
         let response: UseCaseResponseMessage;
         try {
-            for (let i of request.Students) {
+            for (let i of request.Entities) {
                 if (emailvalidator.validate(i.email)) {
                     this._logger.Log(LogLevels.debug, `Processing student: ${i.email}`);
                     let student: Student | null = await this._repository.GetByEmail(i.email);
@@ -36,7 +37,7 @@ export class RegisterStudentUseCase implements IRegisterStudentUseCase {
                     errors.push(new Error("", `Skip student with invalid email: ${i.email}`));
                 }
             };
-            response = new UseCaseResponseMessage("", count == request.Students.length && !errors.length, `${count} students registered successfully`, errors);
+            response = new UseCaseResponseMessage("", count == request.Entities.length && !errors.length, `${count} students registered successfully`, errors);
             outputPort.Handle(response);
             return response.Success;
         } catch (e) {

@@ -1,9 +1,7 @@
 import { Student } from "../../Domain/Entities/Student.js";
-import { IUseCaseRequest } from "../../Interfaces/IUseCaseRequest.js";
-import { UseCaseResponseMessage } from "../UseCaseResponse/UseCaseResponseMessage.js";
-export class RegisterStudentRequest implements IUseCaseRequest<UseCaseResponseMessage> {
-    public Students: Student[];
+import { RegistrationRequest } from "./RegistrationRequest.js";
+export class RegisterStudentRequest extends RegistrationRequest<Student> {
     constructor(students: Student[]) {
-        this.Students = students;
+        super(students);
     }
 }

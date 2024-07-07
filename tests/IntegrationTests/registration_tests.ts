@@ -24,10 +24,10 @@ var verifyClientError = function (err: any, res: any) {
 // WIP. Mock doesn't work for integration tests!
 describe.skip('Valid data should succeed tests', () => {
     /*
-      * Test the /POST /api/register/student passes with valid student data
+      * Test the /POST /api/register passes with valid student data
       */
     it('Valid student should succeed test', (done) => {
-        let students = {
+        let request = {
             "students": [
                 {
                     "firstName": "One",
@@ -46,8 +46,8 @@ describe.skip('Valid data should succeed tests', () => {
             .returnsAsync(null);
         mockRepository.setup(i => i.Add(It.IsAny<Student>())).returnsAsync(It.IsAny<Student>());
         chai.request.execute(app)
-            .post('/api/register/student')
-            .send(students)
+            .post('/api/register')
+            .send(request)
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
                 expect(res).to.have.status(201);
@@ -57,10 +57,23 @@ describe.skip('Valid data should succeed tests', () => {
             });
     });
     /*
-      * Test the /POST /api/register/teacher passes with valid student data
+      * Test the /POST /api/register passes with valid student data
       */
     it('Valid teacher should succeed test', (done) => {
-        let teacher: Teacher = new Teacher("One", "Teacher", "teacher@example.com");
+        let request = {
+            "teachers": [
+                {
+                    "firstName": "One",
+                    "lastName": "Teacher",
+                    "email": "teacher1@example.com"
+                },
+                {
+                    "firstName": "Two",
+                    "lastName": "Teacher",
+                    "email": "teacher2@example.com"
+                }
+            ]
+        };
         /*{
             "id": 123,
             "firstName": "First Name",
@@ -75,33 +88,33 @@ describe.skip('Valid data should succeed tests', () => {
             .returnsAsync(null);
         mockRepository.setup(i => i.Add(It.IsAny<Teacher>())).returnsAsync(It.IsAny<Teacher>());
         chai.request.execute(app)
-            .post('/api/register/teacher')
-            .send(teacher)
+            .post('/api/register')
+            .send(request)
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
                 expect(res).to.have.status(201);
                 expect(err).to.be.empty;
-                expect(res).to.have.property("Message").and.to.be.a("string").and.to.equal("Teacher teacher@example.com registered successfully!");
+                expect(res).to.have.property("Message").and.to.be.a("string").and.to.equal("2 teachers registered successfully");
                 done();
             });
     });
 });
 describe.skip('InValid data should fail tests', () => {
     /*
-      * Test the /POST /api/register/student passes with valid student data
+      * Test the /POST /api/register fails with invalid student data
       */
     it('InValid student should fail test', (done) => {
-        let students = {
+        let request = {
             "students": [
                 {
                     "firstName": "One",
                     "lastName": "Student",
-                    "email": "student1@example.com"
+                    "email": "student1@b.c"
                 },
                 {
                     "firstName": "Two",
                     "lastName": "Student",
-                    "email": "student2@example.com"
+                    "email": "student2@b.c"
                 }
             ]
         };
@@ -110,21 +123,34 @@ describe.skip('InValid data should fail tests', () => {
             .returnsAsync(It.IsAny<Student>());
         mockRepository.setup(i => i.Add(It.IsAny<Student>())).returnsAsync(null);
         chai.request.execute(app)
-            .post('/api/register/student')
-            .send(students)
+            .post('/api/register')
+            .send(request)
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
                 expect(res).to.have.status(400);
                 expect(err).to.not.be.empty;
-                expect(res).to.have.property("Message").and.to.be.a("string").and.to.equal("0 students registered successfully");
+                expect(res).to.have.property("Message").and.to.be.a("array").and.to.include("Student student1@b.c registration failed!");
                 done();
             });
     });
     /*
-      * Test the /POST /api/register/teacher passes with valid student data
+      * Test the /POST /api/register fails with invalid teacher data
       */
     it('InValid teacher should fail test', (done) => {
-        let teacher: Teacher = new Teacher("One", "Teacher", "teacher@example.com");
+        let request = {
+            "teachers": [
+                {
+                    "firstName": "One",
+                    "lastName": "Teacher",
+                    "email": "teacher1@b.c"
+                },
+                {
+                    "firstName": "Two",
+                    "lastName": "Teacher",
+                    "email": "teacher2@b.c"
+                }
+            ]
+        };
         /*{
             "id": 123,
             "firstName": "First Name",
@@ -139,13 +165,13 @@ describe.skip('InValid data should fail tests', () => {
             .returnsAsync(It.IsAny<Teacher>());
         mockRepository.setup(i => i.Add(It.IsAny<Teacher>())).returnsAsync(null);
         chai.request.execute(app)
-            .post('/api/register/teacher')
-            .send(teacher)
+            .post('/api/register')
+            .send(request)
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
                 expect(res).to.have.status(400);
                 expect(err).to.not.be.empty;
-                expect(res).to.have.property("Message").and.to.be.a("string").and.to.equal("Teacher teacher@example.com registration failed!");
+                expect(res).to.have.property("Message").and.to.be.a("array").and.to.include("Teacher teacher1@b.c registration failed!");
                 done();
             });
     });
