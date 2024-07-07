@@ -32,15 +32,32 @@ export class AddStudentsToTeacherUseCase implements IAddStudentsToTeacherUseCase
                     if (s !== null && (t!.students.length === 0 || t!.students.find(ss => ss.email == s.email) == null)) {
                         this._logger.Log(LogLevels.debug, `Adding student: ${JSON.stringify(s)} to teacher ${JSON.stringify(t)}`);
                         if (!s.teachers.some(i => i.id === t.id)) {
-                            let student = await this._studentRepository.AddTeacher(s, t);
+                            let student = await this._studentRepository.AddTeacher(s, t!);
                             //let teacher = await this._teacherRepository.AddStudent(t, s);
                             this._logger.Log(LogLevels.debug, `student: ${JSON.stringify(student)}`);
-                            if (student !== null)
+                            if (student !== null) {
+                                //t = await this._teacherRepository.GetByEmail(request.Teacher.email);
                                 count++;
-                            else {
+                            } else {
                                 this._logger.Log(LogLevels.error, `Failed to add student ${s.email} to teacher ${t.email}`);
                                 errors.push(new Error("", `Failed to add student ${s.email} to teacher ${t.email}`));
                             }
+                            /*
+                            let [teacher, student] = await Promise.allSettled([this._teacherRepository.AddStudent(t, s), this._studentRepository.AddTeacher(s, t)]);
+                            this._logger.Log(LogLevels.debug, `teacher: ${JSON.stringify(teacher)}, student: ${JSON.stringify(student)}`);
+                            if (teacher.status === "fulfilled" && student.status === "fulfilled" && student.value !== null)
+                                count++;
+                            else {
+                                if (!teacher || teacher.status !== "fulfilled") {
+                                    this._logger.Log(LogLevels.error, `Failed to add student ${s.email} to teacher ${t.email} status: ${teacher?.status} ${teacher?.reason}`);
+                                    errors.push(new Error("", `Failed to add student ${s.email} to teacher ${t.email}`));
+                                }
+                                if (!student || student.status !== "fulfilled") {
+                                    this._logger.Log(LogLevels.error, `Failed to add teacher ${t.email} to student ${s.email} status: ${student?.status} ${student?.reason}`);
+                                    errors.push(new Error("", `Failed to add teacher ${t.email} to student ${s.email}`));
+                                }
+                            }
+                                */
                         } else {
                             this._logger.Log(LogLevels.error, `Skip existing Student ${i.email} <-> teacher ${t.email}`);
                             errors.push(new Error("", `Skip existing Student ${i.email} <-> teacher ${t.email}`));
