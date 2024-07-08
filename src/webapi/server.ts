@@ -11,7 +11,8 @@ import http2 from 'http2';
 import d from 'debug';
 import * as winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
-
+import grpc from '@grpc/grpc-js';
+import { getServer } from './Services/SchoolService.js';
 var debug = d('teachersapi:server');
 var port = normalizePort(process.env.PORT || '443');
 /*https://stackoverflow.com/questions/59534717/how-to-integrate-http2-with-expressjs-using-nodejs-module-http2
@@ -40,10 +41,19 @@ server.on('stream', (stream, headers) => {
   stream.end('<h1>Hello World</h1>');
 });
 server.listen(port);
+var grpcServer = getServer();
+let credentials = grpc.ServerCredentials.createSsl(fs.readFileSync('server.crt'), [{
+  cert_chain: fs.readFileSync('server.crt'),
+  private_key: fs.readFileSync('server.key')
+}], true);
+grpcServer.bindAsync(`0.0.0.0:${port}`, credentials, () => {
+  console.log(`Server running on port ${port}`);
+  grpcServer.start();
+});
+
 /**
  * Normalize a port into a number, string, or false.
  */
-
 function normalizePort (val: string) {
   var port = Number(val);
 

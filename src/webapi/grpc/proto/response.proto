@@ -1,0 +1,9 @@
+syntax = "proto3";
+message Response {
+    bool success = 1;
+    repeated Error errors = 2;
+}
+message Error {
+    string code = 1;
+    string description = 2;
+}
