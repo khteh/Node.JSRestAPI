@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import express from 'express'
 import emailvalidator from 'email-validator'
 import { RegisterStudentRequest, RegisterTeacherRequest, Error } from "webapi.core"
 import { RegisterStudentModel } from "../Models/Request/RegisterStudentModel.js"
