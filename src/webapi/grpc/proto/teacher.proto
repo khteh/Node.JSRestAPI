@@ -1,0 +1,9 @@
+syntax = "proto3";
+package school;
+message Teacher {
+    string id = 1;
+    string firstName = 2;
+    string lastName = 3;
+    string email = 4;
+    repeated string students = 5;
+}

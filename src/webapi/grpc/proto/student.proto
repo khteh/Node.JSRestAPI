@@ -1,0 +1,10 @@
+syntax = "proto3";
+package school;
+message Student {
+    string id = 1;
+    string firstName = 2;
+    string lastName = 3;
+    string email = 4;
+    bool isSuspended = 5;
+    repeated string teachers = 6;
+}
