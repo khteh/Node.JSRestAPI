@@ -17,36 +17,20 @@ import emailvalidator from 'email-validator'
 import { Response, Error as grpcError } from "../grpc/client/response.js";
 //import { RegisterRequest, AddStudentsToTeacherRequest } from "../grpc/client/school.js";
 import { school } from "../grpc/client/school.js";
+import { student as grpcStudent } from "../grpc/client/student.js";
+import { teacher as grpcTeacher } from "../grpc/client/teacher.js";
 import { SchoolService } from "../grpc/client/school_grpc_pb.js";
-import { ILogger, LogLevels, LoggerTypes, Student, Teacher, UseCaseTypes, IRegisterStudentUseCase, IRegisterTeacherUseCase } from "webapi.core"
-import { RegisterStudentRequest, RegisterTeacherRequest, Error } from "webapi.core"
+import { ILogger, LogLevels, LoggerTypes, Student, Teacher, RegisterStudentRequest, RegisterTeacherRequest, AddStudentsToTeacherRequest, UseCaseTypes, IRegisterStudentUseCase, IRegisterTeacherUseCase, IAddStudentsToTeacherUseCase, UseCaseResponseMessage, Error } from "webapi.core"
+import { PresenterBase } from "../Presenters/PresenterBase.js"
 import { di } from "../routes/api.js"
 import { RegisterStudentModel } from "../Models/Request/RegisterStudentModel.js"
 import { RegisterTeacherModel } from "../Models/Request/RegisterTeacherModel.js"
 import { RegisterUserPresenter } from "../Presenters/RegisterUserPresenter.js"
 var studentUseCase: IRegisterStudentUseCase = di.get<IRegisterStudentUseCase>(UseCaseTypes.IRegisterStudentUseCase);
 var teacherUseCase: IRegisterTeacherUseCase = di.get<IRegisterTeacherUseCase>(UseCaseTypes.IRegisterTeacherUseCase);
+var addStudentsToTeacherUseCase: IAddStudentsToTeacherUseCase = di.get<IAddStudentsToTeacherUseCase>(UseCaseTypes.IAddStudentsToTeacherUseCase);
 var presenter: RegisterUserPresenter = new RegisterUserPresenter();
 var logger = di.get<ILogger>(LoggerTypes.ILogger);
-var port = normalizePort(process.env.PORT || '443');
-/**
- * Normalize a port into a number, string, or false.
- */
-function normalizePort (val: string) {
-    var port = Number(val);
-
-    if (isNaN(port)) {
-        // named pipe
-        return val;
-    }
-
-    if (port >= 0) {
-        // port number
-        return port;
-    }
-
-    return false;
-}
 /**
  * register request handler. Gets a request with a point, and responds with a
  * feature object indicating whether there is a feature at that point.
@@ -63,7 +47,7 @@ async function register (call: ServerUnaryCall<school.RegisterRequest, Response>
         logger.Log(LogLevels.debug, 'grpc register query: ' + JSON.stringify(request));
         if (grpcStudents.length) {
             let students: Student[] = [];
-            grpcStudents.map((i: RegisterStudentModel) => {
+            grpcStudents.map((i: grpcStudent) => {
                 if (emailvalidator.validate(i.email)) {
                     students.push(new Student(i.firstName, i.lastName, i.email))
                 }
@@ -77,7 +61,7 @@ async function register (call: ServerUnaryCall<school.RegisterRequest, Response>
         }
         if (grpcTeachers.length) {
             let teachers: Teacher[] = [];
-            grpcTeachers.map((i: RegisterTeacherModel) => {
+            grpcTeachers.map((i: grpcTeacher) => {
                 if (emailvalidator.validate(i.email)) {
                     teachers.push(new Teacher(i.firstName, i.lastName, i.email))
                 }
@@ -107,6 +91,58 @@ async function register (call: ServerUnaryCall<school.RegisterRequest, Response>
 async function addStudentsToTeacher (call: ServerUnaryCall<school.AddStudentsToTeacherRequest, Response>, callback: sendUnaryData<Response>) {
     const request = call.request;
     try {
+        let message: string = "";
+        let errors: Array<Error> = [];
+        let response: Response = new Response();
+        let grpcStudents = request.students;
+        let grpcTeacher = request.teacher;
+        logger.Log(LogLevels.debug, 'grpc addstudentstoteacher query: ' + JSON.stringify(request));
+        let teacher: Teacher | null = null;
+        //let studentsModel: RegisterStudentModel[] = [];
+        let students: Student[] = [];
+        if (emailvalidator.validate(grpcTeacher.email) === false)
+            message = 'Invalid teacher email address!';
+        else
+            teacher = new Teacher("", "", grpcTeacher.email);
+        if (!grpcStudents.length)
+            message += ' without a list of students specified!';
+        if (message) {
+            response.success = true;
+            let error: grpcError = new grpcError();
+            error.description = message;
+            response.errors.push(error);
+            callback(null, response);
+            return;
+        }
+        //else
+        //    studentsModel = req.body.students;//JSON.parse(req.body.students);
+        logger.Log(LogLevels.debug, `teacher: ${JSON.stringify(teacher)}, students: ${JSON.stringify(grpcStudents)}`);
+        if (teacher !== null && grpcStudents.length) {
+            let students: Student[] = [];
+            grpcStudents.map((i: grpcStudent) => {
+                if (emailvalidator.validate(i.email)) {
+                    students.push(new Student(i.firstName, i.lastName, i.email))
+                }
+            });
+            if (students.length) {
+                logger.Log(LogLevels.debug, `teacher: ${JSON.stringify(teacher)}, students: ${JSON.stringify(students)}`);
+                if (students.length) {
+                    let presenter: PresenterBase<UseCaseResponseMessage> = new PresenterBase();
+                    logger.Log(LogLevels.debug, `Adding ${students.length} students to teacher ${teacher.email}...`);
+                    let request = new AddStudentsToTeacherRequest(teacher, students);
+                    await addStudentsToTeacherUseCase.Handle(request, presenter);
+                    message = presenter.Message;
+                    errors = presenter.Errors;
+                }
+            }
+            response.success = true;
+            errors.map((i: Error) => {
+                let error: grpcError = new grpcError();
+                error.description = i.Description;
+                response.errors.push(error);
+            });
+            callback(null, response);
+        }
     } catch (e: any) {
         console.log(e);
         callback(e, null);
