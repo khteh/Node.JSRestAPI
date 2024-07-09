@@ -1,6 +1,6 @@
 # Node.JS API Server
 
-Simple RESTful API using HTTP/2 SPDY server for Node.JS
+Simple RESTful API using HTTP/2 SPDY server for Node.JS with Clean Architecture.
 
 ## Description
 
