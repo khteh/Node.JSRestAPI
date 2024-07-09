@@ -14,7 +14,7 @@ export class GreetingsController {
     public Greetings (req: Request, res: Response, next: NextFunction) {
         var url_parts = url.parse(req.url, true);
         var query = url_parts.query;
-        this._logger.Log(LogLevels.debug, 'GET /api/greetings query: ' + JSON.stringify(query));
+        this._logger.Log(LogLevels.debug, 'GET /api/greetings query: ' + JSON.stringify(query, null, 2));
         var greetings = 'Hello';
         let now = new Date();
         let time = now.toLocaleString("en-SG", {

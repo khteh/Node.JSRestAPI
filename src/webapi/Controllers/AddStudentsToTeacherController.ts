@@ -18,7 +18,7 @@ export class AddStudentsToTeacherController {
     }
     public async AddStudentsToTeacher (req: Request, res: Response, next: NextFunction) {
         try {
-            this._logger.Log(LogLevels.debug, 'POST /api/addstudents query: ' + JSON.stringify(req.body));
+            this._logger.Log(LogLevels.debug, 'POST /api/addstudents query: ' + JSON.stringify(req.body, null, 2));
             let teacher: Teacher | null = null;
             //let studentsModel: RegisterStudentModel[] = [];
             let students: Student[] = [];
@@ -33,14 +33,14 @@ export class AddStudentsToTeacherController {
                 message.message += ' without a list of students specified!';
             //else
             //    studentsModel = req.body.students;//JSON.parse(req.body.students);
-            this._logger.Log(LogLevels.debug, `teacher: ${JSON.stringify(teacher)}, students: ${JSON.stringify(req.body.students)}`);
+            this._logger.Log(LogLevels.debug, `teacher: ${JSON.stringify(teacher, null, 2)}, students: ${JSON.stringify(req.body.students, null, 2)}`);
             if (teacher && req.body.students.length) {
                 req.body.students.map((i: string) => {
                     if (emailvalidator.validate(i)) {
                         students.push(new Student("", "", i))
                     }
                 });
-                this._logger.Log(LogLevels.debug, `teacher: ${JSON.stringify(teacher)}, students: ${JSON.stringify(students)}`);
+                this._logger.Log(LogLevels.debug, `teacher: ${JSON.stringify(teacher, null, 2)}, students: ${JSON.stringify(students, null, 2)}`);
                 if (students.length) {
                     this._logger.Log(LogLevels.debug, `Adding ${students.length} students to teacher ${teacher.email}...`);
                     let request = new AddStudentsToTeacherRequest(teacher, students);

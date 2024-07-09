@@ -23,7 +23,7 @@ export class RegistrationController {
         try {
             let message: string = "";
             let errors: Array<Error> = [];
-            this._logger.Log(LogLevels.debug, 'POST /api/register query: ' + JSON.stringify(req.body));
+            this._logger.Log(LogLevels.debug, 'POST /api/register query: ' + JSON.stringify(req.body, null, 2));
             if (req.body.hasOwnProperty('students') && req.body.students !== undefined || Array.isArray(req.body.students) && req.body.students.length) {
                 let students: Student[] = [];
                 req.body.students.map((i: RegisterStudentModel) => {

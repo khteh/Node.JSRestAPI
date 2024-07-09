@@ -26,7 +26,7 @@ export class CommonStudentsUseCase implements ICommonStudentsUseCase {
     // Retrieve students who are registered to ALL of the given teachers:
     public async Handle (request: CommonStudentsRequest, outputPort: IOutputPort<CommonStudentsResponse>): Promise<Boolean> {
         let errors: Error[] = [];
-        this._logger.Log(LogLevels.debug, 'POST /api/commonstudents query: ' + JSON.stringify(request));
+        this._logger.Log(LogLevels.debug, 'POST /api/commonstudents query: ' + JSON.stringify(request, null, 2));
         let students: Student[] = [];
         let studentsDTO: StudentDTO[] = [];
         let response: CommonStudentsResponse;
@@ -42,12 +42,17 @@ export class CommonStudentsUseCase implements ICommonStudentsUseCase {
                             return c;
                         }
                         students = merge(students, teacher.students);
-                    } else if (teacher === null)
+                    } else if (teacher === null) {
+                        this._logger.Log(LogLevels.error, `teacher ${i} does not have any student registered!`);
                         errors.push(new Error("", `Invalid teacher! ${i}!`));
-                    else if (!teacher.students.length)
+                    } else if (!teacher.students.length) {
                         this._logger.Log(LogLevels.warn, `teacher ${i} does not have any student registered!`);
-                } else
+                        errors.push(new Error("", `teacher ${i} does not have any student registered!`));
+                    }
+                } else {
+                    this._logger.Log(LogLevels.error, `Invalid teacher's email! ${i}!`);
                     errors.push(new Error("", `Invalid teacher's email! ${i}!`));
+                }
             };
         } else {
             response = new CommonStudentsResponse("", false, studentsDTO, `Invalid request!`, errors);

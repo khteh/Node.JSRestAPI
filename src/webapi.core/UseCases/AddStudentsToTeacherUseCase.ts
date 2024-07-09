@@ -28,10 +28,10 @@ export class AddStudentsToTeacherUseCase implements IAddStudentsToTeacherUseCase
             for (let i of request.Students) {
                 let s: Student | null = await this._studentRepository.GetByEmail(i.email);
                 let t: Teacher | null = await this._teacherRepository.GetByEmail(request.Teacher.email);
-                if (s !== null && t != null && !t.students.some(i => i.id === s.id) && !s.teachers.some(i => i.id === t.id)) {
-                    this._logger.Log(LogLevels.debug, `Adding student: ${JSON.stringify(s)} to teacher ${JSON.stringify(t)}`);
+                if (s !== null && t !== null && !t.students.some(ii => ii.id === s.id) && !s.teachers.some(ii => ii.id === t.id)) {
+                    this._logger.Log(LogLevels.debug, `Adding student: ${JSON.stringify(s, null, 2)} to teacher ${JSON.stringify(t, null, 2)}`);
                     let student = await this._studentRepository.AddTeacher(s, t!);
-                    this._logger.Log(LogLevels.debug, `student: ${JSON.stringify(student)}`);
+                    this._logger.Log(LogLevels.debug, `student: ${JSON.stringify(student, null, 2)}`);
                     if (student !== null)
                         count++;
                     else {
@@ -45,10 +45,11 @@ export class AddStudentsToTeacherUseCase implements IAddStudentsToTeacherUseCase
                     this._logger.Log(LogLevels.error, `Invalid teacher ${i.email}`);
                     errors.push(new Error("", `Invalid student ${i.email}`));
                 } else {
-                    this._logger.Log(LogLevels.error, `Failed to add student ${i.email} to teacher ${t.email}`);
-                    errors.push(new Error("", `Failed to add student ${i.email} to teacher ${t.email}`));
+                    this._logger.Log(LogLevels.warn, `Skip duplicate student ${i.email} <-> teacher ${t.email}`);
+                    errors.push(new Error("", `Skip duplicate  student ${i.email} <-> teacher ${t.email}`));
                 }
             };
+            this._logger.Log(LogLevels.debug, `${count} students added successfully to teacher ${request.Teacher.email}!`);
             response = new UseCaseResponseMessage("", count === request.Students.length && errors.length === 0, `${count} students added successfully to teacher ${request.Teacher.email}!`, errors);
             outputPort.Handle(response);
             return response.Success;
@@ -58,7 +59,7 @@ export class AddStudentsToTeacherUseCase implements IAddStudentsToTeacherUseCase
                 errors.push(new Error("", e));
                 response = new UseCaseResponseMessage("", false, e, errors);
             } else {
-                errors.push(new Error("", JSON.stringify(e)));
+                errors.push(new Error("", JSON.stringify(e, null, 2)));
                 response = new UseCaseResponseMessage("", false, "Exception!", errors);
             }
             outputPort.Handle(response);

@@ -13,7 +13,7 @@ export class CommonStudentsController {
         this.presenter = new CommonStudentsPresenter();
     }
     public async CommonStudents (req: Request, res: Response, next: NextFunction) {
-        this._logger.Log(LogLevels.debug, 'POST /api/commonstudents query: ' + JSON.stringify(req.body));
+        this._logger.Log(LogLevels.debug, 'POST /api/commonstudents query: ' + JSON.stringify(req.body, null, 2));
         let message = { 'message': 'Calling /api/commonstudents' };
         try {
             if (!req.body.hasOwnProperty('teachers') || req.body.teachers === undefined || !Array.isArray(req.body.teachers) || !req.body.teachers.length) {

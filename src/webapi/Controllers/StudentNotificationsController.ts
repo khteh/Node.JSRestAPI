@@ -22,10 +22,10 @@ export class StudentNotificationsController {
         if (req.body.hasOwnProperty('teacher') && req.body.teacher !== "" && emailvalidator.validate(req.body.teacher)) {
             let notificationMessage = req.body.notification.split(' @').splice(0);
             var notifications: string[] = req.body.notification.split(' @').splice(1);
-            //console.log("notifications: " + JSON.stringify(notifications));
+            //console.log("notifications: " + JSON.stringify(notifications, null, 2));
             var notification_recipients: string[] = [];
             notifications.map(i => { if (emailvalidator.validate(i)) notification_recipients.push(i) });
-            //console.log("notification_emails: " + JSON.stringify(notification_emails));
+            //console.log("notification_emails: " + JSON.stringify(notification_emails, null, 2));
             let request: StudentNotificationsRequest = new StudentNotificationsRequest(notificationMessage, req.body.teacher, notification_recipients);
             await this._usecase.Handle(request, this.presenter);
             res.status(this.presenter.Code);
