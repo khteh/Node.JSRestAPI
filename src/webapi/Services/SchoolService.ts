@@ -14,21 +14,22 @@ import {
     ServerCredentials,
 } from "@grpc/grpc-js";
 import emailvalidator from 'email-validator'
-import { Response, Error as grpcError } from "../grpc/client/response.js";
-//import { RegisterRequest, AddStudentsToTeacherRequest } from "../grpc/client/school.js";
-import { school } from "../grpc/client/school.js";
-import { student as grpcStudent } from "../grpc/client/student.js";
-import { teacher as grpcTeacher } from "../grpc/client/teacher.js";
+import { Response, Error as grpcError } from "../grpc/client/response_pb.js";
+import { CommonStudentsRequest as grpcCommonStudentsRequest, CommonStudentsResponse, RegisterRequest, AddStudentsToTeacherRequest as grpcAddStudentsToTeacherRequest } from "../grpc/client/school_pb.js";
+import { Student as grpcStudent } from "../grpc/client/student_pb.js";
+import { Teacher as grpcTeacher } from "../grpc/client/teacher_pb.js";
 import { SchoolService } from "../grpc/client/school_grpc_pb.js";
-import { ILogger, LogLevels, LoggerTypes, Student, Teacher, RegisterStudentRequest, RegisterTeacherRequest, AddStudentsToTeacherRequest, UseCaseTypes, IRegisterStudentUseCase, IRegisterTeacherUseCase, IAddStudentsToTeacherUseCase, UseCaseResponseMessage, Error } from "webapi.core"
+import { ILogger, LogLevels, LoggerTypes, Student, Teacher, RegisterStudentRequest, RegisterTeacherRequest, AddStudentsToTeacherRequest, CommonStudentsRequest, UseCaseTypes, IRegisterStudentUseCase, IRegisterTeacherUseCase, IAddStudentsToTeacherUseCase, ICommonStudentsUseCase, UseCaseResponseMessage, Error } from "webapi.core"
 import { PresenterBase } from "../Presenters/PresenterBase.js"
 import { di } from "../routes/api.js"
 import { RegisterStudentModel } from "../Models/Request/RegisterStudentModel.js"
 import { RegisterTeacherModel } from "../Models/Request/RegisterTeacherModel.js"
 import { RegisterUserPresenter } from "../Presenters/RegisterUserPresenter.js"
+import { CommonStudentsPresenter } from "../Presenters/CommonStudentsPresenter.js";
 var studentUseCase: IRegisterStudentUseCase = di.get<IRegisterStudentUseCase>(UseCaseTypes.IRegisterStudentUseCase);
 var teacherUseCase: IRegisterTeacherUseCase = di.get<IRegisterTeacherUseCase>(UseCaseTypes.IRegisterTeacherUseCase);
 var addStudentsToTeacherUseCase: IAddStudentsToTeacherUseCase = di.get<IAddStudentsToTeacherUseCase>(UseCaseTypes.IAddStudentsToTeacherUseCase);
+var commonStudentsUseCase: ICommonStudentsUseCase = di.get<ICommonStudentsUseCase>(UseCaseTypes.ICommonStudentsUseCase);
 var presenter: RegisterUserPresenter = new RegisterUserPresenter();
 var logger = di.get<ILogger>(LoggerTypes.ILogger);
 /**
@@ -37,19 +38,19 @@ var logger = di.get<ILogger>(LoggerTypes.ILogger);
  * @param {EventEmitter} call Call object for the handler to process
  * @param {function(Error, feature)} callback Response callback
  */
-async function register (call: ServerUnaryCall<school.RegisterRequest, Response>, callback: sendUnaryData<Response>) {
+async function register (call: ServerUnaryCall<RegisterRequest, Response>, callback: sendUnaryData<Response>) {
     const request = call.request;
     try {
         let message: string = "";
         let errors: Array<Error> = [];
-        let grpcStudents = request.students;
-        let grpcTeachers = request.teachers;
+        let grpcStudents = request.getStudentsList();
+        let grpcTeachers = request.getTeachersList();
         logger.Log(LogLevels.debug, 'grpc register query: ' + JSON.stringify(request));
         if (grpcStudents.length) {
             let students: Student[] = [];
             grpcStudents.map((i: grpcStudent) => {
-                if (emailvalidator.validate(i.email)) {
-                    students.push(new Student(i.firstName, i.lastName, i.email))
+                if (emailvalidator.validate(i.getEmail())) {
+                    students.push(new Student(i.getFirstname(), i.getLastname(), i.getEmail()))
                 }
             });
             if (students.length) {
@@ -62,8 +63,8 @@ async function register (call: ServerUnaryCall<school.RegisterRequest, Response>
         if (grpcTeachers.length) {
             let teachers: Teacher[] = [];
             grpcTeachers.map((i: grpcTeacher) => {
-                if (emailvalidator.validate(i.email)) {
-                    teachers.push(new Teacher(i.firstName, i.lastName, i.email))
+                if (emailvalidator.validate(i.getEmail())) {
+                    teachers.push(new Teacher(i.getFirstname(), i.getLastname(), i.getEmail()))
                 }
             });
             if (teachers.length) {
@@ -76,29 +77,30 @@ async function register (call: ServerUnaryCall<school.RegisterRequest, Response>
             }
         }
         let response: Response = new Response();
-        response.success = true;
+        response.setSuccess(true);
+        let grpcErrors: Array<grpcError> = new Array<grpcError>();
         errors.map((i: Error) => {
             let error: grpcError = new grpcError();
-            error.description = i.Description;
-            response.errors.push(error);
+            error.setDescription(i.Description);
+            grpcErrors.push(error);
         });
+        response.setErrorsList(grpcErrors);
         callback(null, response);
     } catch (e: any) {
         console.log(e);
         callback(e, null);
     }
 }
-async function addStudentsToTeacher (call: ServerUnaryCall<school.AddStudentsToTeacherRequest, Response>, callback: sendUnaryData<Response>) {
+async function addStudentsToTeacher (call: ServerUnaryCall<grpcAddStudentsToTeacherRequest, Response>, callback: sendUnaryData<Response>) {
     const request = call.request;
     try {
         let message: string = "";
         let errors: Array<Error> = [];
         let response: Response = new Response();
-        let grpcStudents = request.students;
-        let grpcTeacher = request.teacher;
+        let grpcStudents = request.getStudentsList();
+        let grpcTeacher = request.getTeacher();
         logger.Log(LogLevels.debug, 'grpc addstudentstoteacher query: ' + JSON.stringify(request));
         let teacher: Teacher | null = null;
-        //let studentsModel: RegisterStudentModel[] = [];
         let students: Student[] = [];
         if (emailvalidator.validate(grpcTeacher.email) === false)
             message = 'Invalid teacher email address!';
@@ -107,21 +109,21 @@ async function addStudentsToTeacher (call: ServerUnaryCall<school.AddStudentsToT
         if (!grpcStudents.length)
             message += ' without a list of students specified!';
         if (message) {
-            response.success = true;
+            response.setSuccess(false);
             let error: grpcError = new grpcError();
-            error.description = message;
-            response.errors.push(error);
+            let errors: Array<grpcError> = new Array<grpcError>();
+            error.setDescription(message);
+            errors.push(error);
+            response.setErrorsList(errors);
             callback(null, response);
             return;
         }
-        //else
-        //    studentsModel = req.body.students;//JSON.parse(req.body.students);
         logger.Log(LogLevels.debug, `teacher: ${JSON.stringify(teacher)}, students: ${JSON.stringify(grpcStudents)}`);
         if (teacher !== null && grpcStudents.length) {
             let students: Student[] = [];
-            grpcStudents.map((i: grpcStudent) => {
-                if (emailvalidator.validate(i.email)) {
-                    students.push(new Student(i.firstName, i.lastName, i.email))
+            grpcStudents.map((email: string) => {
+                if (emailvalidator.validate(email)) {
+                    students.push(new Student("", "", email))
                 }
             });
             if (students.length) {
@@ -135,12 +137,53 @@ async function addStudentsToTeacher (call: ServerUnaryCall<school.AddStudentsToT
                     errors = presenter.Errors;
                 }
             }
-            response.success = true;
+            response.setSuccess(true);
+            let grpcErrors: Array<grpcError> = new Array<grpcError>();
             errors.map((i: Error) => {
                 let error: grpcError = new grpcError();
-                error.description = i.Description;
-                response.errors.push(error);
+                error.setDescription(i.Description);
+                grpcErrors.push(error);
             });
+            response.setErrorsList(grpcErrors);
+            callback(null, response);
+        }
+    } catch (e: any) {
+        console.log(e);
+        callback(e, null);
+    }
+}
+async function commonStudents (call: ServerUnaryCall<grpcCommonStudentsRequest, CommonStudentsResponse>, callback: sendUnaryData<CommonStudentsResponse>) {
+    const request = call.request;
+    try {
+        let message: string = "";
+        let errors: Array<Error> = [];
+        let response: CommonStudentsResponse = new CommonStudentsResponse();
+        let presenter: CommonStudentsPresenter = new CommonStudentsPresenter();
+        let grpcTeachers = request.getTeachersList();
+        if (!grpcTeachers.length) {
+            let r: Response = new Response();
+            r.setSuccess(false);
+            let error: grpcError = new grpcError();
+            let errors: Array<grpcError> = new Array<grpcError>();
+            error.setDescription(message);
+            errors.push(error);
+            r.setErrorsList(errors);
+            response.setResponse(r);
+            callback(null, response);
+            return;
+        } else {
+            let request: CommonStudentsRequest = new CommonStudentsRequest(grpcTeachers);
+            await commonStudentsUseCase.Handle(request, presenter);
+            let r: Response = new Response();
+            r.setSuccess(true);
+            let grpcErrors: Array<grpcError> = new Array<grpcError>();
+            errors.map((i: Error) => {
+                let error: grpcError = new grpcError();
+                error.setDescription(i.Description);
+                grpcErrors.push(error);
+            });
+            r.setErrorsList(grpcErrors);
+            response.setResponse(r);
             callback(null, response);
         }
     } catch (e: any) {
@@ -158,6 +201,7 @@ export function getServer () {
     server.addService(SchoolService, {
         register,
         addStudentsToTeacher,
+        commonStudents
     });
     return server;
 }

@@ -29,6 +29,28 @@ function deserialize_school_AddStudentsToTeacherRequest(buffer_arg) {
   return school_pb.AddStudentsToTeacherRequest.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_school_CommonStudentsRequest(arg) {
+  if (!(arg instanceof school_pb.CommonStudentsRequest)) {
+    throw new Error('Expected argument of type school.CommonStudentsRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_school_CommonStudentsRequest(buffer_arg) {
+  return school_pb.CommonStudentsRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_school_CommonStudentsResponse(arg) {
+  if (!(arg instanceof school_pb.CommonStudentsResponse)) {
+    throw new Error('Expected argument of type school.CommonStudentsResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_school_CommonStudentsResponse(buffer_arg) {
+  return school_pb.CommonStudentsResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_school_RegisterRequest(arg) {
   if (!(arg instanceof school_pb.RegisterRequest)) {
     throw new Error('Expected argument of type school.RegisterRequest');
@@ -63,6 +85,17 @@ var SchoolService = exports.SchoolService = {
     requestDeserialize: deserialize_school_AddStudentsToTeacherRequest,
     responseSerialize: serialize_Response,
     responseDeserialize: deserialize_Response,
+  },
+  commonStudents: {
+    path: '/school.School/CommonStudents',
+    requestStream: false,
+    responseStream: false,
+    requestType: school_pb.CommonStudentsRequest,
+    responseType: school_pb.CommonStudentsResponse,
+    requestSerialize: serialize_school_CommonStudentsRequest,
+    requestDeserialize: deserialize_school_CommonStudentsRequest,
+    responseSerialize: serialize_school_CommonStudentsResponse,
+    responseDeserialize: deserialize_school_CommonStudentsResponse,
   },
 };
 
