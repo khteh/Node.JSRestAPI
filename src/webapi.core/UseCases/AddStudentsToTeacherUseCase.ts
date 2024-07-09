@@ -24,70 +24,43 @@ export class AddStudentsToTeacherUseCase implements IAddStudentsToTeacherUseCase
         let count: number = 0;
         let errors: Error[] = [];
         let response: UseCaseResponseMessage;
-        let t: Teacher | null = await this._teacherRepository.GetByEmail(request.Teacher.email);
-        if (t !== null)
-            try {
-                for (let i of request.Students) {
-                    let s: Student | null = await this._studentRepository.GetByEmail(i.email);
-                    if (s !== null && (t!.students.length === 0 || t!.students.find(ss => ss.email == s.email) == null)) {
-                        this._logger.Log(LogLevels.debug, `Adding student: ${JSON.stringify(s)} to teacher ${JSON.stringify(t)}`);
-                        if (!s.teachers.some(i => i.id === t.id)) {
-                            let student = await this._studentRepository.AddTeacher(s, t!);
-                            //let teacher = await this._teacherRepository.AddStudent(t, s);
-                            this._logger.Log(LogLevels.debug, `student: ${JSON.stringify(student)}`);
-                            if (student !== null) {
-                                //t = await this._teacherRepository.GetByEmail(request.Teacher.email);
-                                count++;
-                            } else {
-                                this._logger.Log(LogLevels.error, `Failed to add student ${s.email} to teacher ${t.email}`);
-                                errors.push(new Error("", `Failed to add student ${s.email} to teacher ${t.email}`));
-                            }
-                            /*
-                            let [teacher, student] = await Promise.allSettled([this._teacherRepository.AddStudent(t, s), this._studentRepository.AddTeacher(s, t)]);
-                            this._logger.Log(LogLevels.debug, `teacher: ${JSON.stringify(teacher)}, student: ${JSON.stringify(student)}`);
-                            if (teacher.status === "fulfilled" && student.status === "fulfilled" && student.value !== null)
-                                count++;
-                            else {
-                                if (!teacher || teacher.status !== "fulfilled") {
-                                    this._logger.Log(LogLevels.error, `Failed to add student ${s.email} to teacher ${t.email} status: ${teacher?.status} ${teacher?.reason}`);
-                                    errors.push(new Error("", `Failed to add student ${s.email} to teacher ${t.email}`));
-                                }
-                                if (!student || student.status !== "fulfilled") {
-                                    this._logger.Log(LogLevels.error, `Failed to add teacher ${t.email} to student ${s.email} status: ${student?.status} ${student?.reason}`);
-                                    errors.push(new Error("", `Failed to add teacher ${t.email} to student ${s.email}`));
-                                }
-                            }
-                                */
-                        } else {
-                            this._logger.Log(LogLevels.error, `Skip existing Student ${i.email} <-> teacher ${t.email}`);
-                            errors.push(new Error("", `Skip existing Student ${i.email} <-> teacher ${t.email}`));
-                        }
-                    } else if (s === null) {
-                        this._logger.Log(LogLevels.error, `Invalid student ${i.email}`);
-                        errors.push(new Error("", `Invalid student ${i.email}`));
-                    } else {
-                        this._logger.Log(LogLevels.error, `Failed to add student ${i.email} to teacher ${t.email}`);
-                        errors.push(new Error("", `Failed to add student ${i.email} to teacher ${t.email}`));
+        try {
+            for (let i of request.Students) {
+                let s: Student | null = await this._studentRepository.GetByEmail(i.email);
+                let t: Teacher | null = await this._teacherRepository.GetByEmail(request.Teacher.email);
+                if (s !== null && t != null && !t.students.some(i => i.id === s.id) && !s.teachers.some(i => i.id === t.id)) {
+                    this._logger.Log(LogLevels.debug, `Adding student: ${JSON.stringify(s)} to teacher ${JSON.stringify(t)}`);
+                    let student = await this._studentRepository.AddTeacher(s, t!);
+                    this._logger.Log(LogLevels.debug, `student: ${JSON.stringify(student)}`);
+                    if (student !== null)
+                        count++;
+                    else {
+                        this._logger.Log(LogLevels.error, `Failed to add student ${s.email} to teacher ${t.email}`);
+                        errors.push(new Error("", `Failed to add student ${s.email} to teacher ${t.email}`));
                     }
-                };
-                response = new UseCaseResponseMessage("", count === request.Students.length && errors.length === 0, `${count} students added successfully to teacher ${t.email}!`, errors);
-                outputPort.Handle(response);
-                return response.Success;
-            } catch (e) {
-                console.error(e);
-                if (typeof e === "string") {
-                    errors.push(new Error("", e));
-                    response = new UseCaseResponseMessage("", false, e, errors);
+                } else if (s === null) {
+                    this._logger.Log(LogLevels.error, `Invalid student ${i.email}`);
+                    errors.push(new Error("", `Invalid student ${i.email}`));
+                } else if (t === null) {
+                    this._logger.Log(LogLevels.error, `Invalid teacher ${i.email}`);
+                    errors.push(new Error("", `Invalid student ${i.email}`));
                 } else {
-                    errors.push(new Error("", JSON.stringify(e)));
-                    response = new UseCaseResponseMessage("", false, "Exception!", errors);
+                    this._logger.Log(LogLevels.error, `Failed to add student ${i.email} to teacher ${t.email}`);
+                    errors.push(new Error("", `Failed to add student ${i.email} to teacher ${t.email}`));
                 }
-                outputPort.Handle(response);
-                return false;
+            };
+            response = new UseCaseResponseMessage("", count === request.Students.length && errors.length === 0, `${count} students added successfully to teacher ${request.Teacher.email}!`, errors);
+            outputPort.Handle(response);
+            return response.Success;
+        } catch (e) {
+            console.error(e);
+            if (typeof e === "string") {
+                errors.push(new Error("", e));
+                response = new UseCaseResponseMessage("", false, e, errors);
+            } else {
+                errors.push(new Error("", JSON.stringify(e)));
+                response = new UseCaseResponseMessage("", false, "Exception!", errors);
             }
-        else {
-            errors.push(new Error("", `Invalid Teacher ${request.Teacher.email}!`));
-            response = new UseCaseResponseMessage("", false, `Invalid Teacher ${request.Teacher.email}!`, errors);
             outputPort.Handle(response);
             return false;
         }

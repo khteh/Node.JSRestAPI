@@ -26,21 +26,26 @@ export class CommonStudentsUseCase implements ICommonStudentsUseCase {
     // Retrieve students who are registered to ALL of the given teachers:
     public async Handle (request: CommonStudentsRequest, outputPort: IOutputPort<CommonStudentsResponse>): Promise<Boolean> {
         let errors: Error[] = [];
-        this._logger.Log(LogLevels.debug, 'GET /api/commonstudents query: ' + JSON.stringify(request));
+        this._logger.Log(LogLevels.debug, 'POST /api/commonstudents query: ' + JSON.stringify(request));
         let students: Student[] = [];
         let studentsDTO: StudentDTO[] = [];
         let response: CommonStudentsResponse;
         if (request.Teachers !== undefined && request.Teachers.length > 0) {
-            let counter: number = 0;
             for (let i of request.Teachers) {
                 if (emailvalidator.validate(i)) {
                     let teacher: Teacher | null = await this._teacherRepository.GetByEmail(i);
-                    if (teacher) {
-                        students = !counter++ ? teacher.students : students.filter(student => teacher!.students.includes(student)).filter(function (e, i, c) { // extra step to remove duplicates
-                            return c.indexOf(e) === i;
-                        });
-                    } else
+                    if (teacher && teacher.students.length) {
+                        const merge = (a: Array<Student>, b: Array<Student>, predicate = (a: Student, b: Student) => a.id === b.id) => {
+                            const c = [...a]; // copy to avoid side effects
+                            // add all items from B to copy C if they're not already present
+                            b.forEach((bItem) => (c.some((cItem) => predicate(bItem, cItem)) ? null : c.push(bItem)))
+                            return c;
+                        }
+                        students = merge(students, teacher.students);
+                    } else if (teacher === null)
                         errors.push(new Error("", `Invalid teacher! ${i}!`));
+                    else if (!teacher.students.length)
+                        this._logger.Log(LogLevels.warn, `teacher ${i} does not have any student registered!`);
                 } else
                     errors.push(new Error("", `Invalid teacher's email! ${i}!`));
             };
@@ -50,6 +55,7 @@ export class CommonStudentsUseCase implements ICommonStudentsUseCase {
             return false;
         }
         students.map(i => studentsDTO.push(new StudentDTO(i.id, i.firstName, i.lastName, i.email, i.isSuspended)));
+        this._logger.Log(LogLevels.debug, `${studentsDTO.length} common students found!`);
         response = new CommonStudentsResponse("", !errors.length, studentsDTO, `${studentsDTO.length} common students found!`, errors);
         outputPort.Handle(response);
         return response.Success;
