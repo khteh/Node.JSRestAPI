@@ -14,7 +14,7 @@ export class FibonacciController {
         var url_parts = url.parse(req.url, true);
         var query = url_parts.query;
         var message = "";
-        this._logger.Log(LogLevels.debug, 'GET /api/fibonacci query: ' + JSON.stringify(query));
+        this._logger.Log(LogLevels.debug, 'GET /api/fibonacci query: ' + JSON.stringify(query, null, 2));
         if (query.n !== undefined && query.n.length > 0 && !isNaN(Number(query.n))) {
             try {
                 let result = this._fibonacci.fibonacci(+query.n);

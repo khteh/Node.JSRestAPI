@@ -54,7 +54,7 @@ export class StudentNotificationsUseCase implements IStudentNotificationsUseCase
                 errors.push(new Error("", e));
                 response = new StudentNotificationsResponse("", false, recipients, e, errors);
             } else {
-                errors.push(new Error("", JSON.stringify(e)));
+                errors.push(new Error("", JSON.stringify(e, null, 2)));
                 response = new StudentNotificationsResponse("", false, recipients, "Exception!", errors);
             }
             outputPort.Handle(response);

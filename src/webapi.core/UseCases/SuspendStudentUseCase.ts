@@ -38,7 +38,7 @@ export class SuspendStudentUseCase implements ISuspendStudentUseCase {
                     errors.push(new Error("", e));
                     response = new UseCaseResponseMessage("", false, e, errors);
                 } else {
-                    errors.push(new Error("", JSON.stringify(e)));
+                    errors.push(new Error("", JSON.stringify(e, null, 2)));
                     response = new UseCaseResponseMessage("", false, "Exception!", errors);
                 }
                 outputPort.Handle(response);
