@@ -27,22 +27,16 @@ export class CommonStudentsUseCase implements ICommonStudentsUseCase {
     public async Handle (request: CommonStudentsRequest, outputPort: IOutputPort<CommonStudentsResponse>): Promise<Boolean> {
         let errors: Error[] = [];
         this._logger.Log(LogLevels.debug, 'POST /api/commonstudents query: ' + JSON.stringify(request, null, 2));
-        let students: Student[] = [];
+        let commonStudents: Array<Student> = new Array<Student>();
         let studentsDTO: StudentDTO[] = [];
         let response: CommonStudentsResponse;
         if (request.Teachers !== undefined && request.Teachers.length > 0) {
             for (let i of request.Teachers) {
                 if (emailvalidator.validate(i)) {
                     let teacher: Teacher | null = await this._teacherRepository.GetByEmail(i);
-                    if (teacher && teacher.students.length) {
-                        const merge = (a: Array<Student>, b: Array<Student>, predicate = (a: Student, b: Student) => a.id === b.id) => {
-                            const c = [...a]; // copy to avoid side effects
-                            // add all items from B to copy C if they're not already present
-                            b.forEach((bItem) => (c.some((cItem) => predicate(bItem, cItem)) ? null : c.push(bItem)))
-                            return c;
-                        }
-                        students = merge(students, teacher.students);
-                    } else if (teacher === null) {
+                    if (teacher && teacher.students.length)
+                        commonStudents = !commonStudents.length ? teacher.students : commonStudents.filter(s1 => teacher.students.some(s2 => s1.id == s2.id));
+                    else if (teacher === null) {
                         this._logger.Log(LogLevels.error, `teacher ${i} does not have any student registered!`);
                         errors.push(new Error("", `Invalid teacher! ${i}!`));
                     } else if (!teacher.students.length) {
@@ -59,7 +53,7 @@ export class CommonStudentsUseCase implements ICommonStudentsUseCase {
             outputPort.Handle(response);
             return false;
         }
-        students.map(i => studentsDTO.push(new StudentDTO(i.id, i.firstName, i.lastName, i.email, i.isSuspended)));
+        commonStudents.map(i => studentsDTO.push(new StudentDTO(i.id, i.firstName, i.lastName, i.email, i.isSuspended)));
         this._logger.Log(LogLevels.debug, `${studentsDTO.length} common students found!`);
         response = new CommonStudentsResponse("", !errors.length, studentsDTO, `${studentsDTO.length} common students found!`, errors);
         outputPort.Handle(response);
