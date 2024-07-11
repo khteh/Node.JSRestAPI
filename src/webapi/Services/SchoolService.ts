@@ -14,16 +14,18 @@ import {
     ServerCredentials,
 } from "@grpc/grpc-js";
 import emailvalidator from 'email-validator'
-import { Response, Error as grpcError } from "../grpc/client/response_pb.js";
-import { CommonStudentsRequest as grpcCommonStudentsRequest, CommonStudentsResponse, RegisterRequest, AddStudentsToTeacherRequest as grpcAddStudentsToTeacherRequest } from "../grpc/client/school_pb.js";
+import { Response as grpcResponse } from "../grpc/client/response_pb.js";
+import { Error as grpcError } from "../grpc/client/response_pb.js";
+import { CommonStudentsRequest as grpcCommonStudentsRequest, } from "../grpc/client/school_pb.js";
+import { CommonStudentsResponse as grpcCommonStudentsResponse, } from "../grpc/client/school_pb.js";
+import { RegisterRequest as grpcRegisterRequest } from "../grpc/client/school_pb.js";
+import { AddStudentsToTeacherRequest as grpcAddStudentsToTeacherRequest } from "../grpc/client/school_pb.js";
 import { Student as grpcStudent } from "../grpc/client/student_pb.js";
 import { Teacher as grpcTeacher } from "../grpc/client/teacher_pb.js";
-import { SchoolService } from "../grpc/client/school_grpc_pb.js";
+import { SchoolService as grpcSchoolService, ISchoolService } from "../grpc/client/school_grpc_pb.js";
 import { ILogger, LogLevels, LoggerTypes, Student, Teacher, RegisterStudentRequest, RegisterTeacherRequest, AddStudentsToTeacherRequest, CommonStudentsRequest, UseCaseTypes, IRegisterStudentUseCase, IRegisterTeacherUseCase, IAddStudentsToTeacherUseCase, ICommonStudentsUseCase, UseCaseResponseMessage, Error } from "webapi.core"
 import { PresenterBase } from "../Presenters/PresenterBase.js"
 import { di } from "../routes/api.js"
-import { RegisterStudentModel } from "../Models/Request/RegisterStudentModel.js"
-import { RegisterTeacherModel } from "../Models/Request/RegisterTeacherModel.js"
 import { RegisterUserPresenter } from "../Presenters/RegisterUserPresenter.js"
 import { CommonStudentsPresenter } from "../Presenters/CommonStudentsPresenter.js";
 var studentUseCase: IRegisterStudentUseCase = di.get<IRegisterStudentUseCase>(UseCaseTypes.IRegisterStudentUseCase);
@@ -38,7 +40,7 @@ var logger = di.get<ILogger>(LoggerTypes.ILogger);
  * @param {EventEmitter} call Call object for the handler to process
  * @param {function(Error, feature)} callback Response callback
  */
-async function register (call: ServerUnaryCall<RegisterRequest, Response>, callback: sendUnaryData<Response>) {
+async function register (call: ServerUnaryCall<grpcRegisterRequest, grpcResponse>, callback: sendUnaryData<grpcResponse>) {
     const request = call.request;
     try {
         let message: string = "";
@@ -76,7 +78,7 @@ async function register (call: ServerUnaryCall<RegisterRequest, Response>, callb
                 });
             }
         }
-        let response: Response = new Response();
+        let response: grpcResponse = new grpcResponse();
         response.setSuccess(true);
         let grpcErrors: Array<grpcError> = new Array<grpcError>();
         errors.map((i: Error) => {
@@ -91,12 +93,12 @@ async function register (call: ServerUnaryCall<RegisterRequest, Response>, callb
         callback(e, null);
     }
 }
-async function addStudentsToTeacher (call: ServerUnaryCall<grpcAddStudentsToTeacherRequest, Response>, callback: sendUnaryData<Response>) {
+async function addStudentsToTeacher (call: ServerUnaryCall<grpcAddStudentsToTeacherRequest, grpcResponse>, callback: sendUnaryData<grpcResponse>) {
     const request = call.request;
     try {
         let message: string = "";
         let errors: Array<Error> = [];
-        let response: Response = new Response();
+        let response: grpcResponse = new grpcResponse();
         let grpcStudents = request.getStudentsList();
         let grpcTeacher = request.getTeacher();
         logger.Log(LogLevels.debug, 'grpc addstudentstoteacher query: ' + JSON.stringify(request));
@@ -152,16 +154,16 @@ async function addStudentsToTeacher (call: ServerUnaryCall<grpcAddStudentsToTeac
         callback(e, null);
     }
 }
-async function commonStudents (call: ServerUnaryCall<grpcCommonStudentsRequest, CommonStudentsResponse>, callback: sendUnaryData<CommonStudentsResponse>) {
+async function commonStudents (call: ServerUnaryCall<grpcCommonStudentsRequest, grpcCommonStudentsResponse>, callback: sendUnaryData<grpcCommonStudentsResponse>) {
     const request = call.request;
     try {
         let message: string = "";
         let errors: Array<Error> = [];
-        let response: CommonStudentsResponse = new CommonStudentsResponse();
+        let response: grpcCommonStudentsResponse = new grpcCommonStudentsResponse();
         let presenter: CommonStudentsPresenter = new CommonStudentsPresenter();
         let grpcTeachers = request.getTeachersList();
         if (!grpcTeachers.length) {
-            let r: Response = new Response();
+            let r: grpcResponse = new grpcResponse();
             r.setSuccess(false);
             let error: grpcError = new grpcError();
             let errors: Array<grpcError> = new Array<grpcError>();
@@ -174,7 +176,7 @@ async function commonStudents (call: ServerUnaryCall<grpcCommonStudentsRequest, 
         } else {
             let request: CommonStudentsRequest = new CommonStudentsRequest(grpcTeachers);
             await commonStudentsUseCase.Handle(request, presenter);
-            let r: Response = new Response();
+            let r: grpcResponse = new grpcResponse();
             r.setSuccess(true);
             let grpcErrors: Array<grpcError> = new Array<grpcError>();
             errors.map((i: Error) => {
@@ -198,7 +200,7 @@ async function commonStudents (call: ServerUnaryCall<grpcCommonStudentsRequest, 
  */
 export function getServer () {
     var server = new grpc.Server();
-    server.addService(SchoolService, {
+    server.addService(grpcSchoolService, {
         register,
         addStudentsToTeacher,
         commonStudents
