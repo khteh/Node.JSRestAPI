@@ -1,7 +1,7 @@
 // GENERATED CODE -- DO NOT EDIT!
 
 'use strict';
-var grpc = require('@grpc/grpc-js');
+var grpc = require('grpc');
 var school_pb = require('./school_pb.js');
 var student_pb = require('./student_pb.js');
 var teacher_pb = require('./teacher_pb.js');

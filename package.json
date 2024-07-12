@@ -29,8 +29,6 @@
     "sonarqube": "./node_modules/.bin/mocha --reporter mocha-sonarqube-reporter tests --reporter-options output=test_reports/sonarqube/test_results.xml"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.10.10",
-    "@grpc/proto-loader": "^0.7.13",
     "ansi-regex": "^6.0.1",
     "async": "^3.2.5",
     "compression": "^1.7.4",

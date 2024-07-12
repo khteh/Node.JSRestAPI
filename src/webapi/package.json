@@ -12,11 +12,13 @@
     "build:watch": "nodemon -e ts --exec \"npm run build\" --ignore build/** --ignore tests/**",
     "rollup": "rollup -c",
     "dev": "export NODE_ENV=development&& concurrently \"npx tsc --watch\" \"nodemon -q build/server.js\"",
-    "proto_old": "npx proto-loader-gen-types --longs=String --enums=String --defaults --oneofs --grpcLib=@grpc/grpc-js --outDir=grpc/client grpc/proto/*.proto && protoc -I=./grpc/proto ./grpc/proto/*.proto --js_out=import_style=commonjs:./grpc/client --grpc-web_out=import_style=typescript,mode=grpcweb:./grpc/client",
-    "proto": "npx grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./grpc/client --grpc_out=grpc_js:./grpc/client --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` -I ./grpc/proto ./grpc/proto/*.proto && npx protoc --plugin=protoc-gen-ts=`which protoc-gen-ts` --ts_out=grpc_js:./grpc/client -I ./grpc/proto ./grpc/proto/*.proto",
+    "proto_old": "npx proto-loader-gen-types --longs=String --enums=String --defaults --oneofs --grpcLib=@grpc/grpc-js --outDir=grpc/client grpc/proto/*.proto && npx grpc_tools_node_protoc -I=./grpc/proto ./grpc/proto/*.proto --js_out=import_style=commonjs,binary:./grpc/client --grpc-web_out=import_style=typescript,mode=grpcweb:./grpc/client",
+    "proto_js": "npx grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./grpc/client --grpc_out=grpc_js:./grpc/client --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` -I ./grpc/proto ./grpc/proto/*.proto && npx grpc_tools_node_protoc --plugin=protoc-gen-ts=`which protoc-gen-ts` --ts_out=grpc_js:./grpc/client -I ./grpc/proto ./grpc/proto/*.proto",
+    "proto": "npx grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./grpc/client --grpc_out=./grpc/client --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` -I ./grpc/proto ./grpc/proto/*.proto && npx grpc_tools_node_protoc --plugin=protoc-gen-ts=`which protoc-gen-ts` --ts_out=./grpc/client -I ./grpc/proto ./grpc/proto/*.proto",
     "start": "node build/server.js"
   },
   "dependencies": {
+    "@grpc/grpc-js": "^1.10.11",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
