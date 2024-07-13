@@ -1,12 +1,12 @@
 {
-	"DBHost": "10.152.183.188",
+	"DBHost": "10.152.183.108",
 	"DBPort": "5432",
 	"Database" : "school",
 	"Username": "guest",
 	"Password": "P@$$w0rd",
 	"typeorm": {
 		"type": "postgres",
-		"host": "10.152.183.188",
+		"host": "10.152.183.108",
 		"port": 5432,
 		"username": "guest",
 		"password": "P@$$w0rd",
