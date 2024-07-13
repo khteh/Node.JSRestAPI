@@ -1,6 +1,5 @@
 import emailvalidator from 'email-validator'
 import { ICommonStudentsUseCase } from "../Interfaces/UseCases/ICommonStudentsUseCase.js"
-import { IStudentRepository } from "../Interfaces/IStudentRepository.js"
 import { ITeacherRepository } from "../Interfaces/ITeacherRepository.js"
 import { IOutputPort } from "../Interfaces/IOutputPort.js";
 import { CommonStudentsResponse } from "../DTO/UseCaseResponse/CommonStudentsResponse.js"
@@ -16,12 +15,10 @@ import e from "express";
 @injectable()
 export class CommonStudentsUseCase implements ICommonStudentsUseCase {
     private readonly _teacherRepository: ITeacherRepository;
-    private readonly _studentRepository: IStudentRepository;
     private _logger: ILogger;
-    public constructor(@inject(LoggerTypes.ILogger) logger: ILogger, @inject(RepositoryTypes.IStudentRepository) studentRepo: IStudentRepository, @inject(RepositoryTypes.ITeacherRepository) teacherRepo: ITeacherRepository) {
+    public constructor(@inject(LoggerTypes.ILogger) logger: ILogger, @inject(RepositoryTypes.ITeacherRepository) teacherRepo: ITeacherRepository) {
         this._logger = logger;
         this._teacherRepository = teacherRepo;
-        this._studentRepository = studentRepo;
     }
     // Retrieve students who are registered to ALL of the given teachers:
     public async Handle (request: CommonStudentsRequest, outputPort: IOutputPort<CommonStudentsResponse>): Promise<Boolean> {
@@ -31,17 +28,19 @@ export class CommonStudentsUseCase implements ICommonStudentsUseCase {
         let studentsDTO: StudentDTO[] = [];
         let response: CommonStudentsResponse;
         if (request.Teachers !== undefined && request.Teachers.length > 0) {
+            let initial: boolean = true;
             for (let i of request.Teachers) {
                 if (emailvalidator.validate(i)) {
                     let teacher: Teacher | null = await this._teacherRepository.GetByEmail(i);
-                    if (teacher && teacher.students.length)
-                        commonStudents = !commonStudents.length ? teacher.students : commonStudents.filter(s1 => teacher.students.some(s2 => s1.id == s2.id));
-                    else if (teacher === null) {
-                        this._logger.Log(LogLevels.error, `teacher ${i} does not have any student registered!`);
+                    if (teacher) {
+                        if (initial) {
+                            initial = false;
+                            commonStudents = teacher.students;
+                        } else
+                            commonStudents = commonStudents.filter(s1 => teacher.students.some(s2 => s1.id == s2.id));
+                    } else if (teacher === null) {
+                        this._logger.Log(LogLevels.error, `Invalid teacher ${i}!`);
                         errors.push(new Error("", `Invalid teacher! ${i}!`));
-                    } else if (!teacher.students.length) {
-                        this._logger.Log(LogLevels.warn, `teacher ${i} does not have any student registered!`);
-                        errors.push(new Error("", `teacher ${i} does not have any student registered!`));
                     }
                 } else {
                     this._logger.Log(LogLevels.error, `Invalid teacher's email! ${i}!`);
