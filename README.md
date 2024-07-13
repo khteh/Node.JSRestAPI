@@ -11,7 +11,7 @@ Teachers need a system where they can perform administrative functions for their
 ## Database:
 
 - Thanks to TypeORM, tables are automatically created when the application is run.
-- Schema in `school_db.sql`
+- Schema in `school.sql`
 
 ## Dependencies:
 
