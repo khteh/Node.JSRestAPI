@@ -4,7 +4,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import * as grpc from "grpc";
+import * as grpc from "@grpc/grpc-js";
 import * as school_pb from "./school_pb";
 import * as student_pb from "./student_pb";
 import * as teacher_pb from "./teacher_pb";
@@ -46,7 +46,7 @@ interface ISchoolService_ICommonStudents extends grpc.MethodDefinition<school_pb
 
 export const SchoolService: ISchoolService;
 
-export interface ISchoolServer {
+export interface ISchoolServer extends grpc.UntypedServiceImplementation {
     register: grpc.handleUnaryCall<school_pb.RegisterRequest, response_pb.Response>;
     addStudentsToTeacher: grpc.handleUnaryCall<school_pb.AddStudentsToTeacherRequest, response_pb.Response>;
     commonStudents: grpc.handleUnaryCall<school_pb.CommonStudentsRequest, school_pb.CommonStudentsResponse>;
@@ -65,7 +65,7 @@ export interface ISchoolClient {
 }
 
 export class SchoolClient extends grpc.Client implements ISchoolClient {
-    constructor(address: string, credentials: grpc.ChannelCredentials, options?: object);
+    constructor(address: string, credentials: grpc.ChannelCredentials, options?: Partial<grpc.ClientOptions>);
     public register(request: school_pb.RegisterRequest, callback: (error: grpc.ServiceError | null, response: response_pb.Response) => void): grpc.ClientUnaryCall;
     public register(request: school_pb.RegisterRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: response_pb.Response) => void): grpc.ClientUnaryCall;
     public register(request: school_pb.RegisterRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: response_pb.Response) => void): grpc.ClientUnaryCall;

@@ -3,7 +3,7 @@ There are two ways to work with proto buffers and code generation in gRPC; dynam
 In static, we will generate types and code from our proto buffers but in dynamic we will not generate any typings from proto buffers and will use the code instead. 
 dynamic can be a pretty good option if we were using JavaScript but since we need the typings to make our work easier while using TypeScript we will use the static way.
 */
-import grpc from '@grpc/grpc-js';
+import grpc, { handleUnaryCall, UntypedHandleCall } from '@grpc/grpc-js';
 import emailvalidator from 'email-validator'
 import { Response } from "../grpc/client/response_pb.js";
 import { Error as grpcError } from "../grpc/client/response_pb.js";
@@ -26,6 +26,7 @@ var commonStudentsUseCase: ICommonStudentsUseCase = di.get<ICommonStudentsUseCas
 var presenter: RegisterUserPresenter = new RegisterUserPresenter();
 var logger = di.get<ILogger>(LoggerTypes.ILogger);
 class ServerImpl implements ISchoolServer {
+    [name: string]: UntypedHandleCall
     /**
      * register request handler. Gets a request with a point, and responds with a
      * feature object indicating whether there is a feature at that point.
