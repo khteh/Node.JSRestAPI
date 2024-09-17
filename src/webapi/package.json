@@ -21,7 +21,7 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "debug": "^4.3.6",
-    "express": "^4.19.2",
+    "express": "^4.21.0",
     "helmet": "^7.1.0",
     "http-errors": "^2.0.0",
     "infrastructure": "^1.4.4",

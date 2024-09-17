@@ -41,7 +41,7 @@
     "ejs": "~3.1.10",
     "elastic-apm-node": "^4.7.2",
     "email-validator": "^2.0.4",
-    "express": "^4.19.2",
+    "express": "^4.21.0",
     "express-winston": "^4.2.0",
     "helmet": "^7.1.0",
     "http-errors": "~2.0.0",
