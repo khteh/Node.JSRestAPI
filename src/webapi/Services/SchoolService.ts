@@ -97,10 +97,10 @@ class ServerImpl implements ISchoolServer {
             logger.Log(LogLevels.debug, 'grpc addstudentstoteacher query: ' + JSON.stringify(request));
             let teacher: Teacher | null = null;
             let students: Student[] = [];
-            if (emailvalidator.validate(grpcTeacher.email) === false)
+            if (!grpcTeacher || emailvalidator.validate(grpcTeacher.getEmail()) === false)
                 message = 'Invalid teacher email address!';
             else
-                teacher = new Teacher("", "", grpcTeacher.email);
+                teacher = new Teacher("", "", grpcTeacher.getEmail());
             if (!grpcStudents.length)
                 message += ' without a list of students specified!';
             if (message) {
