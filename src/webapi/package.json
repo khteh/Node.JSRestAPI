@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-json": "^6.1.0",
-    "@rollup/plugin-typescript": "^11.1.6",
+    "@rollup/plugin-typescript": "^12.1.0",
     "@types/compression": "latest",
     "@types/cookie-parser": "latest",
     "@types/cors": "latest",
@@ -45,7 +45,7 @@
     "@types/google-protobuf": "latest",
     "@types/http-errors": "latest",
     "@types/morgan": "latest",
-    "@types/node": "^22.5.5",
+    "@types/node": "^22.6.1",
     "@types/spdy": "latest",
     "grpc_tools_node_protoc_ts": "^5.3.3",
     "nodemon": "^3.1.7",
