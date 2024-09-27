@@ -5,7 +5,7 @@ import StateContext from "./StateContext.js";
 import State from "./State.js";
 import { StatusEnum } from "./StateEnums.js";
 export default class ApprovedState extends State {
-    public constructor(@inject(LoggerTypes.ILogger) logger: ILogger, context: StateContext) {
+    public constructor(@inject(LoggerTypes.ILogger) logger: ILogger, context: () => StateContext) {
         super(logger, StatusEnum.APPROVED, context);
     }
     public override async handle () {
