@@ -6,7 +6,7 @@ import State from "./State.js";
 import { StatusEnum } from "./StateEnums.js";
 
 export default class RejectedState extends State {
-    public constructor(@inject(LoggerTypes.ILogger) logger: ILogger, context: StateContext) {
+    public constructor(@inject(LoggerTypes.ILogger) logger: ILogger, context: () => StateContext) {
         super(logger, StatusEnum.REJECTED, context);
     }
     public override async handle () {

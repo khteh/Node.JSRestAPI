@@ -8,8 +8,8 @@ export default abstract class State {
     protected readonly _logger: ILogger;
     protected readonly _name: StatusEnum;
     protected readonly _colour: string;
-    protected readonly _context: StateContext;
-    protected constructor(@inject(LoggerTypes.ILogger) logger: ILogger, name: StatusEnum, context: StateContext) {
+    protected readonly _context: () => StateContext;
+    protected constructor(@inject(LoggerTypes.ILogger) logger: ILogger, name: StatusEnum, context: () => StateContext) {
         this._logger = logger;
         this._name = name;
         this._context = context;
