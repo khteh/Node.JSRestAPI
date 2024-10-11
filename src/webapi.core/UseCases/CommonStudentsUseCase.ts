@@ -37,7 +37,7 @@ export class CommonStudentsUseCase implements ICommonStudentsUseCase {
                             initial = false;
                             commonStudents = teacher.students;
                         } else
-                            commonStudents = commonStudents.filter(s1 => teacher.students.some(s2 => s1.id == s2.id));
+                            commonStudents = commonStudents.filter(s1 => teacher!.students.some(s2 => s1.id == s2.id));
                     } else if (teacher === null) {
                         this._logger.Log(LogLevels.error, `Invalid teacher ${i}!`);
                         errors.push(new Error("", `Invalid teacher! ${i}!`));

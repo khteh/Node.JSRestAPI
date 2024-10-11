@@ -28,7 +28,7 @@ export class AddStudentsToTeacherUseCase implements IAddStudentsToTeacherUseCase
             for (let i of request.Students) {
                 let s: Student | null = await this._studentRepository.GetByEmail(i.email);
                 let t: Teacher | null = await this._teacherRepository.GetByEmail(request.Teacher.email);
-                if (s !== null && t !== null && !t.students.some(ii => ii.id === s.id) && !s.teachers.some(ii => ii.id === t.id)) {
+                if (s !== null && t !== null && !t.students.some(ii => ii.id === s!.id) && !s.teachers.some(ii => ii.id === t!.id)) {
                     this._logger.Log(LogLevels.debug, `Adding student: ${JSON.stringify(s, null, 2)} to teacher ${JSON.stringify(t, null, 2)}`);
                     let student = await this._studentRepository.AddTeacher(s, t!);
                     this._logger.Log(LogLevels.debug, `student: ${JSON.stringify(student, null, 2)}`);
