@@ -9,6 +9,7 @@
     ],
     "compilerOptions": {
         "module": "NodeNext",
+        "moduleResolution": "NodeNext",
         "baseUrl": ".",
         "rootDir": ".",
         "outDir": "build/",

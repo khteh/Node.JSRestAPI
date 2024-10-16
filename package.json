@@ -25,6 +25,7 @@
     "start": "export NODE_ENV=development&& node build/src/webapi/server.js",
     "test": "export NODE_ENV=development&& ./node_modules/.bin/mocha -r ts-node/register tests/**/*.ts --timeout 10000 --recursive --check-leaks --exit",
     "ts_test": "export NODE_ENV=development && env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' ./node_modules/.bin/nyc --timeout 10000 --recursive --check-leaks --reporter=lcov --reporter=text --reporter=text-summary --reporter=html ./node_modules/.bin/mocha --loader=ts-node/esm -r ts-node/register tests/**/*.ts --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml --exit",
+    "ts_test_error": "export NODE_ENV=development && ./node_modules/.bin/nyc --timeout 10000 --recursive --check-leaks --reporter=lcov --reporter=text --reporter=text-summary --reporter=html ./node_modules/.bin/mocha --loader=ts-node/esm -r ts-node/register tests/**/*.ts --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml --exit",
     "cover": "./node_modules/.bin/nyc --reporter=lcov --reporter=text --reporter=text-summary --reporter=html npm test",
     "sonarqube": "./node_modules/.bin/mocha --reporter mocha-sonarqube-reporter tests --reporter-options output=test_reports/sonarqube/test_results.xml"
   },
@@ -55,6 +56,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.25.1",
     "@babel/plugin-syntax-import-assertions": "^7.25.6",
+    "@tsconfig/node22": "^22.0.0",
     "@types/async": "latest",
     "@types/chai-as-promised": "^8.0.0",
     "@types/jest": "^29.5.13",
