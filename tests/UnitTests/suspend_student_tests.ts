@@ -1,6 +1,6 @@
 import config from 'config'
 import { Mock, It, Times } from 'moq.ts';
-import chai from 'chai'
+import * as chai from 'chai';
 import chaiHttp from 'chai-http'
 import chaiAsPromised from "chai-as-promised";
 chai.use(chaiAsPromised);
