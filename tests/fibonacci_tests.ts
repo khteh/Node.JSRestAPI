@@ -1,6 +1,6 @@
 import config from 'config'
 import { app } from "../src/webapi/index.js"
-import chai from 'chai'
+import * as chai from 'chai';
 import chaiHttp from 'chai-http'
 var expect = chai.expect
 var assert = chai.assert

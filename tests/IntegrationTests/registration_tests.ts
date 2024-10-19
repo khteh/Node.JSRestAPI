@@ -1,8 +1,8 @@
 import config from 'config'
 import { Mock, It, Times } from 'moq.ts';
 import { app } from "../../src/webapi/index.js"
-import chai from 'chai'
-import chaiHttp from 'chai-http'
+import * as chai from 'chai';
+import { default as chaiHttp, request } from "chai-http";
 import chaiAsPromised from "chai-as-promised";
 chai.use(chaiAsPromised);
 import * as typeorm from "typeorm";
@@ -27,7 +27,7 @@ describe.skip('Valid data should succeed tests', () => {
       * Test the /POST /api/register passes with valid student data
       */
     it('Valid student should succeed test', (done) => {
-        let request = {
+        let payload = {
             "students": [
                 {
                     "firstName": "One",
@@ -45,9 +45,9 @@ describe.skip('Valid data should succeed tests', () => {
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(null);
         mockRepository.setup(i => i.Add(It.IsAny<Student>())).returnsAsync(It.IsAny<Student>());
-        chai.request.execute(app)
+        request.execute(app)
             .post('/api/register')
-            .send(request)
+            .send(payload)
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
                 expect(res).to.have.status(201);
@@ -60,7 +60,7 @@ describe.skip('Valid data should succeed tests', () => {
       * Test the /POST /api/register passes with valid student data
       */
     it('Valid teacher should succeed test', (done) => {
-        let request = {
+        let payload = {
             "teachers": [
                 {
                     "firstName": "One",
@@ -87,9 +87,9 @@ describe.skip('Valid data should succeed tests', () => {
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(null);
         mockRepository.setup(i => i.Add(It.IsAny<Teacher>())).returnsAsync(It.IsAny<Teacher>());
-        chai.request.execute(app)
+        request.execute(app)
             .post('/api/register')
-            .send(request)
+            .send(payload)
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
                 expect(res).to.have.status(201);
@@ -104,7 +104,7 @@ describe.skip('InValid data should fail tests', () => {
       * Test the /POST /api/register fails with invalid student data
       */
     it('InValid student should fail test', (done) => {
-        let request = {
+        let payload = {
             "students": [
                 {
                     "firstName": "One",
@@ -122,9 +122,9 @@ describe.skip('InValid data should fail tests', () => {
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(It.IsAny<Student>());
         mockRepository.setup(i => i.Add(It.IsAny<Student>())).returnsAsync(null);
-        chai.request.execute(app)
+        request.execute(app)
             .post('/api/register')
-            .send(request)
+            .send(payload)
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
                 expect(res).to.have.status(400);
@@ -137,7 +137,7 @@ describe.skip('InValid data should fail tests', () => {
       * Test the /POST /api/register fails with invalid teacher data
       */
     it('InValid teacher should fail test', (done) => {
-        let request = {
+        let payload = {
             "teachers": [
                 {
                     "firstName": "One",
@@ -164,9 +164,9 @@ describe.skip('InValid data should fail tests', () => {
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(It.IsAny<Teacher>());
         mockRepository.setup(i => i.Add(It.IsAny<Teacher>())).returnsAsync(null);
-        chai.request.execute(app)
+        request.execute(app)
             .post('/api/register')
-            .send(request)
+            .send(payload)
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
                 expect(res).to.have.status(400);

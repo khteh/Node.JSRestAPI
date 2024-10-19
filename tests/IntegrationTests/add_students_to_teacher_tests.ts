@@ -1,8 +1,8 @@
 import config from 'config'
 import { Mock, It, Times } from 'moq.ts';
 import { app } from "../../src/webapi/index.js"
-import chai from 'chai'
-import chaiHttp from 'chai-http'
+import * as chai from 'chai';
+import { default as chaiHttp, request } from "chai-http";
 import chaiAsPromised from "chai-as-promised";
 //const chai = chaiModule.use(chaiHttp).use(chaiAsPromised)
 chai.use(chaiAsPromised);
@@ -59,7 +59,7 @@ describe.skip('Add students to teacher tests', () => {
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(It.IsAny<Student>());
 
-        chai.request.execute(app)
+        request.execute(app)
             .post('/api/addstudents')
             .send(data)
             .end((err, res) => {
@@ -101,7 +101,7 @@ describe.skip('Add students to teacher tests', () => {
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(null);
 
-        chai.request.execute(app)
+        request.execute(app)
             .post('/api/addstudents')
             .send(data)
             .end((err, res) => {
