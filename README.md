@@ -2,9 +2,16 @@
 
 Simple RESTful API using HTTP/2 SPDY server for Node.JS with Clean Architecture design and implemented using Typescript language.
 
-## Description
+## Use Cases
+
+### School Teacher-Student Administration
 
 Teachers need a system where they can perform administrative functions for their students. Teachers and students are identified by their email addresses. Unit tests using mocha framework with chai assertion library. Test coverage report is generated with Istanbul library and SonarQube. Dependency check is done with OWASP dependency check CLI.
+
+### Google Gemini API
+
+- Return text message from input prompt string by calling the API
+- Return text message from input prompt string and an image file by calling the API
 
 # Installation
 
@@ -12,6 +19,15 @@ Teachers need a system where they can perform administrative functions for their
 
 - Thanks to TypeORM, tables are automatically created when the application is run.
 - Schema in `school.sql`
+
+## Google Gemini API
+
+- Obtain an API key from https://aistudio.google.com/apikey
+- Add a `.env` file with the following content:
+
+```
+GEMINI_API_KEY=<api key>
+```
 
 ## Dependencies:
 
