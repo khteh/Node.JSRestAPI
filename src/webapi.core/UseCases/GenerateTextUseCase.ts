@@ -1,4 +1,5 @@
-import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
+import fs from 'fs';
+import { GoogleGenerativeAI, GenerativeModel, Part } from "@google/generative-ai";
 import { IGenerateTextUseCase } from "../Interfaces/UseCases/IGenerateTextUseCase.js"
 import { IOutputPort } from "../Interfaces/IOutputPort.js";
 import { UseCaseResponseMessage } from "../DTO/UseCaseResponse/UseCaseResponseMessage.js"
@@ -11,12 +12,20 @@ import e from "express";
 @injectable()
 export class GenerateTextUseCase implements IGenerateTextUseCase {
     private _logger: ILogger;
-    private _genAI: GoogleGenerativeAI;
-    private _model: GenerativeModel;
+    private readonly _genAI: GoogleGenerativeAI;
+    private readonly _model: GenerativeModel;
     public constructor(@inject(LoggerTypes.ILogger) logger: ILogger) {
         this._logger = logger;
         this._genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
         this._model = this._genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+    }
+    private FileToGenerativePart (path: string, mimeType: string) {
+        return {
+            inlineData: {
+                data: Buffer.from(fs.readFileSync(path)).toString("base64"),
+                mimeType,
+            },
+        };
     }
     // Retrieve students who are registered to ALL of the given teachers:
     public async Handle (request: GenerateTextRequest, outputPort: IOutputPort<UseCaseResponseMessage>): Promise<Boolean> {
@@ -25,7 +34,13 @@ export class GenerateTextUseCase implements IGenerateTextUseCase {
         try {
             this._logger.Log(LogLevels.debug, 'POST /api/gemini query: ' + JSON.stringify(request, null, 2));
             if (request.Prompt) {
-                let result = await this._model.generateContent(request.Prompt)
+                let result;
+                if (request.Image) {
+                    this._logger.Log(LogLevels.debug, `Reading uploaded file from ${request.Image.Path}`);
+                    let imagePart: Part = this.FileToGenerativePart(request.Image.Path, request.Image.MimeType);
+                    result = await this._model.generateContent([request.Prompt, imagePart]);
+                } else
+                    result = await this._model.generateContent(request.Prompt);
                 response = new UseCaseResponseMessage("", true, result.response.text(), errors);
                 this._logger.Log(LogLevels.debug, `Prompt: ${request.Prompt} generates: ${response.Message}`);
 

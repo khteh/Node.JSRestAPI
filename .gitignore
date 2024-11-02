@@ -8,6 +8,7 @@ node_modules
 **/build
 **/.tsbuildinfo
 **/.rollup.cache
+**/uploads
 test_reports
 .nyc_output
 coverage

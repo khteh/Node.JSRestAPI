@@ -15,6 +15,9 @@ import { RegisterStudentUseCase, SuspendStudentUseCase, RegisterTeacherUseCase, 
 import { StudentRepository, TeacherRepository, LoggerImpl, DatabaseTypes, Database } from "infrastructure"
 import { ILogger } from "webapi.core";
 import { loadEnvFile } from 'node:process';
+import multer from 'multer';
+const upload = multer({ dest: 'uploads/' })
+
 loadEnvFile();
 var api = express.Router();
 const di = new Container();
@@ -39,7 +42,7 @@ var suspendStudent = new SuspendStudentController(di.get<ISuspendStudentUseCase>
 var studentNotifications = new StudentNotificationsController(di.get<IStudentNotificationsUseCase>(UseCaseTypes.IStudentNotificationsUseCase));
 api.get('/greetings', function (req, res, next) { greetings.Greetings(req, res, next); });
 api.get('/fibonacci', function (req, res, next) { fibonacci.Fibonacci(req, res, next); });
-api.post('/gemini', function (req, res, next) { gemini.GenerateText(req, res, next); });
+api.post('/gemini', upload.single('image'), function (req, res, next) { gemini.GenerateText(req, res, next); });
 api.post('/register', function (req, res, next) { registration.Register(req, res, next); });
 api.post('/addstudents', function (req, res, next) { addStudentsToTeacher.AddStudentsToTeacher(req, res, next); });
 api.post('/commonstudents', function (req, res, next) { commonStudents.CommonStudents(req, res, next); });
