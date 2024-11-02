@@ -91,6 +91,23 @@ $ export PORT=4433 && npm start
 }
 ```
 
+## Google Gemini
+
+### Prompt without an image: Use a POST request with the following JSON body template:
+
+```
+{
+    "prompt": "Design a card game about dog breeds"
+}
+```
+
+### Prompt with an image: Use a POST request with `form-data` which includes the following key-value pairs:
+
+** Key: `image` `File`, Value: Path of the image.
+** Key: `prompt` `Text`, Value: The prompt string.
+For example, I wanted to sell my Tango shoe and ask Gemini to generate a descript of the shoe for my to sell in the second-hand market.
+Image: ![Shoe to sell](./GeminiPromptWithImage.png?raw=true "Shoe to sell")
+
 ## Register one or more students to a specified teacher.
 
 - `POST /api/register`
