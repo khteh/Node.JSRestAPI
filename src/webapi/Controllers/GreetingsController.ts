@@ -1,7 +1,7 @@
 import express from 'express'
 import { Request, Response, NextFunction } from 'express';
 import { injectable, inject } from "inversify";
-import { ILogger, LoggerTypes, LogLevels, LogLevelsType, Fibonacci } from "webapi.core";
+import { ILogger, LoggerTypes, LogLevels, LogLevelsType, } from "webapi.core";
 import emailvalidator from 'email-validator'
 var router = express.Router();
 import url from 'url'

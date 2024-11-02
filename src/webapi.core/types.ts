@@ -1,4 +1,5 @@
 const UseCaseTypes = {
+    IGenerateTextUseCase: Symbol.for("IGenerateTextUseCase"),
     IRegisterStudentUseCase: Symbol.for("IRegisterStudentUseCase"),
     IRegisterTeacherUseCase: Symbol.for("IRegisterTeacherUseCase"),
     IAddStudentsToTeacherUseCase: Symbol.for("IAddStudentsToTeacherUseCase"),

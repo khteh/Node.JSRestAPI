@@ -18,7 +18,7 @@ import healthchecks from './routes/healthchecks.js'
 import { api } from './routes/api.js'
 import * as winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
-
+import bodyParser from 'body-parser';
 var app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -26,6 +26,8 @@ const __dirname = dirname(__filename);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.enable("trust proxy");
+app.use(bodyParser.json({ limit: '100mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '100mb', parameterLimit: 1000000 }));
 //if (config.util.getEnv('NODE_ENV') !== "test")
 //  Database.init();
 // create a rotating write stream
