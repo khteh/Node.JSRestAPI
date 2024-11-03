@@ -24,10 +24,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+app.set('view engine', 'pug');
 app.enable("trust proxy");
 app.use(bodyParser.json({ limit: '100mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '100mb', parameterLimit: 1000000 }));
+app.use(express.static(path.join(__dirname, 'public')));
 //if (config.util.getEnv('NODE_ENV') !== "test")
 //  Database.init();
 // create a rotating write stream

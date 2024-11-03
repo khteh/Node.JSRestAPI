@@ -3,8 +3,6 @@ import { Request, Response, NextFunction } from 'express';
 import { ILogger, LoggerTypes, LogLevels, LogLevelsType, GenerateTextRequest, IGenerateTextUseCase } from "webapi.core";
 import { GenerateTextPresenter } from "../Presenters/GenerateTextPresenter.js"
 import { UseCaseTypes, ImagePart } from "webapi.core";
-import url from 'url'
-//import Logger from "infrastructure"
 export class GeminiController {
     private _logger: ILogger;
     private _usecase: IGenerateTextUseCase;

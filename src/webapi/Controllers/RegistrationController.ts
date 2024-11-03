@@ -7,7 +7,6 @@ import { ILogger, LogLevels, LoggerTypes, IRegisterStudentUseCase, IRegisterTeac
 import { RegisterUserPresenter } from "../Presenters/RegisterUserPresenter.js"
 import { inject } from "inversify";
 import { UseCaseTypes } from "webapi.core";
-import { forEach } from 'async';
 export class RegistrationController {
     private _logger: ILogger;
     private studentUseCase: IRegisterStudentUseCase;

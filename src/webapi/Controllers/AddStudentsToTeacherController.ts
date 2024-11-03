@@ -6,7 +6,6 @@ import { RegisterStudentModel } from "../Models/Request/RegisterStudentModel.js"
 import { PresenterBase } from "../Presenters/PresenterBase.js"
 import { inject } from "inversify";
 import { UseCaseTypes } from "webapi.core";
-var router = express.Router();
 export class AddStudentsToTeacherController {
     private _logger: ILogger;
     private _usecase: IAddStudentsToTeacherUseCase;

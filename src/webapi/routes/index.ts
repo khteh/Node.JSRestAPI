@@ -4,6 +4,6 @@ var indexRoute = express.Router();
 
 /* GET home page. */
 indexRoute.get('/', function (req, res, next) {
-  res.render('index', { title: 'Student administrative app' });
+  res.render('home', { title: 'Node.JS Express Application' });
 });
 export { indexRoute as default };

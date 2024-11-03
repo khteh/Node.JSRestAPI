@@ -1,0 +1,22 @@
+block variables
+doctype html
+html
+  head
+    block head
+      meta(charset="utf-8")
+      meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
+      meta(name="theme-color", content="#000000")
+      link(type='stylesheet', href='/stylesheets/main.css', rel='stylesheet')
+      link(type="image/png", href="/images/favicon.png", rel="icon")
+      link(href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.css', rel='stylesheet')
+      script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js')
+      script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+      title #{title} | FunCoolGeek
+  body
+      block layout-content
+  footer
+    .container
+      .content
+       p(style="text-align:center;")
+        | Powered by 
+        a(href='https://funcoolgeek.com') FunCoolGeek

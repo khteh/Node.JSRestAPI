@@ -1,0 +1,36 @@
+extends layout
+block append head
+  link(type='stylesheet', href='/stylesheets/gemini.css', rel='stylesheet')
+block layout-content
+  #chat-app
+    #chat.has-text-centered
+      h1.title Welcome to #{title}
+      section.section.chat-container
+        .container
+          .columns
+            .box.column.is-full
+              h2.title Messages
+              .chat-messages.has-text-left
+                p#messages
+              form#chatForm(action='/api/gemini', method='post')
+                .field.has-addons
+                  p.control.is-expanded
+                    input(class='input', id='prompt', type='text', placeholder='How can I help?')
+                  p.control
+                    input(class='button is-success', type='submit', value='Post')                
+      script.
+        document.querySelector("#chatForm").addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const prompt = document.querySelector("#prompt").value;
+          if (prompt.trim()) {
+            const response = await fetch('/api/gemini', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ prompt: prompt })
+            });
+            const data = await response.json();
+            document.querySelector("#messages").innerHTML += `<p><strong>You:</strong> ${prompt}</p>`;
+            document.querySelector("#messages").innerHTML += `<p><strong>Gemini:</strong> ${data.message}</p><br>`;
+            document.querySelector("#prompt").value = '';
+          }
+        });
