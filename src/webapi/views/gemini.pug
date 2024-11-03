@@ -55,7 +55,7 @@ block layout-content
             });
             const data = await response.json();
             document.querySelector("#messages").innerHTML += `<p><strong>You:</strong> ${prompt}</p>`;
-            document.querySelector("#messages").innerHTML += `<p><strong>Gemini:</strong> ${data.message}</p><br>`;
+            document.querySelector("#messages").innerHTML += `<p><strong>Gemini:</strong></p>${data.message}<br>`;
             document.querySelector("#prompt").value = '';
             document.querySelector("#image").value = '';
             document.querySelector("#submit").value = 'Submit';
