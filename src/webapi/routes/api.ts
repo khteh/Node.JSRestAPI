@@ -17,7 +17,8 @@ import { ILogger } from "webapi.core";
 import { loadEnvFile } from 'node:process';
 import multer from 'multer';
 const upload = multer({ dest: 'uploads/' })
-loadEnvFile();
+if (process.env.NODE_ENV === "development")
+    loadEnvFile();
 var api = express.Router();
 const di = new Container();
 di.bind<IGenerateTextUseCase>(UseCaseTypes.IGenerateTextUseCase).to(GenerateTextUseCase);
