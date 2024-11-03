@@ -93,7 +93,13 @@ $ export PORT=4433 && npm start
 
 ## Google Gemini
 
-### Prompt without an image: Use a POST request with the following JSON body template:
+### In-App
+
+Head over to https://localhost:<port>/api/gemini and enjoy!
+
+### POSTMAN
+
+#### Prompt without an image: Use a POST request with the following JSON body template:
 
 ```
 {
@@ -101,7 +107,7 @@ $ export PORT=4433 && npm start
 }
 ```
 
-### Prompt with an image: Use a POST request with `form-data` which includes the following key-value pairs:
+#### Prompt with an image: Use a POST request with `form-data` which includes the following key-value pairs:
 
 - Key: `image` `File`, Value: Path of the image.
 - Key: `prompt` `Text`, Value: The prompt string.

@@ -19,6 +19,7 @@ import { api } from './routes/api.js'
 import * as winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import bodyParser from 'body-parser';
+//import fileUpload from 'express-fileupload';
 var app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -29,6 +30,13 @@ app.enable("trust proxy");
 app.use(bodyParser.json({ limit: '100mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '100mb', parameterLimit: 1000000 }));
 app.use(express.static(path.join(__dirname, 'public')));
+/*app.use(fileUpload({
+  // Configure file uploads with maximum file size 10MB
+  limits: { fileSize: 100 * 1024 * 1024 },
+  // Temporarily store uploaded files to disk, rather than buffering in memory
+  useTempFiles: true,
+  tempFileDir: '/tmp/'
+}));*/
 //if (config.util.getEnv('NODE_ENV') !== "test")
 //  Database.init();
 // create a rotating write stream
