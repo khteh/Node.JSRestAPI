@@ -1,6 +1,6 @@
 {
   "name": "node.jsrestapi",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "exports": "./src/webapi/server.ts",
   "type": "module",
@@ -50,6 +50,7 @@
     "morgan-json": "^1.1.0",
     "multer": "^1.4.5-lts.1",
     "pg": "^8.13.0",
+    "showdown": "^2.1.0",
     "spdy": "^4.0.2",
     "winston": "^3.15.0",
     "winston-daily-rotate-file": "^5.0.0"
@@ -66,6 +67,7 @@
     "@types/morgan-json": "latest",
     "@types/multer": "^1.4.12",
     "@types/shelljs": "latest",
+    "@types/showdown": "^2.0.6",
     "@types/sinon": "latest",
     "@types/superagent": "^8.1.9",
     "chai": "^5.1.1",

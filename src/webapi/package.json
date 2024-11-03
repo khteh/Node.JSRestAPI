@@ -33,6 +33,7 @@
     "reflect-metadata": "^0.2.2",
     "rotating-file-stream": "^3.2.5",
     "spdy": "^4.0.2",
+    "pug": "3.0.3",
     "webapi.core": "^1.0.0"
   },
   "devDependencies": {

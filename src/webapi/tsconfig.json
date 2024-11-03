@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.json",
     "include": [
         "**/*.ts",
-        "views/*.ejs"
+        "views/*.pug"
     ],
     "exclude": [
         "node_modules",

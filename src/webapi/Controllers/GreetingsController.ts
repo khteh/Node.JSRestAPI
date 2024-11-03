@@ -2,10 +2,7 @@ import express from 'express'
 import { Request, Response, NextFunction } from 'express';
 import { injectable, inject } from "inversify";
 import { ILogger, LoggerTypes, LogLevels, LogLevelsType, } from "webapi.core";
-import emailvalidator from 'email-validator'
-var router = express.Router();
 import url from 'url'
-//import { Logger } from "infrastructure"
 export class GreetingsController {
     private _logger: ILogger;
     public constructor(@inject(LoggerTypes.ILogger) logger: ILogger) {

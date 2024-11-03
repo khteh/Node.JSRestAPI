@@ -1,0 +1,64 @@
+extends layout
+block append head
+  link(type='stylesheet', href='/stylesheets/gemini.css', rel='stylesheet')
+block layout-content
+  #chat-app
+    #chat.has-text-centered
+      h1.title Welcome to #{title}
+      section.section.chat-container
+        .container
+          .columns
+            .box.column.is-full
+              h2.title Messages
+              .chat-messages.has-text-left
+                p#messages
+              form#chatForm(action='/api/gemini', method='post', enctype="multipart/form-data")
+                .field.has-addons
+                  p.control.is-expanded
+                    input(class='input', id='prompt', type='text', placeholder='How can I help?', onkeyup="stoppedTyping()")
+                  p.control
+                    input(class='input', id='image', name="image", type='file', accept="image/*")
+                  p.control
+                    input(class='button is-success', id="submit", type='submit', value='Submit', disabled)
+      script.
+        function stoppedTyping() {
+                if(document.querySelector("#prompt").value.length > 0) { 
+                    document.querySelector('#submit').disabled = false; 
+                } else { 
+                    document.querySelector('#submit').disabled = true;
+                }
+        }
+        document.querySelector("#prompt").onblur = stoppedTyping();
+        // Select your input type file and store it in a variable
+        document.querySelector("#chatForm").addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const prompt = document.querySelector("#prompt").value;
+          const image = document.querySelector("#image");
+          if (prompt.trim()) {
+            var form = new FormData();
+            form.append("prompt", prompt);
+            if (image && image.files.length && image.files[0]) {
+              //console.log(`Image name: ${image.files[0].name}, size: ${image.files[0].size}, type: ${image.files[0].type}`);
+              form.append("image", image.files[0]);
+            }// else 
+              //console.log("No file selected!");
+            // Display the key/value pairs
+            /*for (var pair of form.entries()) {
+                console.log(pair[0]+ ', ' + pair[1]); 
+            }*/
+            document.querySelector('#submit').disabled = true;
+            document.querySelector("#submit").value = 'Processing...';
+            const response = await fetch('/api/gemini', {
+              method: 'POST',
+              //headers: { 'Content-Type': 'multipart/form-data' }, Does NOT need to declare Content-Type: multipart/form-data in request header
+              body: form
+            });
+            const data = await response.json();
+            document.querySelector("#messages").innerHTML += `<p><strong>You:</strong> ${prompt}</p>`;
+            document.querySelector("#messages").innerHTML += `<p><strong>Gemini:</strong> ${data.message}</p><br>`;
+            document.querySelector("#prompt").value = '';
+            document.querySelector("#image").value = '';
+            document.querySelector("#submit").value = 'Submit';
+          } else 
+            console.error(`Invalid prompt!`);
+        });
