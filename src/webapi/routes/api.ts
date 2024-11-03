@@ -17,7 +17,7 @@ import { ILogger } from "webapi.core";
 import { loadEnvFile } from 'node:process';
 import multer from 'multer';
 const upload = multer({ dest: 'uploads/' })
-if (process.env.NODE_ENV === "development")
+if (process.env.NODE_ENV === "development" || config.util.getEnv('NODE_ENV') === "development")
     loadEnvFile();
 var api = express.Router();
 const di = new Container();
