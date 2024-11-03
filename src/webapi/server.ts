@@ -13,11 +13,9 @@ import * as winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import grpc from '@grpc/grpc-js';
 import { getServer } from './Services/SchoolService.js';
-import { loadEnvFile } from 'node:process';
 
 var debug = d('teachersapi:server');
 var port = normalizePort(process.env.PORT || '443');
-loadEnvFile();
 /*https://stackoverflow.com/questions/59534717/how-to-integrate-http2-with-expressjs-using-nodejs-module-http2
 expressjs still does not officially support Node http2
 https://github.com/expressjs/express/issues/5061
