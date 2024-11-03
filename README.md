@@ -95,7 +95,7 @@ $ export PORT=4433 && npm start
 
 ### In-App
 
-Head over to https://localhost:<port>/api/gemini and enjoy!
+Head over to https://localhost:4433/api/gemini and enjoy!
 
 ### POSTMAN
 
