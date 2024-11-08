@@ -13,7 +13,6 @@ import * as rfs from 'rotating-file-stream'
 import cookieParser from 'cookie-parser'
 import morgan from 'morgan'
 import json from 'morgan-json'
-import indexRoute from './routes/index.js'
 import healthchecks from './routes/healthchecks.js'
 import { api } from './routes/api.js'
 import * as winston from 'winston';
@@ -160,9 +159,11 @@ app.use(compression({ filter: shouldCompress }));
 //app.use(helmet()); // adding set of security middlewares
 app.use(cors()); // enable all CORS request
 
-app.use('/', indexRoute);
+// The order of the following app.use is important. It will match the first rule.
+app.use('/gemini', function (req, res, next) { res.render('gemini', { title: 'Google Gemini' }); });
 app.use('/health', healthchecks);
 app.use('/api', api);
+app.use('/', function (req, res, next) { res.render('home', { title: 'Node.JS Express Application' }); }); // This is catch-all
 // catch 404 and forward to error handler
 app.use(function (req: Request, res: Response, next: NextFunction) {
   next(createError(404));

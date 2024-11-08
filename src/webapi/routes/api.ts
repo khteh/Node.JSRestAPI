@@ -39,7 +39,6 @@ var suspendStudent = new SuspendStudentController(di.get<ISuspendStudentUseCase>
 var studentNotifications = new StudentNotificationsController(di.get<IStudentNotificationsUseCase>(UseCaseTypes.IStudentNotificationsUseCase));
 api.get('/greetings', function (req, res, next) { greetings.Greetings(req, res, next); });
 api.get('/fibonacci', function (req, res, next) { fibonacci.Fibonacci(req, res, next); });
-api.get('/gemini', function (req, res, next) { res.render('gemini', { title: 'Google Gemini' }); });
 api.post('/gemini', upload.single('image'), function (req, res, next) { gemini.GenerateText(req, res, next); });
 api.post('/register', function (req, res, next) { registration.Register(req, res, next); });
 api.post('/addstudents', function (req, res, next) { addStudentsToTeacher.AddStudentsToTeacher(req, res, next); });
