@@ -1,6 +1,6 @@
 extends layout
 
-block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+block layout-content
+  h1.title(style="text-align:center;") #{message}
+  h2.title(style="text-align:center;") #{error.status}
+  pre(style="text-align:left;") #{error.stack}

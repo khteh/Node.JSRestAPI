@@ -18,6 +18,7 @@ import { api } from './routes/api.js'
 import * as winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import bodyParser from 'body-parser';
+import homeRoute from './routes/home.js'
 //import fileUpload from 'express-fileupload';
 var app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -160,10 +161,11 @@ app.use(compression({ filter: shouldCompress }));
 app.use(cors()); // enable all CORS request
 
 // The order of the following app.use is important. It will match the first rule.
+app.use('/', homeRoute);
 app.use('/gemini', function (req, res, next) { res.render('gemini', { title: 'Google Gemini' }); });
 app.use('/health', healthchecks);
 app.use('/api', api);
-app.use('/', function (req, res, next) { res.render('home', { title: 'Node.JS Express Application' }); }); // This is catch-all
+//app.use('/', function (req, res, next) { res.render('home', { title: 'Node.JS Express Application' }); }); // This is catch-all
 // catch 404 and forward to error handler
 app.use(function (req: Request, res: Response, next: NextFunction) {
   next(createError(404));
