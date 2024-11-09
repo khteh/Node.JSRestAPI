@@ -39,6 +39,10 @@ export class GenerateTextUseCase implements IGenerateTextUseCase {
                     this._logger.Log(LogLevels.debug, `Reading uploaded file from ${request.Image.Path}`);
                     let imagePart: Part = this.FileToGenerativePart(request.Image.Path, request.Image.MimeType);
                     result = await this._model.generateContent([request.Prompt, imagePart]);
+                    fs.unlink(request.Image.Path, (err) => {
+                        if (err) throw err;
+                        this._logger.Log(LogLevels.debug, `${request!.Image!.Path} was deleted successfully`);
+                    });
                 } else
                     result = await this._model.generateContent(request.Prompt);
                 response = new UseCaseResponseMessage("", true, result.response.text(), errors);

@@ -1,6 +1,7 @@
 extends layout
 block append head
   link(type='stylesheet', href='/stylesheets/gemini.css', rel='stylesheet')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js')
 block layout-content
   #chat-app
     #chat.has-text-centered
@@ -10,7 +11,7 @@ block layout-content
           .columns
             .box.column.is-full
               .chat-messages.has-text-left
-                p#messages
+                #messages
               form#chatForm(action='/api/gemini', method='post', enctype="multipart/form-data")
                 .field.has-addons
                   p.control.is-expanded
@@ -53,8 +54,15 @@ block layout-content
               body: form
             });
             const data = await response.json();
-            document.querySelector("#messages").innerHTML += `<p><strong>You:</strong> ${prompt}</p>`;
-            document.querySelector("#messages").innerHTML += `<p><strong>Gemini:</strong></p>${data.message}<br>`;
+            const queryContainer = document.createElement('div');
+            queryContainer.innerHTML = `<div><strong>You:</strong> ${prompt}</div>`;
+            document.querySelector("#messages").appendChild(queryContainer);
+            //document.querySelector("#messages").innerHTML += `<div><strong>You:</strong> ${prompt}</div>`;
+            var converter = new showdown.Converter();
+            const responseContainer = document.createElement('div');
+            responseContainer.innerHTML = `<strong>Gemini:</strong><div>${converter.makeHtml(data.message)}</div><br>`;
+            document.querySelector("#messages").appendChild(responseContainer);
+            //document.querySelector("#messages").innerHTML += `<div><strong>Gemini:</strong></div>${converter.makeHtml(data.message)}<br>`;
             document.querySelector("#prompt").value = '';
             document.querySelector("#image").value = '';
             document.querySelector("#submit").value = 'Submit';
