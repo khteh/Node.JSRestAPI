@@ -7,7 +7,7 @@ body {
     align-items: center;
 }
 .chat-container {
-    width: 80%;
+    width: 100%;
     margin: 0 auto;
     display: flex;
     justify-content: center;
@@ -16,7 +16,7 @@ body {
 
 .chat-box {
     border: 1px solid #ddd;
-    padding: 20px;
+    padding: 10px;
     height: 400px;
     overflow-y: scroll;
     background: #fff;

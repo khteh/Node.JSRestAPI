@@ -12,7 +12,7 @@
     "graph": "nx graph",
     "typeorm": "typeorm-ts-node-esm",
     "run_migration": "npx typeorm-ts-node-esm migration:run",
-    "clean": "tsc --build --clean && rimraf build src/webapi.core/build src/infrastructure/build src/webapi/build src/webapi.core/.rollup.cache src/infrastructure/.rollup.cache src/webapi/.rollup.cache",
+    "clean": "tsc --build --clean && rimraf build src/webapi.core/build src/infrastructure/build src/webapi/build src/webapi.core/.rollup.cache src/infrastructure/.rollup.cache src/webapi/.rollup.cache uploads",
     "copy-assets": "npx tsx tools/copyAssets.ts",
     "build": "npx tsc",
     "build_core": "npm run build --workspace=webapi.core",
