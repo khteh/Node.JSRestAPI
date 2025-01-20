@@ -31,7 +31,7 @@ Teachers need a system where they can perform administrative functions for their
 ## Dependencies:
 
 ```
-npm install
+$ npm install
 ```
 
 # Start the application:
@@ -229,7 +229,6 @@ Image: ![Shoe to sell](./GeminiPromptWithImage.png?raw=true "Shoe to sell")
       "studentbob@gmail.com"
     ]
   }
-
   ```
 
 # Logs
