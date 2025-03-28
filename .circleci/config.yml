@@ -25,12 +25,11 @@ jobs: # a collection of steps
       - image: node:latest # ...with this image as the primary container; this is where all `steps` will run
       - image: postgres:latest
         environment:
-          POSTGRES_PASSWORD: $POSTGRESQL_PASSWORD
           POSTGRESQL_HOST: 127.0.0.1
           POSTGRESQL_DB: school_test
           POSTGRESQL_ALLOW_EMPTY_PASSWORD: true
           POSTGRESQL_USER: $POSTGRESQL_USER
-          POSTGRESQL_PASSWORD: $POSTGRESQL_PASSWORD
+          POSTGRES_PASSWORD: $POSTGRESQL_PASSWORD
     steps:
       - checkout
       - setup_remote_docker:
