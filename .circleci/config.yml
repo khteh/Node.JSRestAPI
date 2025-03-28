@@ -69,7 +69,7 @@ jobs: # a collection of steps
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
       - run:
           name: Prepare database for tests
-          command: psql -h localhost -U $POSTGRESQL_USER -W $POSTGRESQL_PASSWORD -d school < school_db.sql
+          command: psql -h localhost -U $POSTGRESQL_USER -W $POSTGRESQL_PASSWORD -d school < school.sql
       - run: mkdir test_reports
       #- run: # run tests
       #    name: Javascript Tests
