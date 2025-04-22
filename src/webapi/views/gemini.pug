@@ -23,9 +23,9 @@ block layout-content
       script.
         function stoppedTyping() {
                 if(document.querySelector("#prompt").value.length > 0) { 
-                    document.querySelector('#submit').disabled = false; 
+                    $('#submit').disabled = false; 
                 } else { 
-                    document.querySelector('#submit').disabled = true;
+                    $('#submit').disabled = true;
                 }
         }
         document.querySelector("#prompt").onblur = stoppedTyping();
