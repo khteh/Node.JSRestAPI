@@ -47,7 +47,6 @@ export class GenerateTextUseCase implements IGenerateTextUseCase {
                     result = await this._model.generateContent(request.Prompt);
                 response = new UseCaseResponseMessage("", true, result.response.text(), errors);
                 this._logger.Log(LogLevels.debug, `Prompt: ${request.Prompt} generates: ${response.Message}`);
-
             } else {
                 this._logger.Log(LogLevels.error, `Invalid prompt! ${request.Prompt}!`);
                 response = new UseCaseResponseMessage("", false, `Invalid prompt! ${request.Prompt}`, errors);
