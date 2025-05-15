@@ -30,7 +30,7 @@
     "sonarqube": "./node_modules/.bin/mocha --reporter mocha-sonarqube-reporter tests --reporter-options output=test_reports/sonarqube/test_results.xml"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.24.1",
+    "@google/genai": "^0.14.0",
     "@grpc/grpc-js": "^1.13.3",
     "@grpc/proto-loader": "^0.7.15",
     "ansi-regex": "^6.1.0",
