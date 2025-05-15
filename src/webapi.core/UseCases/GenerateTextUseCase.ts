@@ -44,6 +44,59 @@ export class GenerateTextUseCase implements IGenerateTextUseCase {
                                 imagePart,
                             ]),
                         ],
+                        /*
+        config: {
+          systemInstruction: "You are an OCR expert. You will extract details and information from an image and return structured data to the user.",
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.OBJECT,
+            description: "Schema for a receipt",
+            properties: {
+              Date: {
+                type: Type.STRING,
+                description: "Date of the receipt",
+              },
+              Vendor: {
+                type: Type.STRING,
+                description: "The vendor or merchant which issued the receipt",
+              },
+              Items: {
+                type: Type.ARRAY,
+                description: "List of items spent in the receipt. Every item should have the name and amount spent for the item.",
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    Name: {
+                      type: Type.STRING,
+                      description: "The name of the item spent on the receipt.",
+                    },
+                    Amount: {
+                      type: Type.NUMBER,
+                      description: "The name of the item spent on the receipt.",
+                    },
+                  },
+                  propertyOrdering: ["Name", "Amount"],
+                  description: "Every item in the receipt should have the name first followed with the amount."
+                },
+              },
+              Currency: {
+                type: Type.STRING,
+                description: "Currency used in the Amount of items, TaxAmount and Total of the receipt",
+              },
+              TaxAmount: {
+                type: Type.NUMBER,
+                description: "The GST/Tax amount payable on the total of all the items' amount."
+              },
+              Total: {
+                type: Type.NUMBER,
+                description: "The total amount spend on the receipt which includes the total of the items' amount and the TaxAmount",
+              },
+            },
+            propertyOrdering: ["Date", "Vendor", "Items", "Currency", "TaxAmount", "Total"],
+            required: ["Date", "Currency", "Vendor", "TaxAmount", "Total"],
+          },
+        },
+                         */
                     });
                     fs.unlink(request.Image.Path, (err) => {
                         if (err) throw err;
