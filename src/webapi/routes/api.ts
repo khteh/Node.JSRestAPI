@@ -9,16 +9,16 @@ import { AddStudentsToTeacherController } from '../Controllers/AddStudentsToTeac
 import { CommonStudentsController } from '../Controllers/CommonStudentsController.js';
 import { SuspendStudentController } from '../Controllers/SuspendStudentController.js';
 import { StudentNotificationsController } from '../Controllers/StudentNotificationsController.js';
-import { IRegisterStudentUseCase, IRegisterTeacherUseCase, IAddStudentsToTeacherUseCase, ICommonStudentsUseCase, ISuspendStudentUseCase, IStudentNotificationsUseCase, IGenerateTextUseCase, Student, UseCaseTypes } from "webapi.core"
+import { IRegisterStudentUseCase, IRegisterTeacherUseCase, IAddStudentsToTeacherUseCase, ICommonStudentsUseCase, ISuspendStudentUseCase, IStudentNotificationsUseCase, IGenerateContentUseCase, Student, UseCaseTypes } from "webapi.core"
 import { IStudentRepository, ITeacherRepository, RepositoryTypes, LoggerTypes } from "webapi.core";
-import { RegisterStudentUseCase, SuspendStudentUseCase, RegisterTeacherUseCase, AddStudentsToTeacherUseCase, CommonStudentsUseCase, GenerateTextUseCase, StudentNotificationsUseCase } from "webapi.core";
+import { RegisterStudentUseCase, SuspendStudentUseCase, RegisterTeacherUseCase, AddStudentsToTeacherUseCase, CommonStudentsUseCase, GenerateContentUseCase, StudentNotificationsUseCase } from "webapi.core";
 import { StudentRepository, TeacherRepository, LoggerImpl, DatabaseTypes, Database } from "infrastructure"
 import { ILogger } from "webapi.core";
 import multer from 'multer';
 const upload = multer({ dest: 'uploads/' })
 var api = express.Router();
 const di = new Container();
-di.bind<IGenerateTextUseCase>(UseCaseTypes.IGenerateTextUseCase).to(GenerateTextUseCase);
+di.bind<IGenerateContentUseCase>(UseCaseTypes.IGenerateContentUseCase).to(GenerateContentUseCase);
 di.bind<IRegisterStudentUseCase>(UseCaseTypes.IRegisterStudentUseCase).to(RegisterStudentUseCase);
 di.bind<ISuspendStudentUseCase>(UseCaseTypes.ISuspendStudentUseCase).to(SuspendStudentUseCase);
 di.bind<IRegisterTeacherUseCase>(UseCaseTypes.IRegisterTeacherUseCase).to(RegisterTeacherUseCase);
@@ -31,7 +31,7 @@ di.bind<ILogger>(LoggerTypes.ILogger).to(LoggerImpl);
 di.bind(DatabaseTypes.DatabaseService).to(Database);
 var fibonacci = new FibonacciController(di.get<ILogger>(LoggerTypes.ILogger));
 var greetings = new GreetingsController(di.get<ILogger>(LoggerTypes.ILogger));
-var gemini = new GeminiController(di.get<ILogger>(LoggerTypes.ILogger), di.get<IGenerateTextUseCase>(UseCaseTypes.IGenerateTextUseCase));
+var gemini = new GeminiController(di.get<ILogger>(LoggerTypes.ILogger), di.get<IGenerateContentUseCase>(UseCaseTypes.IGenerateContentUseCase));
 var registration = new RegistrationController(di.get<ILogger>(LoggerTypes.ILogger), di.get<IRegisterStudentUseCase>(UseCaseTypes.IRegisterStudentUseCase), di.get<IRegisterTeacherUseCase>(UseCaseTypes.IRegisterTeacherUseCase));
 var addStudentsToTeacher = new AddStudentsToTeacherController(di.get<ILogger>(LoggerTypes.ILogger), di.get<IAddStudentsToTeacherUseCase>(UseCaseTypes.IAddStudentsToTeacherUseCase));
 var commonStudents = new CommonStudentsController(di.get<ILogger>(LoggerTypes.ILogger), di.get<ICommonStudentsUseCase>(UseCaseTypes.ICommonStudentsUseCase));
