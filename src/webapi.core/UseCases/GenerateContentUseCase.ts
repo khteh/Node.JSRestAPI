@@ -5,6 +5,7 @@ import { IOutputPort } from "../Interfaces/IOutputPort.js";
 import { UseCaseResponseMessage } from "../DTO/UseCaseResponse/UseCaseResponseMessage.js"
 import { GenerateContentRequest } from "../DTO/UseCaseRequests/GenerateContentRequest.js"
 import { Error } from "../DTO/Error.js"
+import { ReceiptModel } from "../DTO/ReceiptModel.js"
 import { injectable, inject } from "inversify";
 import { ILogger, LogLevels } from "../Interfaces/ILogger.js";
 import { LoggerTypes, RepositoryTypes } from "../types.js";
@@ -106,12 +107,72 @@ export class GenerateContentUseCase implements IGenerateContentUseCase {
             if (err) throw err;
             this._logger.Log(LogLevels.debug, `${request!.Image!.Path} was deleted successfully`);
           });
-        } else
+        } else {
           result = await this._genAI.models.generateContent({
             model: 'gemini-2.0-flash',
             contents: request.Prompt
           });
+          /*result = new GenerateContentResponse()
+          result.text = "Task decomposition is the process of breaking down a complex task or problem into smaller, more manageable, and understandable sub-tasks.  Think of it as taking a large project and dividing it into smaller, actionable steps.\
+                    \
+                    Here's a breakdown of the key aspects:\
+                    \
+                    *   ** Breaking Down Complexity:** The primary goal is to simplify a difficult or overwhelming task into bite- sized pieces.\
+                    *   ** Manageability:** Smaller tasks are easier to plan, execute, and monitor.It's much easier to estimate the time and resources needed for a small task than a large, vague one.\
+            *   ** Understandability:** Each sub - task is more focused and has a clearer purpose, making it easier to understand what needs to be done.\
+                    *   ** Actionable Steps:** The result of decomposition should be a set of concrete steps that can be directly worked on.\
+                    *   ** Hierarchy(Often):** Task decomposition often results in a hierarchical structure, where the main task sits at the top, and sub - tasks branch out below it.These sub - tasks might even be further decomposed into even smaller sub - sub - tasks.\
+                    *   ** Parallelization(Potential):** Decomposed tasks can sometimes be performed in parallel, speeding up the overall completion time.\
+                    *   ** Collaboration(Facilitation):** Smaller tasks can be easily assigned to different individuals or teams, facilitating collaboration.\
+                    *   ** Iterative Process:** Task decomposition is often an iterative process.You might start with a high - level breakdown and then refine the sub - tasks further as you gain a better understanding of the problem.\
+                    \
+                    ** Why is Task Decomposition Important ?**\
+                    \
+                    *   ** Improved Efficiency:** Makes it easier to plan and execute tasks, leading to increased efficiency.\
+                    *   ** Better Organization:** Provides a structured approach to tackling complex problems.\
+                    *   ** Reduced Stress:** Large, overwhelming tasks can cause stress.Decomposition helps reduce this by making the task feel more manageable.\
+                    *   ** Enhanced Collaboration:** Facilitates teamwork by allowing tasks to be divided and assigned.\
+                    *   ** Easier Tracking and Monitoring:** Allows for better tracking of progress and identification of potential roadblocks.\
+                    *   ** Improved Estimates:** Smaller tasks are easier to estimate in terms of time, resources, and effort.\
+                    *   ** Problem Solving:** Forces you to think critically about the task and identify its key components.\
+                    \
+                    ** Examples of Task Decomposition:**\
+                    \
+                    *   ** Writing a Report:**\
+                        * Research the topic\
+                        * Outline the report\
+                        * Write the introduction\
+                        * Write the body paragraphs(further decomposed by section)\
+                        * Write the conclusion\
+                        * Edit and proofread the report\
+                        * Format the report\
+                    *   ** Planning a Vacation:**\
+                        * Determine the budget\
+                        * Choose a destination\
+                        * Book flights\
+                        * Book accommodation\
+                        * Plan activities\
+                        * Pack your bags\
+                    *   ** Building a Website:**\
+                        * Define the website's purpose and target audience.\
+                        * Plan the website's structure (sitemap).\
+                        * Design the layout and user interface.\
+                        * Develop the front - end(HTML, CSS, JavaScript).\
+                        * Develop the back - end(server - side logic, database).\
+                        * Test the website.\
+                        * Deploy the website.\
+                        * Maintain and update the website.\
+                    \
+                    ** In Summary:**\
+                    \
+                    Task decomposition is a valuable technique for managing complexity, improving efficiency, and enhancing collaboration.It involves breaking down a large, intimidating task into smaller, more manageable pieces, making it easier to plan, execute, and ultimately achieve the desired outcome."};*/
+        }
         if (result && result.text) {
+          if (request.IsReceipt === true) {
+            this._logger.Log(LogLevels.debug, `Parse receipt object...`);
+            let receipt: ReceiptModel = JSON.parse(result.text);
+            this._logger.Log(LogLevels.debug, `receipt: ${JSON.stringify(receipt, null, 2)}`);
+          }
           let text = result.text.replace('```json', '')
           text = text.replace('```', '')
           response = new UseCaseResponseMessage("", true, result.text, errors);
@@ -129,9 +190,11 @@ export class GenerateContentUseCase implements IGenerateContentUseCase {
     } catch (e) {
       console.error(e);
       if (typeof e === "string") {
+        this._logger.Log(LogLevels.error, `Exception! ${e}`);
         errors.push(new Error("", e));
         response = new UseCaseResponseMessage("", false, e, errors);
       } else {
+        this._logger.Log(LogLevels.error, `Exception! ${JSON.stringify(e, null, 2)}`);
         errors.push(new Error("", JSON.stringify(e, null, 2)));
         response = new UseCaseResponseMessage("", false, "Exception!", errors);
       }
