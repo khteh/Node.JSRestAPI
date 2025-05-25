@@ -2,44 +2,68 @@ extends layout
 block append head
   link(type='stylesheet', href='/stylesheets/gemini.css', rel='stylesheet')
   script(src='https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js')
+  meta(name="csrf-token" content="{{ csrf_token() }}")
 block layout-content
   #chat-app
-    #chat.has-text-centered
+    #chat
       h1.title Welcome to #{title}
       section.section.chat-container.is-fullheight.is-fullhd
         .container.mx-0.my-0.px-0.py-0
           .columns
             .box.column.is-full
-              .chat-messages.has-text-left
+              .chat-messages
                 #messages
               form#chatForm(action='/api/gemini', method='post', enctype="multipart/form-data")
+                input(name="csrf_token" type="hidden" value="{{ csrf_token() }}")
                 .field.has-addons
                   p.control.is-expanded
                     input(class='input', id='prompt', type='text', placeholder='How can I help?', onkeyup="stoppedTyping()")
                   p.control
-                    input(class='input', id='image', name="image", type='file', accept="image/*")
+                    label.file-label(class='input', id="lbl-image", for="image") Upload
+                    input.file-input(id="image", name="image", type="file", accept="image/*", hidden="hidden")
                   p.control
-                    input(class='button is-success', id="submit", type='submit', value='Submit', disabled)
+                    input.receipt-input(id='checkReceipt', name="receipt", type="checkbox", value="", style="margin-left: 10px")
+                    label.receipt-label(for="checkReceipt", style="margin-left: 10px") Receipt
+                  p.control
+                    input(class='button is-success', id="submit", type='submit', value='Submit', style="margin-left: 10px")
       script.
         function stoppedTyping() {
-                if(document.querySelector("#prompt").value.length > 0) { 
-                    document.querySelector('#submit').disabled = false; 
-                } else { 
-                    document.querySelector('#submit').disabled = true;
-                }
+          if(document.querySelector("#prompt").value.length > 0) { 
+            document.querySelector('#submit').disabled = false; 
+          } else { 
+            document.querySelector('#submit').disabled = true; 
+          }
         }
+        function isJson(str) {
+            try {
+                const jsonObject = JSON.parse(str);
+                /*const markdownText = jsonObject.markdown;
+                console.log(`json, jsonObject:, ${JSON.stringify(jsonObject)}, markdown:, ${markdownText}`)
+                return markdownText*/
+                //console.log("isJson")
+                return true;
+            } catch (e) {
+                //console.error(`isJson exception ! ${e}`);
+                //return str;
+                return false;
+            }
+        }    
         document.querySelector("#prompt").onblur = stoppedTyping();
         // Select your input type file and store it in a variable
         document.querySelector("#chatForm").addEventListener("submit", async (e) => {
           e.preventDefault();
           const prompt = document.querySelector("#prompt").value;
-          const image = document.querySelector("#image");
+          const receipt = document.querySelector("#checkReceipt").checked;
+          const fileUpload = document.querySelector("#image");
+          const csrf_token = $('meta[name=csrf-token]').attr('content');
+          console.log(`prompt: ${prompt}, receipt: ${receipt}`);
           if (prompt.trim()) {
             var form = new FormData();
             form.append("prompt", prompt);
-            if (image && image.files.length && image.files[0]) {
-              //console.log(`Image name: ${image.files[0].name}, size: ${image.files[0].size}, type: ${image.files[0].type}`);
-              form.append("image", image.files[0]);
+            form.append("receipt", receipt);
+            if (fileUpload && fileUpload.files.length && fileUpload.files[0]) {
+              //console.log(`Image name: ${fileUpload.files[0].name}, size: ${fileUpload.files[0].size}, type: ${fileUpload.files[0].type}`);
+              form.append("image", fileUpload.files[0]);
             }// else 
               //console.log("No file selected!");
             // Display the key/value pairs
@@ -47,25 +71,109 @@ block layout-content
                 console.log(pair[0]+ ', ' + pair[1]); 
             }*/
             document.querySelector('#submit').disabled = true;
+            document.querySelector('#image').disabled = true;
+            document.querySelector('#lbl-image').disabled = true;
+            document.querySelector('#checkReceipt').disabled = true;
             document.querySelector("#submit").value = 'Processing...';
-            const response = await fetch('/api/gemini', {
-              method: 'POST',
-              //headers: { 'Content-Type': 'multipart/form-data' }, Do NOT declare Content-Type: multipart/form-data in request header
-              body: form
-            });
-            const data = await response.json();
             const queryContainer = document.createElement('div');
-            queryContainer.innerHTML = `<div><strong>You:</strong> ${prompt}</div>`;
+            queryContainer.innerHTML = `<div class="row" style="margin-top: 10px">
+                                          <div class="col-md-1">
+                                          </div>
+                                          <div class="col-md-11 d-flex justify-content-end">
+                                            <p class="msg right">${prompt}</p>
+                                          </div>
+                                        </div>`;
             document.querySelector("#messages").appendChild(queryContainer);
-            //document.querySelector("#messages").innerHTML += `<div><strong>You:</strong> ${prompt}</div>`;
-            var converter = new showdown.Converter();
-            const responseContainer = document.createElement('div');
-            responseContainer.innerHTML = `<strong>Gemini:</strong><div>${converter.makeHtml(data.message)}</div><br>`;
-            document.querySelector("#messages").appendChild(responseContainer);
-            //document.querySelector("#messages").innerHTML += `<div><strong>Gemini:</strong></div>${converter.makeHtml(data.message)}<br>`;
-            document.querySelector("#prompt").value = '';
-            document.querySelector("#image").value = '';
-            document.querySelector("#submit").value = 'Submit';
+            try {
+              const response = await fetch('/api/gemini', {
+                method: 'POST',
+                //headers: { 'Content-Type': 'multipart/form-data' }, Do NOT declare Content-Type: multipart/form-data in request header
+                headers: {
+                  "X-CSRFToken": csrf_token,
+                },
+                body: form
+              });
+              const data = await response.json();
+              // let data = {"message":"{\n  \"date_str\": \"28-07-2017\",\n  \"vendor\": \"Walmart\",\n  \"currency\": \"USD\",\n  \"items\": [\n    {\n      \"name\": \"PET TOY\",\n      \"amount\": 1.97\n    },\n    {\n      \"name\": \"FLOPPY PUPPY\",\n      \"amount\": 1.97\n    },\n    {\n      \"name\": \"SSSUPREME S\",\n      \"amount\": 4.97\n    },\n    {\n      \"name\": \"2.5 SQUEAK\",\n      \"amount\": 5.92\n    },\n    {\n      \"name\": \"MUNCHY DMBEL\",\n      \"amount\": 3.77\n    },\n    {\n      \"name\": \"DOG TREAT\",\n      \"amount\": 2.92\n    },\n    {\n      \"name\": \"PED PCH 1\",\n      \"amount\": 0.50\n    },\n    {\n      \"name\": \"PED PCH 1\",\n      \"amount\": 0.50\n    },\n    {\n      \"name\": \"COUPON 23100\",\n      \"amount\": 1.00\n    },\n    {\n      \"name\": \"HNYMD SMORES\",\n      \"amount\": 3.98\n    },\n    {\n      \"name\": \"FRENCH DRSNG\",\n      \"amount\": 1.98\n    },\n    {\n      \"name\": \"3 ORANGES\",\n      \"amount\": 5.47\n    },\n    {\n      \"name\": \"BABY CARROTS\",\n      \"amount\": 1.48\n    },\n    {\n      \"name\": \"COLLARDS\",\n      \"amount\": 1.24\n    },\n    {\n      \"name\": \"CALZONE\",\n      \"amount\": 2.50\n    },\n    {\n      \"name\": \"MM RVW MNT\",\n      \"amount\": 19.77\n    },\n    {\n      \"name\": \"STKOBRLPLABL\",\n      \"amount\": 1.97\n    },\n    {\n      \"name\": \"STKOBRLPLABL\",\n      \"amount\": 1.97\n    },\n    {\n      \"name\": \"STKO SUNFLWR\",\n      \"amount\": 0.97\n    },\n    {\n      \"name\": \"STKO SUNFLWR\",\n      \"amount\": 0.97\n    },\n    {\n      \"name\": \"STKO SUNFLWR\",\n      \"amount\": 0.97\n    },\n    {\n      \"name\": \"STKO SUNFLWR\",\n      \"amount\": 0.97\n    },\n    {\n      \"name\": \"BLING BEADS\",\n      \"amount\": 0.97\n    },\n    {\n      \"name\": \"GREAT VALUE\",\n      \"amount\": 9.97\n    },\n    {\n      \"name\": \"LIPTON\",\n      \"amount\": 4.48\n    },\n    {\n      \"name\": \"DRY DOG\",\n      \"amount\": 12.44\n    }\n  ],\n  \"tax\": 4.59,\n  \"total\": 98.21\n}"}
+              /*let data = {"message": "Task decomposition is the process of breaking down a large, complex task or project into smaller, more manageable subtasks. This makes the overall task less intimidating and easier to understand, plan, and execute.
+
+                          Think of it like eating an elephant. You wouldn't try to swallow it whole. Instead, you'd break it down into bite-sized pieces.
+
+                          Here's a breakdown of the key aspects of task decomposition:
+
+                          *   **Purpose:** To simplify complex tasks, making them easier to understand, plan, execute, and monitor.
+
+                          *   **How it works:** The overarching task is divided into smaller, self-contained units.  Each subtask should have a clear goal and a defined set of actions.
+
+                          *   **Benefits:**
+
+                              *   **Improved Clarity:** Makes the project less overwhelming and easier to grasp.
+                              *   **Better Planning:** Enables more accurate estimation of time, resources, and effort required.
+                              *   **Enhanced Collaboration:** Allows for easier delegation of tasks to different individuals or teams.
+                              *   **Reduced Risk:** Identifies potential problems and dependencies early on, allowing for proactive mitigation.
+                              *   **Increased Efficiency:** Streamlines the workflow and reduces wasted effort.
+                              *   **Easier Tracking:** Allows for better monitoring of progress and identification of bottlenecks.
+                              *   **Improved Quality:** Facilitates more thorough and focused work on individual components, leading to higher overall quality.
+
+                          *   **Levels of Decomposition:** Task decomposition can be hierarchical. You can break down the main task into subtasks, then further break down those subtasks into even smaller, more specific actions.  The appropriate level of decomposition depends on the complexity of the project.  Keep decomposing until each subtask is clear, actionable, and can be completed within a reasonable timeframe.
+
+                          *   **Example:** Let's say the task is "Write a blog post."
+
+                              Here's a possible decomposition:
+
+                              1.  **Choose a topic:**
+                                  *   Brainstorm ideas
+                                  *   Research keywords
+                                  *   Select the best topic based on relevance and search volume
+                              2.  **Outline the post:**
+                                  *   Create a title
+                                  *   Write an introduction
+                                  *   Develop main sections with subheadings
+                                  *   Plan conclusion
+                              3.  **Write the content:**
+                                  *   Research the topic in detail
+                                  *   Write each section based on the outline
+                                  *   Add supporting data, examples, and visuals
+                              4.  **Edit and proofread:**
+                                  *   Check for grammar and spelling errors
+                                  *   Ensure clarity and flow
+                                  *   Optimize for search engines
+                              5.  **Publish the post:**
+                                  *   Format the post for the blog platform
+                                  *   Add images and videos
+                                  *   Publish to the blog
+
+                          *   **Techniques:**
+
+                              *   **Top-down approach:** Start with the main task and break it down into smaller pieces.
+                              *   **Bottom-up approach:** Identify individual tasks and then group them into larger categories.
+                              *   **Process-based approach:** Focus on the steps involved in a process and break them down into individual actions.
+
+                          In summary, task decomposition is a fundamental project management and problem-solving technique that involves breaking down large tasks into smaller, more manageable components, leading to increased clarity, efficiency, and success.
+                          "}*/
+              console.log(`data: ${JSON.stringify(data, null, 2)}`);
+              // https://getbootstrap.com/docs/5.0/utilities/flex/
+              var converter = new showdown.Converter();
+              const responseContainer = document.createElement('div');
+              responseContainer.innerHTML = `<div class="row d-flex">
+                                                <div class="col-md-11 msg left">
+                                                    ${isJson(data.message) ? data.message : converter.makeHtml(data.message)}
+                                                </div>
+                                                <div clalss="col-md-1">
+                                                </div>
+                                            </div>`;
+              document.querySelector("#messages").appendChild(responseContainer);
+            } catch (err) {
+              console.error(err)
+            } finally {
+              document.querySelector('#lbl-image').disabled = false;
+              document.querySelector('#image').disabled = false;
+              document.querySelector("#prompt").value = '';
+              document.querySelector("#image").value = '';
+              document.querySelector('#checkReceipt').disabled = false;
+              document.querySelector("#checkReceipt").checked = false;
+              document.querySelector("#submit").value = 'Submit';
+            }
           } else 
             console.error(`Invalid prompt!`);
         });

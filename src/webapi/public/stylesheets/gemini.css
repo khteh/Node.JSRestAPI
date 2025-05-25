@@ -1,41 +1,96 @@
-body {
+/*body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
+}*/
+.title {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
 }
 .chat-container {
-    width: 100%;
-    margin: 0 auto;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    height: 100%;
+    position: relative;
+    background-color: rgb(191, 237, 255);
+    border: 4px solid rgb(191, 237, 255);
+    border-radius: 15px;
 }
-.chat-box {
-    border: 1px solid #ddd;
-    padding: 10px;
-    height: 400px;
-    overflow-y: scroll;
-    background: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.chat-messages {
+    position: relative;
 }
-/*
 #messages {
-    width: 80%;
+    position: relative;
+}
+.msg {
+    border-radius: 10px;
+}
+
+.msg.right {
+    justify-content: flex-end;
+    background-color: #CCC;
+}
+
+.msg.left {
+    margin-left: 10px;
+    justify-content: flex-start;
+    background-color: #555;
+    color: white;
+}
+#prompt {
+    flex-grow: 1;
     padding: 10px;
-    display: flex;
+    font-size: 1.1rem;
+    outline: none;
+    border: 4px solid rgb(191, 237, 255);
+    border-right: none;
+    background-color: white;
+    border-bottom-left-radius: 15px;
+}
+#lbl-image {
+    height: 50px;
+    font-size: 1.1rem;
+    border: 4px solid rgb(191, 237, 255);
+    border-left: none;
+    background-color: rgb(0, 100, 140);
+    color: white;
+    cursor: pointer;
+    border-bottom-right-radius: 15px;
+    transition: all 0.1s ease-in;
     justify-content: center;
     align-items: center;
-}*/
-
-button {
-    padding: 10px 20px;
-    background-color: #333;
-    color: white;
-    border: none;
+    text-align: center;
 }
+
+#lbl-image:hover {
+    background-color: rgb(46, 175, 225);
+}
+.receipt-input {
+    margin-left: 10px;
+}
+#lbl-receipt {
+    margin-left: 10px;
+}
+#submit {
+    height: 50px;
+    padding: 0 20px;
+    font-size: 1.1rem;
+    border: 4px solid rgb(191, 237, 255);
+    border-left: none;
+    background-color: rgb(0, 100, 140);
+    color: white;
+    cursor: pointer;
+    border-bottom-right-radius: 15px;
+    transition: all 0.1s ease-in;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+#submit:hover {
+    background-color: rgb(46, 175, 225);
+}/*#file-upload {
+    display: none;
+}*/

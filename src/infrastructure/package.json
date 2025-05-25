@@ -17,9 +17,9 @@
   },
   "dependencies": {
     "config": "^3.3.12",
-    "inversify": "^6.2.2",
+    "inversify": "^7.5.1",
     "reflect-metadata": "^0.2.2",
-    "typeorm": "^0.3.20",
+    "typeorm": "^0.3.22",
     "webapi.core": "^2.0.0",
     "winston": "^3.17.0"
   },
@@ -27,12 +27,12 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-typescript": "^12.1.2",
     "@types/config": "^3.3.5",
-    "@types/node": "^22.13.1",
-    "nodemon": "^3.1.9",
-    "rollup": "^4.34.3",
-    "rollup-plugin-dts": "^6.1.1",
+    "@types/node": "^22.15.11",
+    "nodemon": "^3.1.10",
+    "rollup": "^4.40.1",
+    "rollup-plugin-dts": "^6.2.1",
     "tslib": "^2.8.1",
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.3"
   },
   "keywords": [],
   "main": "build/index.js",

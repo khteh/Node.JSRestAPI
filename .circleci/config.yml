@@ -22,15 +22,15 @@ jobs: # a collection of steps
   build_and_test: # runs not using Workflows must have a `build` job as entry point
     <<: *defaults
     docker: # run the steps with Docker
-      - image: node:latest # ...with this image as the primary container; this is where all `steps` will run
+      #- image: node:latest # ...with this image as the primary container; this is where all `steps` will run
+      - image: khteh/ubuntu:latest
       - image: postgres:latest
         environment:
-          POSTGRES_PASSWORD: $POSTGRESQL_PASSWORD
           POSTGRESQL_HOST: 127.0.0.1
           POSTGRESQL_DB: school_test
           POSTGRESQL_ALLOW_EMPTY_PASSWORD: true
           POSTGRESQL_USER: $POSTGRESQL_USER
-          POSTGRESQL_PASSWORD: $POSTGRESQL_PASSWORD
+          POSTGRES_PASSWORD: $POSTGRESQL_PASSWORD
     steps:
       - checkout
       - setup_remote_docker:
@@ -39,22 +39,10 @@ jobs: # a collection of steps
       - run:
           name: Install Docker client
           command: |
-            VER="24.0.7"
+            VER="28.0.4"
             curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
             tar -xz -C /tmp -f /tmp/docker-$VER.tgz
             mv /tmp/docker/* /usr/bin
-      - run:
-          name: install dockerize
-          command: |
-            DOCKERIZE_VERSION="v0.7.0"
-            wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-      #- run:
-      #    name: Wait for MYSQL Server
-      #    command: dockerize -wait tcp://localhost:3306 -timeout 1m
-      #- run:
-      #    name: Prepare database for tests
-      #    command: mysql -h 127.0.0.1 -u root < school_db.sql
-      - run: mkdir test_reports
       # Download and cache dependencies
       - restore_cache:
           key: v1-dependencies-{{ .Branch }}-{{ checksum "package-lock.json" }}
@@ -71,6 +59,16 @@ jobs: # a collection of steps
       - run:
           name: Build Typescript files
           command: npm run build_all
+      - run:
+          name: Wait for PostgreSQL Server
+          command: pg_isready -U "postgres" -h 127.0.0.1 -p 5432
+      - run:
+          name: Prepare database for tests
+          command: |
+            psql -h localhost -U postgres -c "CREATE USER $POSTGRESQL_USER WITH PASSWORD '$POSTGRESQL_PASSWORD' ;"
+            psql -h localhost -U postgres -c "CREATE DATABASE school WITH OWNER = $POSTGRESQL_USER ;"
+            psql -h localhost -U $POSTGRESQL_USER -w -d school < school.sql
+      - run: mkdir test_reports
       #- run: # run tests
       #    name: Javascript Tests
       #    no_output_timeout: 5m
