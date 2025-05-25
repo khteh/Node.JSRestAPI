@@ -11,7 +11,7 @@ block layout-content
         .container.mx-0.my-0.px-0.py-0
           .columns
             .box.column.is-full
-              .chat-messages.has-text-left
+              .chat-messages
                 #messages
               form#chatForm(action='/api/gemini', method='post', enctype="multipart/form-data")
                 input(name="csrf_token" type="hidden" value="{{ csrf_token() }}")
@@ -95,7 +95,7 @@ block layout-content
               });
               const data = await response.json();
               // let data = {"message":"{\n  \"date_str\": \"28-07-2017\",\n  \"vendor\": \"Walmart\",\n  \"currency\": \"USD\",\n  \"items\": [\n    {\n      \"name\": \"PET TOY\",\n      \"amount\": 1.97\n    },\n    {\n      \"name\": \"FLOPPY PUPPY\",\n      \"amount\": 1.97\n    },\n    {\n      \"name\": \"SSSUPREME S\",\n      \"amount\": 4.97\n    },\n    {\n      \"name\": \"2.5 SQUEAK\",\n      \"amount\": 5.92\n    },\n    {\n      \"name\": \"MUNCHY DMBEL\",\n      \"amount\": 3.77\n    },\n    {\n      \"name\": \"DOG TREAT\",\n      \"amount\": 2.92\n    },\n    {\n      \"name\": \"PED PCH 1\",\n      \"amount\": 0.50\n    },\n    {\n      \"name\": \"PED PCH 1\",\n      \"amount\": 0.50\n    },\n    {\n      \"name\": \"COUPON 23100\",\n      \"amount\": 1.00\n    },\n    {\n      \"name\": \"HNYMD SMORES\",\n      \"amount\": 3.98\n    },\n    {\n      \"name\": \"FRENCH DRSNG\",\n      \"amount\": 1.98\n    },\n    {\n      \"name\": \"3 ORANGES\",\n      \"amount\": 5.47\n    },\n    {\n      \"name\": \"BABY CARROTS\",\n      \"amount\": 1.48\n    },\n    {\n      \"name\": \"COLLARDS\",\n      \"amount\": 1.24\n    },\n    {\n      \"name\": \"CALZONE\",\n      \"amount\": 2.50\n    },\n    {\n      \"name\": \"MM RVW MNT\",\n      \"amount\": 19.77\n    },\n    {\n      \"name\": \"STKOBRLPLABL\",\n      \"amount\": 1.97\n    },\n    {\n      \"name\": \"STKOBRLPLABL\",\n      \"amount\": 1.97\n    },\n    {\n      \"name\": \"STKO SUNFLWR\",\n      \"amount\": 0.97\n    },\n    {\n      \"name\": \"STKO SUNFLWR\",\n      \"amount\": 0.97\n    },\n    {\n      \"name\": \"STKO SUNFLWR\",\n      \"amount\": 0.97\n    },\n    {\n      \"name\": \"STKO SUNFLWR\",\n      \"amount\": 0.97\n    },\n    {\n      \"name\": \"BLING BEADS\",\n      \"amount\": 0.97\n    },\n    {\n      \"name\": \"GREAT VALUE\",\n      \"amount\": 9.97\n    },\n    {\n      \"name\": \"LIPTON\",\n      \"amount\": 4.48\n    },\n    {\n      \"name\": \"DRY DOG\",\n      \"amount\": 12.44\n    }\n  ],\n  \"tax\": 4.59,\n  \"total\": 98.21\n}"}
-              let data = {"message": "Task decomposition is the process of breaking down a large, complex task or project into smaller, more manageable subtasks. This makes the overall task less intimidating and easier to understand, plan, and execute.
+              /*let data = {"message": "Task decomposition is the process of breaking down a large, complex task or project into smaller, more manageable subtasks. This makes the overall task less intimidating and easier to understand, plan, and execute.
 
                           Think of it like eating an elephant. You wouldn't try to swallow it whole. Instead, you'd break it down into bite-sized pieces.
 
@@ -150,7 +150,7 @@ block layout-content
                               *   **Process-based approach:** Focus on the steps involved in a process and break them down into individual actions.
 
                           In summary, task decomposition is a fundamental project management and problem-solving technique that involves breaking down large tasks into smaller, more manageable components, leading to increased clarity, efficiency, and success.
-                          "}
+                          "}*/
               console.log(`data: ${JSON.stringify(data, null, 2)}`);
               // https://getbootstrap.com/docs/5.0/utilities/flex/
               var converter = new showdown.Converter();
