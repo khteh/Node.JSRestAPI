@@ -1,11 +1,16 @@
-/*body {
-    font-family: Arial, sans-serif;
+body {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
     background-color: #f4f4f4;
-    text-align: center;
     display: flex;
+}
+h1 {
+    color: #333;
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
     justify-content: center;
     align-items: center;
-}*/
+}
 .title {
     text-align: center;
     justify-content: center;
