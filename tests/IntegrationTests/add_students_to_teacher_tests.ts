@@ -7,7 +7,6 @@ import chaiAsPromised from "chai-as-promised";
 //const chai = chaiModule.use(chaiHttp).use(chaiAsPromised)
 chai.use(chaiAsPromised);
 chai.use(chaiHttp)
-import * as typeorm from "typeorm";
 import { EntityBase, Student, IStudentRepository, ITeacherRepository, Teacher } from "webapi.core";
 import { reject } from 'async';
 import { send } from 'process';

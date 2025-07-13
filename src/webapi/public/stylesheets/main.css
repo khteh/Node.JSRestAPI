@@ -1,8 +1,10 @@
 body {
     font-family: Avenir, Helvetica, Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
 }
 form {
-    margin-top: 12px;
+    margin-top: 10px;
 }
 .center-container {
     display: flex;
