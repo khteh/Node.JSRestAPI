@@ -32,7 +32,8 @@ jobs: # a collection of steps
           POSTGRESQL_USER: $POSTGRESQL_USER
           POSTGRES_PASSWORD: $POSTGRESQL_PASSWORD
     steps:
-      - checkout
+      - checkout:
+          method: full
       - setup_remote_docker:
           docker_layer_caching: true
       # Download and cache dependencies
