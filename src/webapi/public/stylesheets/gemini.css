@@ -1,43 +1,44 @@
-/*body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}*/
-.title {
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-}
-.chat-container {
+#chat-room-widget {
     height: 100%;
     position: relative;
     background-color: rgb(191, 237, 255);
     border: 4px solid rgb(191, 237, 255);
     border-radius: 15px;
 }
-.chat-messages {
+
+#message-box {
     position: relative;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
+    display: flex;
+}
+.chat-messages {
+    height: 100%;
+    position: relative;
+    display: flex;
+    background-color: rgb(191, 237, 255);
+    border: 4px solid rgb(191, 237, 255);
+    border-radius: 15px;
 }
 #messages {
+    display: flex;
     position: relative;
 }
 .msg {
     border-radius: 10px;
 }
-
 .msg.right {
     justify-content: flex-end;
     background-color: #CCC;
+    text-align: right;
 }
-
 .msg.left {
     margin-left: 10px;
     justify-content: flex-start;
     background-color: #555;
     color: white;
+    text-align: left;
 }
 #prompt {
     flex-grow: 1;
@@ -49,7 +50,7 @@
     background-color: white;
     border-bottom-left-radius: 15px;
 }
-#lbl-image {
+#lbl-upload {
     height: 50px;
     font-size: 1.1rem;
     border: 4px solid rgb(191, 237, 255);
@@ -64,13 +65,13 @@
     text-align: center;
 }
 
-#lbl-image:hover {
+#lbl-upload:hover {
     background-color: rgb(46, 175, 225);
 }
-.receipt-input {
+#checkReceipt {
     margin-left: 10px;
 }
-#lbl-receipt {
+#lblReceipt {
     margin-left: 10px;
 }
 #submit {

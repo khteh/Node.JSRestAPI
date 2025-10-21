@@ -91,7 +91,7 @@ export class GenerateContentUseCase implements IGenerateContentUseCase {
           this._logger.Log(LogLevels.debug, `Reading uploaded file from ${request.Image.Path}`);
           let imagePart: Part = this.FileToGenerativePart(request.Image.Path, request.Image.MimeType);
           result = await this._genAI.models.generateContent({
-            model: 'gemini-2.0-flash',
+            model: 'gemini-2.5-flash',
             contents: [
               createUserContent([
                 request.Prompt,
@@ -109,7 +109,7 @@ export class GenerateContentUseCase implements IGenerateContentUseCase {
           });
         } else {
           result = await this._genAI.models.generateContent({
-            model: 'gemini-2.0-flash',
+            model: 'gemini-2.5-flash',
             contents: request.Prompt
           });
           /*result = new GenerateContentResponse()

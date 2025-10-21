@@ -8,8 +8,8 @@
         "build"
     ],
     "compilerOptions": {
-        "module": "NodeNext",
-        "moduleResolution": "NodeNext",
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
         "baseUrl": ".",
         "rootDir": ".",
         "outDir": "build/",
