@@ -30,10 +30,10 @@
     "infrastructure": "^1.4.4",
     "inversify": "^7.10.3",
     "morgan": "^1.10.1",
+    "pug": "3.0.3",
     "reflect-metadata": "^0.2.2",
     "rotating-file-stream": "^3.2.7",
     "spdy": "^4.0.2",
-    "pug": "3.0.3",
     "webapi.core": "^2.0.0"
   },
   "devDependencies": {
@@ -48,7 +48,6 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^24.9.1",
     "@types/spdy": "latest",
-    "grpc_tools_node_protoc_ts": "^5.3.3",
     "nodemon": "^3.1.10",
     "rollup": "^4.52.5",
     "rollup-plugin-dts": "^6.2.3",
