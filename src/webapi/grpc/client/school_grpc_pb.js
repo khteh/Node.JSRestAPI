@@ -99,4 +99,4 @@ var SchoolService = exports.SchoolService = {
   },
 };
 
-exports.SchoolClient = grpc.makeGenericClientConstructor(SchoolService);
+exports.SchoolClient = grpc.makeGenericClientConstructor(SchoolService, 'School');
