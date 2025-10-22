@@ -2,6 +2,7 @@
   "extensions": ["ts"],
   "spec": ["tests/**/*.ts"],
   "node-option": [
-    "loader=ts-node/esm"
+    "loader=ts-node/esm",
+    "no-experimental-strip-types"
   ]
 }
