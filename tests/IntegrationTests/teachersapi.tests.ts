@@ -3,8 +3,8 @@ import config from 'config'
 //import assert from assert
 import chai from 'chai'
 import chaiHttp from 'chai-http'
-import app from '../app.js'
-import {Query} from '../lib/db.js'
+import { app } from "../../src/webapi/index.js"
+import { Query } from '../lib/db.js'
 import registration from '../BusinessLogic/registration.js'
 import notifications from '../BusinessLogic/notifications.js'
 import suspend from '../BusinessLogic/suspend.js'

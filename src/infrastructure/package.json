@@ -36,5 +36,8 @@
   },
   "keywords": [],
   "main": "build/index.js",
-  "types": "build/index.d.ts"
+  "types": "build/index.d.ts",
+  "engines": {
+    "node": ">=25.0.0"
+  }
 }
