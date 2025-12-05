@@ -23,7 +23,9 @@
     "lint": "eslint --ext .js --ignore-path .gitignore ./",
     "dev": "export NODE_ENV=development&& concurrently \"npx tsc --watch\" \"nodemon -q build/src/webapi/server.js\"",
     "start": "export NODE_ENV=development&& node --env-file-if-exists=.env build/src/webapi/server.js",
-    "test": "export NODE_ENV=development&& ./node_modules/.bin/mocha -r ts-node/register tests/**/*.ts --timeout 10000 --recursive --check-leaks --exit",
+    "mocha_test": "export NODE_ENV=development&& ./node_modules/.bin/mocha -r ts-node/register tests/**/*.ts --timeout 10000 --recursive --check-leaks --exit",
+    "test": "export NODE_ENV=test&& vitest",
+    "coverage": "export NODE_ENV=test&& vitest run --coverage",
     "ts_test": "export NODE_ENV=development && ./node_modules/.bin/nyc --timeout 10000 --recursive --check-leaks --reporter=lcov --reporter=text --reporter=text-summary --reporter=html ./node_modules/.bin/mocha -r ts-node/register tests/**/*.ts --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml --exit",
     "ts_test_error": "export NODE_ENV=development && ./node_modules/.bin/nyc --timeout 10000 --recursive --check-leaks --reporter=lcov --reporter=text --reporter=text-summary --reporter=html ./node_modules/.bin/mocha --loader=ts-node/esm -r ts-node/register tests/**/*.ts --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml --exit",
     "cover": "./node_modules/.bin/nyc --reporter=lcov --reporter=text --reporter=text-summary --reporter=html npm test",
@@ -90,7 +92,8 @@
     "ts-node": "^10.9.2",
     "ts-protoc-gen": "^0.15.0",
     "tslib": "^2.8.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.15"
   },
   "workspaces": [
     "src/webapi.core",
