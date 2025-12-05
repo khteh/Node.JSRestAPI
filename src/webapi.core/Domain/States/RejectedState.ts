@@ -1,12 +1,12 @@
 import { ILogger, LogLevels } from "../../Interfaces/ILogger.js";
 import { injectable, inject } from "inversify";
 import { LoggerTypes } from '../../types.js';
-import StateContext from "./StateContext.js";
+import { StateContext } from "./StateContext.js";
 import State from "./State.js";
 import { StatusEnum } from "./StateEnums.js";
 
-export default class RejectedState extends State {
-    public constructor(@inject(LoggerTypes.ILogger) logger: ILogger, context: () => StateContext) {
+export class RejectedState extends State {
+    public constructor(@inject(LoggerTypes.ILogger) logger: ILogger, context: StateContext) {
         super(logger, StatusEnum.REJECTED, context);
     }
     public override async handle () {

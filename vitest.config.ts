@@ -17,7 +17,8 @@ export default defineConfig({
                     environment: 'node',
                     //setupFiles: ['./setup.happy-dom.ts'],
                     globals: true,
-                    include: ['*.{js,tsx,ts}']
+                    include: ['*.{js,tsx,ts}'],
+                    clearMocks: true // Automatically calls vi.clearAllMocks() before each test
                 },
             },
             {
@@ -27,7 +28,8 @@ export default defineConfig({
                     environment: 'node',
                     //setupFiles: ['./setup.node.ts'],
                     globals: true,
-                    include: ['*.{js,tsx,ts}']
+                    include: ['*.{js,tsx,ts}'],
+                    clearMocks: true // Automatically calls vi.clearAllMocks() before each test
                 },
             },
             {
@@ -37,7 +39,8 @@ export default defineConfig({
                     environment: 'node',
                     //setupFiles: ['./setup.node.ts'],
                     globals: true,
-                    include: ['*.{js,tsx,ts}']
+                    include: ['*.{js,tsx,ts}'],
+                    clearMocks: true // Automatically calls vi.clearAllMocks() before each test
                 },
             },
         ],
