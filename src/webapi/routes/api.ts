@@ -18,6 +18,7 @@ import multer from 'multer';
 const upload = multer({ dest: 'uploads/' })
 var api = express.Router();
 const di = new Container();
+di.bind<ILogger>(LoggerTypes.ILogger).to(LoggerImpl);
 di.bind<IGenerateContentUseCase>(UseCaseTypes.IGenerateContentUseCase).to(GenerateContentUseCase);
 di.bind<IRegisterStudentUseCase>(UseCaseTypes.IRegisterStudentUseCase).to(RegisterStudentUseCase);
 di.bind<ISuspendStudentUseCase>(UseCaseTypes.ISuspendStudentUseCase).to(SuspendStudentUseCase);
@@ -27,7 +28,6 @@ di.bind<ICommonStudentsUseCase>(UseCaseTypes.ICommonStudentsUseCase).to(CommonSt
 di.bind<IStudentNotificationsUseCase>(UseCaseTypes.IStudentNotificationsUseCase).to(StudentNotificationsUseCase);
 di.bind<IStudentRepository>(RepositoryTypes.IStudentRepository).to(StudentRepository);
 di.bind<ITeacherRepository>(RepositoryTypes.ITeacherRepository).to(TeacherRepository);
-di.bind<ILogger>(LoggerTypes.ILogger).to(LoggerImpl);
 di.bind(DatabaseTypes.DatabaseService).to(Database);
 var fibonacci = new FibonacciController(di.get<ILogger>(LoggerTypes.ILogger));
 var greetings = new GreetingsController(di.get<ILogger>(LoggerTypes.ILogger));

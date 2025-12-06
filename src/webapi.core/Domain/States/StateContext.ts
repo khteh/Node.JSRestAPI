@@ -20,7 +20,7 @@ export class StateContext {
     public async ChangeState (state?: State) {
         this._logger.Log(LogLevels.debug, `Current state ${this._state?.Name()}`);
         this._state = state;
-        console.log(`StateContext.ChangeState(${state?.Name()}), Current state ${this._state?.Name()}`)
+        //console.log(`StateContext.ChangeState(${state?.Name()}), Current state ${this._state?.Name()}`)
         this._logger.Log(LogLevels.debug, `New state ${this._state?.Name()}`);
     }
     public State (): StatusEnum | null {

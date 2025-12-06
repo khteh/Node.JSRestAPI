@@ -14,7 +14,6 @@ export class NewState extends State {
     public override async handle () {
         // Do operation
         this._logger.Log(LogLevels.debug, "NewState.handle()")
-        console.log(`NewState.handle() ${this._quoted.Name()}`)
         await this._context.ChangeState(this._quoted);
     }
 }
