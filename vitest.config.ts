@@ -1,6 +1,11 @@
+import swc from "unplugin-swc"; // https://github.com/inversify/monorepo/issues/1378
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
+    plugins: [
+        // Vite plugin
+        swc.vite(),
+    ],
     test: {
         projects: [
             // you can use a list of glob patterns to define your projects
