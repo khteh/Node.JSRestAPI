@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 //import 'elastic-apm-node/start.js'
-
+import 'reflect-metadata'
 /**
  * Module dependencies.
  */
