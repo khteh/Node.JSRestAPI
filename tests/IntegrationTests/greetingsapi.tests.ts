@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 // Set env variable to test during the tests
 import config from 'config'
 import { app } from "../../src/webapi/index.js"

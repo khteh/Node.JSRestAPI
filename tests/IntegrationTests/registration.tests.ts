@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import config from 'config'
 import { Mock, It, Times } from 'moq.ts';
 import { app } from "../../src/webapi/index.js"

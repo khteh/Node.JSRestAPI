@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import config from 'config'
 import { app } from "../../src/webapi/index.js"
 import * as chai from 'chai';
