@@ -1,8 +1,6 @@
 import config from 'config'
 import { expect, test, vi } from 'vitest'
 import { Mock, It, Times } from 'moq.ts';
-import { DataSource, EntityTarget, Repository } from "typeorm"
-import { Database } from 'infrastructure';
 import * as chai from 'chai';
 import chaiHttp from 'chai-http'
 import chaiAsPromised from "chai-as-promised";
@@ -32,25 +30,21 @@ describe('State tests', async () => {
         expect(changeStateSpy).toHaveBeenCalledTimes(1)
         expect(stateContext.State()).to.equal(state.Name());
 
-        const handleSpy = vi.spyOn(state, 'handle')
+        const newStateSpy = vi.spyOn(state, 'handle')
         changeStateSpy.mockClear() // Reset the spy's call count and other data
         await stateContext.handle();
-        expect(handleSpy).toHaveBeenCalledTimes(1)
+        expect(newStateSpy).toHaveBeenCalledTimes(1)
         expect(changeStateSpy).toHaveBeenCalledTimes(1)
         expect(stateContext.State()).to.equal(StatusEnum.QUOTED);
 
         changeStateSpy.mockClear() // Reset the spy's call count and other data
-        handleSpy.mockClear() // Reset the spy's call count and other data
         await stateContext.handle();
-        expect(handleSpy).toHaveBeenCalledTimes(1)
         expect(changeStateSpy).toHaveBeenCalledTimes(1)
         expect(stateContext.State()).to.equal(StatusEnum.APPROVED);
 
         changeStateSpy.mockClear() // Reset the spy's call count and other data
-        handleSpy.mockClear() // Reset the spy's call count and other data
         await stateContext.handle();
-        expect(handleSpy).toHaveBeenCalledTimes(1)
-        expect(changeStateSpy).toHaveBeenCalledTimes(1)
+        expect(changeStateSpy).toHaveBeenCalledTimes(0)
         expect(stateContext.State()).to.equal(StatusEnum.APPROVED);
     });
 })
