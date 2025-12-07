@@ -10,17 +10,15 @@ import * as typeorm from "typeorm";
 import { EntityBase, Student, StudentDTO, IStudentRepository, ITeacherRepository, Teacher } from "webapi.core";
 import { reject } from 'async';
 import { send } from 'process';
-var expect = chai.expect
-var assert = chai.assert
-var should = chai.should()
+//var expect = chai.expect
 chai.use(chaiHttp)
 //console.log("NODE_ENV: "+config.util.getEnv('NODE_ENV')+ " : "+process.env.NODE_ENV)
-expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
+expect(config.util.getEnv('NODE_ENV')).toEqual('test');
 var verifyClientError = function (err: any, res: any) {
-    expect(res).to.have.status(400);
-    expect(res).to.have.property('body');
-    expect(res.body).to.have.property('message');
-    expect(res.body.message).to.not.be.empty;
+    expect(res).toHaveProperty("status", 400);
+    expect(res).toHaveProperty('body');
+    expect(res.body).toHaveProperty('message');
+    expect(res.body.message).not.toBe('');
 }
 // WIP. Mock doesn't work for integration tests!
 describe.skip('Valid data should succeed tests', () => {
@@ -51,9 +49,9 @@ describe.skip('Valid data should succeed tests', () => {
             .send(payload)
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
-                expect(res).to.have.status(201);
-                expect(err).to.be.empty;
-                expect(res).to.have.property("Message").and.to.be.a("string").and.to.equal("2 students registered successfully");
+                expect(res).toHaveProperty("status", 201);
+                expect(err).toBe('');
+                expect(res).toHaveProperty("Message").and.toBeTypeOf("string").and.to.equal("2 students registered successfully");
                 done();
             });
     });
@@ -93,9 +91,9 @@ describe.skip('Valid data should succeed tests', () => {
             .send(payload)
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
-                expect(res).to.have.status(201);
-                expect(err).to.be.empty;
-                expect(res).to.have.property("Message").and.to.be.a("string").and.to.equal("2 teachers registered successfully");
+                expect(res).toHaveProperty("status", 201);
+                expect(err).toBe('');
+                expect(res).toHaveProperty("Message").and.toBeTypeOf("string").and.to.equal("2 teachers registered successfully");
                 done();
             });
     });
@@ -128,9 +126,9 @@ describe.skip('InValid data should fail tests', () => {
             .send(payload)
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
-                expect(res).to.have.status(400);
-                expect(err).to.not.be.empty;
-                expect(res).to.have.property("Message").and.to.be.a("array").and.to.include("Student student1@b.c registration failed!");
+                expect(res).toHaveProperty("status", 400);
+                expect(err).not.toBe('');
+                expect(res).toHaveProperty("Message").and.toBeTypeOf("array").and.toContain("Student student1@b.c registration failed!");
                 done();
             });
     });
@@ -170,9 +168,9 @@ describe.skip('InValid data should fail tests', () => {
             .send(payload)
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
-                expect(res).to.have.status(400);
-                expect(err).to.not.be.empty;
-                expect(res).to.have.property("Message").and.to.be.a("array").and.to.include("Teacher teacher1@b.c registration failed!");
+                expect(res).toHaveProperty("status", 400);
+                expect(err).not.toBe('');
+                expect(res).toHaveProperty("Message").and.toBeTypeOf("array").and.toContain("Teacher teacher1@b.c registration failed!");
                 done();
             });
     });

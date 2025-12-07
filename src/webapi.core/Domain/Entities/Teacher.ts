@@ -1,6 +1,6 @@
 import { Entity, Column, JoinTable, ManyToMany, Relation } from "typeorm"
 import { EntityBase } from "./EntityBase.js"
-import { Student } from "./Student.js"
+import type { Student } from "./Student.js"
 @Entity()
 export class Teacher extends EntityBase {
     @Column({ length: 256 })
@@ -12,7 +12,8 @@ export class Teacher extends EntityBase {
     @Column({ unique: true, length: 256 })
     public email: string
 
-    @ManyToMany((type) => Student, (student) => student.teachers)
+    //@ManyToMany((type) => Student, (student) => student.teachers)
+    @ManyToMany("Student")
     //@JoinTable()// Note that the inverse relation does not have a @JoinTable. @JoinTable must be only on one side of the relation.
     public students: Relation<Student>[]
 

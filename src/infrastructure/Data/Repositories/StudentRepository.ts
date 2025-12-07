@@ -1,12 +1,12 @@
-import { Student, Teacher, IStudentRepository } from "webapi.core"
+import { Student, Teacher, IStudentRepository, ILogger, LoggerTypes, LogLevels } from "webapi.core"
 import { RepositoryBase } from "./RepositoryBase.js"
 import { injectable, inject } from "inversify";
 import { DatabaseTypes } from "../../types.js";
 import { Database } from "../../db.js"
 @injectable()
 export class StudentRepository extends RepositoryBase<Student> implements IStudentRepository {
-    constructor(@inject(DatabaseTypes.DatabaseService) db: Database) {
-        super(Student, db);
+    constructor(@inject(LoggerTypes.ILogger) logger: ILogger, @inject(DatabaseTypes.DatabaseService) db: Database) {
+        super(logger, Student, db);
     }
     public override async GetById (id: number): Promise<Student | null> {
         return await this._repository.findOne({
@@ -37,5 +37,29 @@ export class StudentRepository extends RepositoryBase<Student> implements IStude
             return (await this.ListAll()).filter(i => i.teachers.find(j => j.email == teacher.email));
         }
         return [];
+    }
+    public async DeleteAllRelations (): Promise<boolean> {
+        try {
+            let students: Student[] = await this.ListAll();
+            students.forEach(async s => {
+                s.teachers = [];
+                await this._repository.save(s);
+            }
+            );
+        } catch (error) {
+            console.error(error);
+            this._logger.Log(LogLevels.error, `DeleteAllRelations(): ${error}`);
+            return false;
+        }
+        return true;
+    }
+    public async DeleteAllStudents (): Promise<boolean> {
+        try {
+            return await this.Clear();
+        } catch (error) {
+            console.error(error);
+            this._logger.Log(LogLevels.error, `DeleteAllStudents(): ${error}`);
+            return false;
+        }
     }
 }

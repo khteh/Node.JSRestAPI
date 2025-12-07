@@ -1,4 +1,4 @@
-import { IRepository, EntityBase } from "webapi.core"
+import { IRepository, EntityBase, ILogger, LoggerTypes } from "webapi.core"
 import { Database } from "../../db.js"
 import { EntityTarget, Repository } from "typeorm"
 import { injectable, unmanaged, inject } from "inversify";
@@ -6,9 +6,11 @@ import { DatabaseTypes } from "../../types.js";
 import { timingSafeEqual } from "crypto";
 @injectable()
 export abstract class RepositoryBase<T extends EntityBase> implements IRepository<T> {
+    protected _logger: ILogger;
     protected _repository: Repository<T>;
     protected _db: Database;
-    constructor(@unmanaged() entity: EntityTarget<T>, db: Database) {
+    constructor(logger: ILogger, @unmanaged() entity: EntityTarget<T>, db: Database) {
+        this._logger = logger;
         this._db = db;
         this._repository = this._db.getRepository(entity);
     }
@@ -30,5 +32,9 @@ export abstract class RepositoryBase<T extends EntityBase> implements IRepositor
     public async Delete (id: number): Promise<Number> {
         let result = await this._repository.delete(id);
         return result.affected ?? 0;
+    }
+    public async Clear (): Promise<boolean> {
+        await this._repository.clear();
+        return true;
     }
 }

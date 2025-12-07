@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import config from 'config'
 import express from 'express'
 import { Container } from "inversify";
@@ -18,6 +19,11 @@ import multer from 'multer';
 const upload = multer({ dest: 'uploads/' })
 var api = express.Router();
 const di = new Container();
+/*
+console.log('### LoggerTypes.ILogger ###');
+console.log(LoggerTypes.ILogger);
+console.log(`LoggerImpl: ${LoggerImpl}, Database: ${Database}, StudentRepository: ${StudentRepository}, TeacherRepository: ${TeacherRepository}`); //, GenerateContentUseCase: ${GenerateContentUseCase}`);
+*/
 di.bind<ILogger>(LoggerTypes.ILogger).to(LoggerImpl);
 di.bind<IGenerateContentUseCase>(UseCaseTypes.IGenerateContentUseCase).to(GenerateContentUseCase);
 di.bind<IRegisterStudentUseCase>(UseCaseTypes.IRegisterStudentUseCase).to(RegisterStudentUseCase);

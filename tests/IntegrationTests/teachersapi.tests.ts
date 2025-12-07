@@ -5,44 +5,54 @@ import config from 'config'
 import chai from 'chai'
 import chaiHttp from 'chai-http'
 import { app } from "../../src/webapi/index.js"
-import { Query } from '../lib/db.js'
+import di from "./IntegrationTestSetup.js"
+import * as typeorm from "typeorm";
+import { EntityBase, Student, StudentDTO, IStudentRepository, ITeacherRepository, Teacher, RepositoryTypes } from "webapi.core";
 import registration from '../BusinessLogic/registration.js'
 import notifications from '../BusinessLogic/notifications.js'
 import suspend from '../BusinessLogic/suspend.js'
 import commonstudents from '../BusinessLogic/commonstudents.js'
-var expect = chai.expect
-var should = chai.should()
+//var expect = chai.expect
 chai.use(chaiHttp)
-expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
+expect(config.util.getEnv('NODE_ENV')).toEqual('test');
 var verifyClientError = function (err, res) {
-    expect(res).to.have.status(400);
-    expect(res).to.have.property('body');
-    expect(res.body).to.have.property('message');
-    expect(res.body.message).to.not.be.empty;
+    expect(res).toHaveProperty("status", 400);
+    expect(res).toHaveProperty('body');
+    expect(res.body).toHaveProperty('message');
+    expect(res.body.message).not.toBe('');
     //console.log("/POST /api/register err: "+JSON.stringify(err));
 }
 describe('Two teachers, two students tests', () => {
     //Clean up before all tests in this block
-    before('Cleanup teacher_student table!', (done) => {
+    before('Cleanup teacher_student table!', async (done) => {
+        let studentRepo = di.get<IStudentRepository>(RepositoryTypes.IStudentRepository);
+        let result = await studentRepo.DeleteAllRelations();
+        expect(result).toBe(true);
         //console.log("Cleanup teacher_student table!");
-        Query('delete from teacher_student', function (error, result) {
-            expect(error).to.be.null;
+        /*Query('delete from teacher_student', function (error, result) {
+            expect(error).toBeNull();
             done();
-        });
+        });*/
     });
-    before("Cleanup students table!", (done) => {
+    before("Cleanup students table!", async (done) => {
+        let studentRepo = di.get<IStudentRepository>(RepositoryTypes.IStudentRepository);
+        let result = await studentRepo.DeleteAllStudents();
+        expect(result).toBe(true);
         //console.log("Cleanup students table!");
-        Query('delete from students', function (error, result) {
-            expect(error).to.be.null;
+        /*Query('delete from students', function (error, result) {
+            expect(error).toBeNull();
             done();
-        });
+        });*/
     });
-    before("Cleanup teachers table!", (done) => {
+    before("Cleanup teachers table!", async (done) => {
         //console.log("Cleanup teachers table!");
-        Query('delete from teachers', function (error, result) {
-            expect(error).to.be.null;
+        let teacherRepo = di.get<ITeacherRepository>(RepositoryTypes.ITeacherRepository);
+        let result = await teacherRepo.DeleteAllTeachers();
+        expect(result).toBe(true);
+        /*Query('delete from teachers', function (error, result) {
+            expect(error).toBeNull();
             done();
-        });
+        });*/
     });
     /*
       * Test the /POST /api/register
@@ -114,8 +124,8 @@ describe('Two teachers, two students tests', () => {
                 .send(register)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).to.have.status(204);
-                    expect(err).to.be.null;
+                    expect(res).toHaveProperty("status", 204);
+                    expect(err).toBeNull();
                     done();
                 });
         });
@@ -137,8 +147,8 @@ describe('Two teachers, two students tests', () => {
                 .send(register)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).to.have.status(204);
-                    expect(err).to.be.null;
+                    expect(res).toHaveProperty("status", 204);
+                    expect(err).toBeNull();
                     done();
                 });
         });
@@ -181,13 +191,13 @@ describe('Two teachers, two students tests', () => {
                 .query({ "teacher": "teacher1@example.com" })
                 .end((err, res) => {
                     //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
-                    expect(res).to.have.status(200);
-                    expect(err).to.be.null;
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('students');
-                    expect(res.body.students).to.be.a('array').that.includes('student1@example.com');
-                    expect(res.body.students.length).to.be.eql(1);
-                    expect(res.body.students[0]).to.be.eql('student1@example.com');
+                    expect(res).toHaveProperty("status", 200);
+                    expect(err).toBeNull();
+                    expect(res).toHaveProperty('body');
+                    expect(res.body).toHaveProperty('students');
+                    expect(res.body.students).toBeTypeOf("array").that.includes('student1@example.com');
+                    expect(res.body.students.length).toEqual(1);
+                    expect(res.body.students[0]).toEqual('student1@example.com');
                     done();
                 });
         });
@@ -202,12 +212,12 @@ describe('Two teachers, two students tests', () => {
                 .query({ "teacher": "teacher2@example.com" })
                 .end((err, res) => {
                     //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
-                    expect(res).to.have.status(200);
-                    expect(err).to.be.null;
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('students');
-                    expect(res.body.students).to.be.a('array').that.includes('student1@example.com', 'student2@example.com');
-                    expect(res.body.students.length).to.be.eql(2);
+                    expect(res).toHaveProperty("status", 200);
+                    expect(err).toBeNull();
+                    expect(res).toHaveProperty('body');
+                    expect(res.body).toHaveProperty('students');
+                    expect(res.body.students).toBeTypeOf("array").that.includes('student1@example.com', 'student2@example.com');
+                    expect(res.body.students.length).toEqual(2);
                     done();
                 });
         });
@@ -222,13 +232,13 @@ describe('Two teachers, two students tests', () => {
                 .query({ teacher: ['teacher1@example.com', 'teacher2@example.com'] })
                 .end((err, res) => {
                     //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
-                    expect(res).to.have.status(200);
-                    expect(err).to.be.null;
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('students');
-                    expect(res.body.students).to.be.a('array').that.includes('student1@example.com');
-                    expect(res.body.students.length).to.be.eql(1);
-                    expect(res.body.students[0]).to.be.eql('student1@example.com');
+                    expect(res).toHaveProperty("status", 200);
+                    expect(err).toBeNull();
+                    expect(res).toHaveProperty('body');
+                    expect(res.body).toHaveProperty('students');
+                    expect(res.body.students).toBeTypeOf("array").that.includes('student1@example.com');
+                    expect(res.body.students.length).toEqual(1);
+                    expect(res.body.students[0]).toEqual('student1@example.com');
                     done();
                 });
         });
@@ -265,12 +275,12 @@ describe('Two teachers, two students tests', () => {
                 .send(notifications)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).to.have.status(200);
-                    expect(err).to.be.null;
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('recipients');
-                    expect(res.body.recipients).to.be.a('array').that.includes('student1@example.com');
-                    expect(res.body.recipients.length).to.be.eql(1);
+                    expect(res).toHaveProperty("status", 200);
+                    expect(err).toBeNull();
+                    expect(res).toHaveProperty('body');
+                    expect(res.body).toHaveProperty('recipients');
+                    expect(res.body.recipients).toBeTypeOf("array").that.includes('student1@example.com');
+                    expect(res.body.recipients.length).toEqual(1);
                     done();
                 });
         });
@@ -289,12 +299,12 @@ describe('Two teachers, two students tests', () => {
                 .send(notifications)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).to.have.status(200);
-                    expect(err).to.be.null;
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('recipients');
-                    expect(res.body.recipients).to.be.a('array').that.includes('student1@example.com');
-                    expect(res.body.recipients.length).to.be.eql(1);
+                    expect(res).toHaveProperty("status", 200);
+                    expect(err).toBeNull();
+                    expect(res).toHaveProperty('body');
+                    expect(res.body).toHaveProperty('recipients');
+                    expect(res.body.recipients).toBeTypeOf("array").that.includes('student1@example.com');
+                    expect(res.body.recipients.length).toEqual(1);
                     done();
                 });
         });
@@ -313,12 +323,12 @@ describe('Two teachers, two students tests', () => {
                 .send(notifications)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).to.have.status(200);
-                    expect(err).to.be.null;
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('recipients');
-                    expect(res.body.recipients).to.be.a('array').that.includes('student1@example.com', 'student2@example.com');
-                    expect(res.body.recipients.length).to.be.eql(2);
+                    expect(res).toHaveProperty("status", 200);
+                    expect(err).toBeNull();
+                    expect(res).toHaveProperty('body');
+                    expect(res.body).toHaveProperty('recipients');
+                    expect(res.body.recipients).toBeTypeOf("array").that.includes('student1@example.com', 'student2@example.com');
+                    expect(res.body.recipients.length).toEqual(2);
                     done();
                 });
         });
@@ -337,12 +347,12 @@ describe('Two teachers, two students tests', () => {
                 .send(notifications)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).to.have.status(200);
-                    expect(err).to.be.null;
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('recipients');
-                    expect(res.body.recipients).to.be.a('array').that.includes('student1@example.com');
-                    expect(res.body.recipients.length).to.be.eql(1);
+                    expect(res).toHaveProperty("status", 200);
+                    expect(err).toBeNull();
+                    expect(res).toHaveProperty('body');
+                    expect(res.body).toHaveProperty('recipients');
+                    expect(res.body.recipients).toBeTypeOf("array").that.includes('student1@example.com');
+                    expect(res.body.recipients.length).toEqual(1);
                     done();
                 });
         });
@@ -361,12 +371,12 @@ describe('Two teachers, two students tests', () => {
                 .send(notifications)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).to.have.status(200);
-                    expect(err).to.be.null;
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('recipients');
-                    expect(res.body.recipients).to.be.a('array').that.includes('student1@example.com', 'student2@example.com');
-                    expect(res.body.recipients.length).to.be.eql(2);
+                    expect(res).toHaveProperty("status", 200);
+                    expect(err).toBeNull();
+                    expect(res).toHaveProperty('body');
+                    expect(res.body).toHaveProperty('recipients');
+                    expect(res.body.recipients).toBeTypeOf("array").that.includes('student1@example.com', 'student2@example.com');
+                    expect(res.body.recipients.length).toEqual(2);
                     done();
                 });
         });
@@ -426,8 +436,8 @@ describe('Two teachers, two students tests', () => {
                 .send(suspend)
                 .end((err, res) => {
                     //console.log("/POST /api/suspend response: " + JSON.stringify(res));
-                    expect(res).to.have.status(204);
-                    expect(err).to.be.null;
+                    expect(res).toHaveProperty("status", 204);
+                    expect(err).toBeNull();
                     done();
                 });
         });
@@ -442,13 +452,13 @@ describe('Two teachers, two students tests', () => {
                 .query({ teacher: ['teacher1@example.com', 'teacher2@example.com'] })
                 .end((err, res) => {
                     //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
-                    expect(res).to.have.status(200);
-                    expect(err).to.be.null;
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('students');
-                    expect(res.body.students).to.be.a('array').that.includes('student1@example.com');
-                    expect(res.body.students.length).to.be.eql(1);
-                    expect(res.body.students[0]).to.be.eql('student1@example.com');
+                    expect(res).toHaveProperty("status", 200);
+                    expect(err).toBeNull();
+                    expect(res).toHaveProperty('body');
+                    expect(res.body).toHaveProperty('students');
+                    expect(res.body.students).toBeTypeOf("array").that.includes('student1@example.com');
+                    expect(res.body.students.length).toEqual(1);
+                    expect(res.body.students[0]).toEqual('student1@example.com');
                     done();
                 });
         });
@@ -467,12 +477,12 @@ describe('Two teachers, two students tests', () => {
                 .send(notifications)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).to.have.status(200);
-                    expect(err).to.be.null;
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('recipients');
-                    expect(res.body.recipients).to.be.a('array').that.is.empty;
-                    expect(res.body.recipients.length).to.be.eql(0);
+                    expect(res).toHaveProperty("status", 200);
+                    expect(err).toBeNull();
+                    expect(res).toHaveProperty('body');
+                    expect(res.body).toHaveProperty('recipients');
+                    expect(res.body.recipients).toBeTypeOf("array").that.is.empty;
+                    expect(res.body.recipients.length).toEqual(0);
                     done();
                 });
         });
@@ -491,12 +501,12 @@ describe('Two teachers, two students tests', () => {
                 .send(notifications)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).to.have.status(200);
-                    expect(err).to.be.null;
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('recipients');
-                    expect(res.body.recipients).to.be.a('array').that.includes('student2@example.com');
-                    expect(res.body.recipients.length).to.be.eql(1);
+                    expect(res).toHaveProperty("status", 200);
+                    expect(err).toBeNull();
+                    expect(res).toHaveProperty('body');
+                    expect(res.body).toHaveProperty('recipients');
+                    expect(res.body.recipients).toBeTypeOf("array").that.includes('student2@example.com');
+                    expect(res.body.recipients.length).toEqual(1);
                     done();
                 });
         });
@@ -515,12 +525,12 @@ describe('Two teachers, two students tests', () => {
                 .send(notifications)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).to.have.status(200);
-                    expect(err).to.be.null;
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('recipients');
-                    expect(res.body.recipients).to.be.a('array').that.includes('student2@example.com');
-                    expect(res.body.recipients.length).to.be.eql(1);
+                    expect(res).toHaveProperty("status", 200);
+                    expect(err).toBeNull();
+                    expect(res).toHaveProperty('body');
+                    expect(res.body).toHaveProperty('recipients');
+                    expect(res.body.recipients).toBeTypeOf("array").that.includes('student2@example.com');
+                    expect(res.body.recipients.length).toEqual(1);
                     done();
                 });
         });
@@ -539,12 +549,12 @@ describe('Two teachers, two students tests', () => {
                 .send(notifications)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).to.have.status(200);
-                    expect(err).to.be.null;
-                    expect(res).to.have.property('body');
-                    expect(res.body).to.have.property('recipients');
-                    expect(res.body.recipients).to.be.a('array').that.includes('student2@example.com');
-                    expect(res.body.recipients.length).to.be.eql(1);
+                    expect(res).toHaveProperty("status", 200);
+                    expect(err).toBeNull();
+                    expect(res).toHaveProperty('body');
+                    expect(res.body).toHaveProperty('recipients');
+                    expect(res.body.recipients).toBeTypeOf("array").that.includes('student2@example.com');
+                    expect(res.body.recipients.length).toEqual(1);
                     done();
                 });
         });

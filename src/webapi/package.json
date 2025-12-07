@@ -30,7 +30,6 @@
     "express": "^5.2.1",
     "helmet": "^8.1.0",
     "http-errors": "^2.0.1",
-    "infrastructure": "^1.4.4",
     "inversify": "^7.10.6",
     "morgan": "^1.10.1",
     "pug": "3.0.3",

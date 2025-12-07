@@ -1,4 +1,4 @@
-import { Student, Teacher, ITeacherRepository } from "webapi.core"
+import { Student, Teacher, ITeacherRepository, ILogger, LoggerTypes, LogLevels } from "webapi.core"
 import { RepositoryBase } from "./RepositoryBase.js"
 import { IStudentRepository, RepositoryTypes } from "webapi.core"
 import { injectable, inject } from "inversify";
@@ -7,8 +7,8 @@ import { Database } from "../../db.js"
 @injectable()
 export class TeacherRepository extends RepositoryBase<Teacher> implements ITeacherRepository {
     private _studentRepository: IStudentRepository;
-    constructor(@inject(DatabaseTypes.DatabaseService) db: Database, @inject(RepositoryTypes.IStudentRepository) studentRepo: IStudentRepository) {
-        super(Teacher, db);
+    constructor(@inject(LoggerTypes.ILogger) logger: ILogger, @inject(DatabaseTypes.DatabaseService) db: Database, @inject(RepositoryTypes.IStudentRepository) studentRepo: IStudentRepository) {
+        super(logger, Teacher, db);
         this._studentRepository = studentRepo;
     }
     public override async GetById (id: number): Promise<Teacher | null> {
@@ -34,5 +34,14 @@ export class TeacherRepository extends RepositoryBase<Teacher> implements ITeach
             } catch (e) { console.log(e); }
         }
         return null;
+    }
+    public async DeleteAllTeachers (): Promise<boolean> {
+        try {
+            return await this.Clear();
+        } catch (error) {
+            console.error(error);
+            this._logger.Log(LogLevels.error, `DeleteAllTeachers(): ${error}`);
+            return false;
+        }
     }
 }
