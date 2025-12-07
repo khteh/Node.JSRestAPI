@@ -1,4 +1,4 @@
-import { Entity, Column, JoinTable, ManyToMany } from "typeorm"
+import { Entity, Column, JoinTable, ManyToMany, Relation } from "typeorm"
 import { EntityBase } from "./EntityBase.js"
 import { Student } from "./Student.js"
 @Entity()
@@ -14,7 +14,7 @@ export class Teacher extends EntityBase {
 
     @ManyToMany((type) => Student, (student) => student.teachers)
     //@JoinTable()// Note that the inverse relation does not have a @JoinTable. @JoinTable must be only on one side of the relation.
-    public students: Student[]
+    public students: Relation<Student>[]
 
     constructor(first: string, last: string, email: string) {
         super();
