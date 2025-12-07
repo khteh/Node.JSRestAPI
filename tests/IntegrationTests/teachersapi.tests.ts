@@ -6,6 +6,8 @@ import chai from 'chai'
 import chaiHttp from 'chai-http'
 import { app } from "../../src/webapi/index.js"
 import { Query } from '../lib/db.js'
+import * as typeorm from "typeorm";
+import { EntityBase, Student, StudentDTO, IStudentRepository, ITeacherRepository, Teacher } from "webapi.core";
 import registration from '../BusinessLogic/registration.js'
 import notifications from '../BusinessLogic/notifications.js'
 import suspend from '../BusinessLogic/suspend.js'

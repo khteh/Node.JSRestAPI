@@ -8,11 +8,12 @@
         "node_modules"
     ],
     "compilerOptions": {
-        "module": "nodenext",
-        "moduleResolution": "nodenext",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
         "baseUrl": ".",
         "rootDir": ".",
         "outDir": "build/",
+        "esModuleInterop": true,
         "plugins": [
             {
                 "name": "@rollup/plugin-typescript"
