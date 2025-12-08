@@ -5,7 +5,7 @@ import config from 'config'
 import chai from 'chai'
 import chaiHttp from 'chai-http'
 import port from "../../src/webapi/server.js"
-import { app, di } from "../../src/webapi/index.js"
+import { app } from "../../src/webapi/index.js"
 import { di } from "../../src/webapi/routes/api.js"
 import { EntityBase, Student, StudentDTO, IStudentRepository, ITeacherRepository, Teacher, RepositoryTypes } from "webapi.core";
 //var expect = chai.expect
