@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { FastifyRequest, FastifyReply } from "fastify"
 import { ILogger, LogLevels, LoggerTypes, ICommonStudentsUseCase, CommonStudentsRequest, Student, Teacher } from "webapi.core"
 import { CommonStudentsPresenter } from "../Presenters/CommonStudentsPresenter.js"
 import { inject } from "inversify";
@@ -12,7 +12,7 @@ export class CommonStudentsController {
         this._usecase = usecase;
         this.presenter = new CommonStudentsPresenter();
     }
-    public async CommonStudents (req: Request, res: Response, next: NextFunction) {
+    public async CommonStudents (req: FastifyRequest, res: FastifyReply) {
         this._logger.Log(LogLevels.debug, 'POST /api/commonstudents query: ' + JSON.stringify(req.body, null, 2));
         let message = { 'message': 'Calling /api/commonstudents' };
         try {

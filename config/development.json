@@ -4,6 +4,7 @@
 	"Database" : "school",
 	"Username": "guest",
 	"Password": "P@$$w0rd",
+	"Secret": "Node.JSRestAPI",
 	"typeorm": {
 		"type": "postgres",
 		"host": "10.152.183.210",

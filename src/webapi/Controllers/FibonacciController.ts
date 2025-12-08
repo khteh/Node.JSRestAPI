@@ -1,5 +1,5 @@
 import { injectable, inject } from "inversify";
-import { Request, Response, NextFunction } from 'express';
+import { FastifyRequest, FastifyReply } from "fastify"
 import { ILogger, LoggerTypes, LogLevels, LogLevelsType, Fibonacci } from "webapi.core";
 import url from 'url'
 export class FibonacciController {
@@ -9,7 +9,7 @@ export class FibonacciController {
         this._logger = logger;
         this._fibonacci = new Fibonacci();
     }
-    public Fibonacci (req: Request, res: Response, next: NextFunction) {
+    public Fibonacci (req: FastifyRequest, res: FastifyReply) {
         var url_parts = url.parse(req.url, true);
         var query = url_parts.query;
         var message = "";
@@ -19,17 +19,14 @@ export class FibonacciController {
                 let result = this._fibonacci.fibonacci(+query.n);
                 this._logger.Log(LogLevels.debug, "fib(" + query.n + "): " + result)
                 message = "Fibonacci(" + query.n + "): " + this._fibonacci.fibonacci(Number(query.n));
-                res.status(200);
-                res.json({ 'message': message });
+                res.code(200).send({ message: message });
             } catch (e) {
                 this._logger.Log(LogLevels.debug, "Exception! " + e)
-                res.status(500);
-                res.json({ 'message': e });
+                res.code(500).send({ message: e });
             }
         } else {
             message = "Please provide a valid integer as query string for fibonacci(n) calculation!";
-            res.status(400);
-            res.json({ 'message': message });
+            res.code(400).send({ message: message });
         }
     }
 }

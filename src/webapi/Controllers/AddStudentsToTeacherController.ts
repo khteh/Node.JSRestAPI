@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express'
+import { FastifyRequest, FastifyReply } from "fastify"
 import express from 'express'
 import emailvalidator from 'email-validator'
 import { ILogger, LogLevels, LoggerTypes, IAddStudentsToTeacherUseCase, AddStudentsToTeacherRequest, Student, Teacher, UseCaseResponseMessage } from "webapi.core"
@@ -15,7 +15,7 @@ export class AddStudentsToTeacherController {
         this._usecase = usecase;
         this.presenter = new PresenterBase();
     }
-    public async AddStudentsToTeacher (req: Request, res: Response, next: NextFunction) {
+    public async AddStudentsToTeacher (req: FastifyRequest, res: FastifyReply) {
         try {
             this._logger.Log(LogLevels.debug, 'POST /api/addstudents query: ' + JSON.stringify(req.body, null, 2));
             let teacher: Teacher | null = null;

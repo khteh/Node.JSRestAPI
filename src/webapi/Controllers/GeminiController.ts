@@ -1,5 +1,5 @@
 import { injectable, inject } from "inversify";
-import { Request, Response, NextFunction } from 'express';
+import { FastifyRequest, FastifyReply } from "fastify"
 import { ILogger, LoggerTypes, LogLevels, LogLevelsType, GenerateContentRequest, IGenerateContentUseCase } from "webapi.core";
 import { GenerateTextPresenter } from "../Presenters/GenerateTextPresenter.js"
 import { UseCaseTypes, ImagePart } from "webapi.core";
@@ -12,7 +12,7 @@ export class GeminiController {
         this._usecase = usecase;
         this.presenter = new GenerateTextPresenter();
     }
-    public async GenerateText (req: Request, res: Response, next: NextFunction) {
+    public async GenerateText (req: FastifyRequest, res: FastifyReply) {
         this._logger.Log(LogLevels.debug, `POST /api/gemini query: ${JSON.stringify(req.body, null, 2)}`);
         let message = { 'message': 'Calling /api/gemini' };
         try {

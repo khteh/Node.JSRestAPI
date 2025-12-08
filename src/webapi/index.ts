@@ -1,36 +1,121 @@
+import 'reflect-metadata'
 import config from 'config';
-import { Request, Response, NextFunction } from 'express';
+import { di } from "./routes/app.js"
+import { FastifyRequest, FastifyReply } from "fastify"
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import createError from 'http-errors'
-import express from 'express'
+import Fastify, { FastifyReply } from 'fastify'
+import formbody from '@fastify/formbody'
+import view from '@fastify/view'
 import compression from 'compression'
+import compress from '@fastify/compress'
 //import helmet from 'helmet'
-import cors from 'cors'
+//import cors from 'cors'
+import cors from '@fastify/cors'
 import path from 'path'
 import fs from 'fs'
 import * as rfs from 'rotating-file-stream'
 import cookieParser from 'cookie-parser'
+import fastifyCookie from '@fastify/cookie';
 import morgan from 'morgan'
 import json from 'morgan-json'
-import healthchecks from './routes/healthchecks.js'
-import { api } from './routes/api.js'
+//import healthchecks from './routes/healthchecks.js'
+//import { api } from './routes/app.js'
 import * as winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import bodyParser from 'body-parser';
-import homeRoute from './routes/home.js'
+import express from 'express'
+import { Container } from "inversify";
+import { FibonacciController } from 'Controllers/FibonacciController.js';
+import { GreetingsController } from 'Controllers/GreetingsController.js';
+import { GeminiController } from 'Controllers/GeminiController.js';
+import { RegistrationController } from 'Controllers/RegistrationController.js';
+import { AddStudentsToTeacherController } from 'Controllers/AddStudentsToTeacherController.js';
+import { CommonStudentsController } from 'Controllers/CommonStudentsController.js';
+import { SuspendStudentController } from 'Controllers/SuspendStudentController.js';
+import { StudentNotificationsController } from 'Controllers/StudentNotificationsController.js';
+import { IRegisterStudentUseCase, IRegisterTeacherUseCase, IAddStudentsToTeacherUseCase, ICommonStudentsUseCase, ISuspendStudentUseCase, IStudentNotificationsUseCase, IGenerateContentUseCase, Student, UseCaseTypes, ILogger, LoggerTypes, Teacher, IStudentRepository, ITeacherRepository, RepositoryTypes } from "webapp.core"
+import { RegisterStudentUseCase, SuspendStudentUseCase, RegisterTeacherUseCase, AddStudentsToTeacherUseCase, CommonStudentsUseCase, GenerateContentUseCase, StudentNotificationsUseCase } from "webapp.core";
+import { StudentRepository, TeacherRepository, LoggerImpl, DatabaseTypes, Database } from "infrastructure"
+import multer from 'multer';
+const upload = multer({ dest: 'uploads/' })
+
+var db = new Database(di.get<ILogger>(LoggerTypes.ILogger));
+//import homeRoute from './routes/home.js'
 //import fileUpload from 'express-fileupload';
-var app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const envToLogger = {
+  development: {
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        translateTime: 'HH:MM:ss Z',
+        ignore: 'pid,hostname',
+      },
+    },
+  },
+  production: true,
+  test: false,
+}
+declare module 'fastify' {
+  interface FastifyReply {
+    render: (view: string, data?: object) => FastifyReply;
+  }
+}
+var app = Fastify({
+  logger: {
+    level: 'info',
+    file: '/var/log/node.js/nodejsrestapp.log', // Will use pino.destination()
+    transport: {
+      target: 'pino-pretty'
+    },
+    redact: ['req.headers.authorization'], // log all HTTP headers except the Authorization header for security:
+    serializers: {
+      res (reply) {
+        // The default
+        return {
+          statusCode: reply.statusCode
+        }
+      },
+      req (request) {
+        return {
+          method: request.method,
+          url: request.url,
+          path: request.routeOptions.url,
+          parameters: request.params,
+          // Including headers in the log could violate privacy laws,
+          // e.g., GDPR. Use the "redact" option to remove sensitive
+          // fields. It could also leak authentication data in the logs.
+          headers: request.headers
+        };
+      },
+    },
+  },
+  http2: true,
+  https: {
+    key: fs.readFileSync('fastify.key'),
+    cert: fs.readFileSync('fastify.crt')
+  },
+  bodyLimit: 100 * 1024 * 1024, // 100MB
+  trustProxy: true // Trust all proxies
+})
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
-app.enable("trust proxy");
-app.use(bodyParser.json({ limit: '100mb' }));
-app.use(bodyParser.urlencoded({ extended: true, limit: '100mb', parameterLimit: 1000000 }));
-app.use(express.static(path.join(__dirname, 'public')));
-/*app.use(fileUpload({
+await app.register(view, {
+  engine: {
+    pug: require('pug'),
+  },
+  root: path.join(__dirname, 'views'), // Directory where your EJS templates are located
+});
+await app.register(import('@fastify/static'), {
+  root: path.join(__dirname, 'public'), // 'public' is the directory containing static files
+  //prefix: '/static/', // optional: serve files under a '/static' URL prefix
+  maxAge: '30d',
+  immutable: true
+});
+await app.register(formbody, { bodyLimit: 100 * 1024 * 1024 });
+/*await app.register(fileUpload({
   // Configure file uploads with maximum file size 10MB
   limits: { fileSize: 100 * 1024 * 1024 },
   // Temporarily store uploaded files to disk, rather than buffering in memory
@@ -60,15 +145,16 @@ if (config.util.getEnv('NODE_ENV') !== "test") {
     ResponseTime: ':response-time ms',
   })
   // log only 4xx and 5xx responses to console
-  app.use(morgan("combined", {
+  /*
+  await app.register(morgan("combined", {
     skip: function (req, res) { return res.statusCode < 400 },
-  }))
+  }))*/
 
   // log all requests to access.log
-  /*app.use(logger(format, {
+  /*await app.register(logger(format, {
     stream: accessLogStream,
   }))*/
-  /*expressApp.use(expressWinston.logger({
+  /*expressawait app.register(expressWinston.logger({
     level: 'info',
     meta: true, // optional: control whether you want to log the meta data about the request (default to true)
     msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
@@ -152,26 +238,88 @@ const shouldCompress = (req: Request, res: Response) => {
   return compression.filter(req, res)
 }
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(compression({ filter: shouldCompress }));
-//app.use(helmet()); // adding set of security middlewares
-app.use(cors()); // enable all CORS request
+await app.register(require('@fastify/cookie'), {
+  secret: config.get("Secret"), // Optional: for signed cookies
+  hook: 'onRequest', // set to false to disable cookie autoparsing or set autoparsing on any of the following hooks: 'onRequest', 'preParsing', 'preHandler', 'preValidation'. default: 'onRequest'
+  parseOptions: {} // Optional: options to pass to the cookie.parse function
+});
+// Response compression can be disabled by an x-no-compression header in the request.
+await app.register(compress, { inflateIfDeflated: true })
+//await app.register(compression({ filter: shouldCompress }));
+//await app.register(helmet()); // adding set of security middlewares
+await app.register(cors);
 
-// The order of the following app.use is important. It will match the first rule.
-app.use('/', homeRoute);
-app.use('/gemini', function (req, res, next) { res.render('gemini', { title: 'Google Gemini' }); });
-app.use('/health', healthchecks);
-app.use('/api', api);
-//app.use('/', function (req, res, next) { res.render('home', { title: 'Node.JS Express Application' }); }); // This is catch-all
+// The order of the following await app.register is important. It will match the first rule.
+//app.all('/', homeRoute);
+/* GET home page. */
+app.get('/', async (req, res) => {
+  res.render('home', { title: 'Node.JS Express Application' });
+});
+
+// All methods (GET, POST, PUT, etc.)
+app.all('/', async (request, reply) => {
+  return { method: request.method };
+});
+app.all('/gemini', async (req, res) => { res.render('gemini', { title: 'Google Gemini' }); });
+//app.all('/health', healthchecks);
+/* k8s readiness check */
+app.get('/ready', async function (req, res) {
+  try {
+    let [students, teachers]: PromiseSettledResult<number>[] = await Promise.allSettled([db.getRepository(Student).createQueryBuilder("student").getCount(), db.getRepository(Teacher).createQueryBuilder("teacher").getCount()]);
+    if (students.status === "fulfilled" && teachers.status === "fulfilled" && students.value >= 0 && teachers.value >= 0)
+      res.send('OK');
+    else
+      res.status(500).send('Database readiness health check failed!');
+  } catch (e) {
+    res.status(500).send(`Database readiness health check failed! ${e}`);
+  }
+});
+/* k8s liveness check */
+app.get('/live', function (req, res) {
+  res.send('OK')
+});
+//app.all('/api', api);
+const di = new Container();
+/*
+console.log('### LoggerTypes.ILogger ###');
+console.log(LoggerTypes.ILogger);
+console.log(`LoggerImpl: ${LoggerImpl}, Database: ${Database}, StudentRepository: ${StudentRepository}, TeacherRepository: ${TeacherRepository}`); //, GenerateContentUseCase: ${GenerateContentUseCase}`);
+*/
+di.bind<ILogger>(LoggerTypes.ILogger).to(LoggerImpl);
+di.bind<IGenerateContentUseCase>(UseCaseTypes.IGenerateContentUseCase).to(GenerateContentUseCase);
+di.bind<IRegisterStudentUseCase>(UseCaseTypes.IRegisterStudentUseCase).to(RegisterStudentUseCase);
+di.bind<ISuspendStudentUseCase>(UseCaseTypes.ISuspendStudentUseCase).to(SuspendStudentUseCase);
+di.bind<IRegisterTeacherUseCase>(UseCaseTypes.IRegisterTeacherUseCase).to(RegisterTeacherUseCase);
+di.bind<IAddStudentsToTeacherUseCase>(UseCaseTypes.IAddStudentsToTeacherUseCase).to(AddStudentsToTeacherUseCase);
+di.bind<ICommonStudentsUseCase>(UseCaseTypes.ICommonStudentsUseCase).to(CommonStudentsUseCase);
+di.bind<IStudentNotificationsUseCase>(UseCaseTypes.IStudentNotificationsUseCase).to(StudentNotificationsUseCase);
+di.bind<IStudentRepository>(RepositoryTypes.IStudentRepository).to(StudentRepository);
+di.bind<ITeacherRepository>(RepositoryTypes.ITeacherRepository).to(TeacherRepository);
+di.bind(DatabaseTypes.DatabaseService).to(Database);
+var fibonacci = new FibonacciController(di.get<ILogger>(LoggerTypes.ILogger));
+var greetings = new GreetingsController(di.get<ILogger>(LoggerTypes.ILogger));
+var gemini = new GeminiController(di.get<ILogger>(LoggerTypes.ILogger), di.get<IGenerateContentUseCase>(UseCaseTypes.IGenerateContentUseCase));
+var registration = new RegistrationController(di.get<ILogger>(LoggerTypes.ILogger), di.get<IRegisterStudentUseCase>(UseCaseTypes.IRegisterStudentUseCase), di.get<IRegisterTeacherUseCase>(UseCaseTypes.IRegisterTeacherUseCase));
+var addStudentsToTeacher = new AddStudentsToTeacherController(di.get<ILogger>(LoggerTypes.ILogger), di.get<IAddStudentsToTeacherUseCase>(UseCaseTypes.IAddStudentsToTeacherUseCase));
+var commonStudents = new CommonStudentsController(di.get<ILogger>(LoggerTypes.ILogger), di.get<ICommonStudentsUseCase>(UseCaseTypes.ICommonStudentsUseCase));
+var suspendStudent = new SuspendStudentController(di.get<ISuspendStudentUseCase>(UseCaseTypes.ISuspendStudentUseCase));
+var studentNotifications = new StudentNotificationsController(di.get<IStudentNotificationsUseCase>(UseCaseTypes.IStudentNotificationsUseCase));
+app.get('/greetings', async (req, res) => { greetings.Greetings(req, res, next); });
+app.get('/fibonacci', async (req, res) => { fibonacci.Fibonacci(req, res, next); });
+app.post('/gemini', upload.single('image'), async (req, res) => { gemini.GenerateText(req, res, next); });
+app.post('/register', async (req, res) => { registration.Register(req, res, next); });
+app.post('/addstudents', async (req, res) => { addStudentsToTeacher.AddStudentsToTeacher(req, res, next); });
+app.post('/commonstudents', async (req, res) => { commonStudents.CommonStudents(req, res, next); });
+app.post('/suspendstudent', async (req, res) => { suspendStudent.SuspendStudent(req, res, next); })
+app.post('/notifystudents', async (req, res) => { studentNotifications.NotifyStudents(req, res, next); })
+
+//await app.register('/', async (req, res) =>  { res.render('home', { title: 'Node.JS Express Application' }); }); // This is catch-all
 // catch 404 and forward to error handler
-app.use(function (req: Request, res: Response, next: NextFunction) {
+await app.register(function (req: FastifyRequest, res: FastifyReply) {
   next(createError(404));
 });
 // error handler
-app.use(function (err: any, req: Request, res: Response, next: NextFunction) {
+await app.register(function (err: any, req: FastifyRequest, res: FastifyReply) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

@@ -33,6 +33,12 @@
     "sonarqube": "./node_modules/.bin/mocha --reporter mocha-sonarqube-reporter tests --reporter-options output=test_reports/sonarqube/test_results.xml"
   },
   "dependencies": {
+    "@fastify/compress": "^8.3.0",
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/cors": "^11.1.0",
+    "@fastify/formbody": "^8.0.2",
+    "@fastify/static": "^8.3.0",
+    "@fastify/view": "^11.1.1",
     "@google/genai": "^1.31.0",
     "@grpc/grpc-js": "^1.14.2",
     "@grpc/proto-loader": "^0.8.0",
@@ -47,12 +53,14 @@
     "email-validator": "^2.0.4",
     "express": "^5.2.1",
     "express-winston": "^4.2.0",
+    "fastify": "^5.6.2",
     "form-data": "^4.0.5",
     "http-errors": "~2.0.1",
     "morgan": "^1.10.1",
     "morgan-json": "^1.1.0",
     "multer": "^2.0.2",
     "pg": "^8.16.3",
+    "pug": "^3.0.3",
     "spdy": "^4.0.2",
     "winston": "^3.18.3",
     "winston-daily-rotate-file": "^5.0.0"

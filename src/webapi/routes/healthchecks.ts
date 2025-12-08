@@ -1,12 +1,13 @@
 //var express = require('express');
-import express from 'express'
+/*import express from 'express'
 import { Database } from "infrastructure"
 import { IStudentRepository, ITeacherRepository, RepositoryTypes, ILogger, LoggerTypes, Student, Teacher } from "webapi.core";
 import { di } from "./api.js"
 var healthchecks = express.Router();
 var db = new Database(di.get<ILogger>(LoggerTypes.ILogger));
+*/
 /* k8s readiness check */
-healthchecks.get('/ready', async function (req, res, next) {
+/*healthchecks.get('/ready', async function (req, res, next) {
   try {
     let [students, teachers]: PromiseSettledResult<number>[] = await Promise.allSettled([db.getRepository(Student).createQueryBuilder("student").getCount(), db.getRepository(Teacher).createQueryBuilder("teacher").getCount()]);
     if (students.status === "fulfilled" && teachers.status === "fulfilled" && students.value >= 0 && teachers.value >= 0)
@@ -16,9 +17,10 @@ healthchecks.get('/ready', async function (req, res, next) {
   } catch (e) {
     res.status(500).send(`Database readiness health check failed! ${e}`);
   }
-});
+});*/
 /* k8s liveness check */
+/*
 healthchecks.get('/live', function (req, res, next) {
   res.send('OK')
 });
-export { healthchecks as default };
+export { healthchecks as default };*/

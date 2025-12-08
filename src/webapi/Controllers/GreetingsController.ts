@@ -1,5 +1,5 @@
 import express from 'express'
-import { Request, Response, NextFunction } from 'express';
+import { FastifyRequest, FastifyReply } from "fastify"
 import { injectable, inject } from "inversify";
 import { ILogger, LoggerTypes, LogLevels, LogLevelsType, } from "webapi.core";
 import url from 'url'
@@ -8,7 +8,7 @@ export class GreetingsController {
     public constructor(@inject(LoggerTypes.ILogger) logger: ILogger) {
         this._logger = logger;
     }
-    public Greetings (req: Request, res: Response, next: NextFunction) {
+    public Greetings (req: FastifyRequest, res: FastifyReply) {
         var url_parts = url.parse(req.url, true);
         var query = url_parts.query;
         this._logger.Log(LogLevels.debug, 'GET /api/greetings query: ' + JSON.stringify(query, null, 2));
@@ -26,7 +26,6 @@ export class GreetingsController {
         if (query.name !== undefined && query.name.length > 0)
             greetings += ' ' + query.name;
         greetings += "! It's " + time + " now.";
-        res.status(200);
-        res.json({ 'message': greetings });
+        res.code(200).send({ message: greetings });
     };
 }

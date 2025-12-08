@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { FastifyRequest, FastifyReply } from "fastify"
 import emailvalidator from 'email-validator'
 import { RegisterStudentRequest, RegisterTeacherRequest, Error } from "webapi.core"
 import { RegisterStudentModel } from "../Models/Request/RegisterStudentModel.js"
@@ -18,7 +18,7 @@ export class RegistrationController {
         this.teacherUseCase = teacher;
         this.presenter = new RegisterUserPresenter();
     }
-    public async Register (req: Request, res: Response, next: NextFunction) {
+    public async Register (req: FastifyRequest, res: FastifyReply) {
         try {
             let message: string = "";
             let errors: Array<Error> = [];

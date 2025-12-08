@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { FastifyRequest, FastifyReply } from "fastify"
 import emailvalidator from 'email-validator'
 import { ISuspendStudentUseCase, SuspendStudentRequest, UseCaseResponseMessage, Student, Teacher } from "webapi.core"
 import { PresenterBase } from "../Presenters/PresenterBase.js"
@@ -11,7 +11,7 @@ export class SuspendStudentController {
         this._usecase = usecase;
         this.presenter = new PresenterBase();
     }
-    public async SuspendStudent (req: Request, res: Response, next: NextFunction) {
+    public async SuspendStudent (req: FastifyRequest, res: FastifyReply) {
         let message = { 'message': 'Calling /api/suspendstudent' };
         if (req.body.hasOwnProperty('student') && req.body.student !== "" && emailvalidator.validate(req.body.student)) {
             let request: SuspendStudentRequest = new SuspendStudentRequest(req.body.student);

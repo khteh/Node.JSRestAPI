@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { FastifyRequest, FastifyReply } from "fastify"
 import emailvalidator from 'email-validator'
 import { IStudentNotificationsUseCase, StudentNotificationsRequest, StudentNotificationsResponse, Student, Teacher } from "webapi.core"
 import { StudentNotificationsPresenter } from "../Presenters/StudentNotificationsPresenter.js"
@@ -17,7 +17,7 @@ export class StudentNotificationsController {
         "notification": "Hello students! @studentagnes@gmail.com @studentmiche@gmail.com"
     }
     */
-    public async NotifyStudents (req: Request, res: Response, next: NextFunction) {
+    public async NotifyStudents (req: FastifyRequest, res: FastifyReply) {
         let message = { 'message': 'Calling /api/notifystudents' };
         if (req.body.hasOwnProperty('teacher') && req.body.teacher !== "" && emailvalidator.validate(req.body.teacher)) {
             let notificationMessage = req.body.notification.split(' @').splice(0);

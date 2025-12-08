@@ -3,6 +3,7 @@
   "include": [
     "src/**/*",
     "src/**/*.ts",
+    "fastify-plugins.d.ts"
   ],
   "exclude": [
     "node_modules",

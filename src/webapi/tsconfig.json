@@ -2,7 +2,8 @@
     "extends": "../../tsconfig.json",
     "include": [
         "**/*.ts",
-        "views/*.pug"
+        "views/*.pug",
+        "fastify-plugins.d.ts"
     ],
     "exclude": [
         "node_modules",
