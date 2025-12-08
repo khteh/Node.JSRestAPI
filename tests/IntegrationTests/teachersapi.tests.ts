@@ -12,7 +12,7 @@ import { EntityBase, Student, StudentDTO, IStudentRepository, ITeacherRepository
 chai.use(chaiHttp)
 expect(config.util.getEnv('NODE_ENV')).toEqual('test');
 var verifyClientError = function (err, res) {
-    expect(res).toHaveProperty("status", 400);
+    expect(res).toHaveProperty("statusCode", 400);
     expect(res).toHaveProperty('body');
     expect(res.body).toHaveProperty('message');
     expect(res.body.message).not.toBe('');
@@ -166,14 +166,14 @@ describe('Two teachers, two students tests', () => {
                     body: JSON.stringify(register)
                 }
             )
-            expect(response).toHaveProperty("status", 204);
+            expect(response).toHaveProperty("statusCode", 204);
             done();
             /*chai.request(app)
                 .post('/api/register')
                 .send(register)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("status", 204);
+                    expect(res).toHaveProperty("statusCode", 204);
                     expect(err).toBeNull();
                     done();
                 });*/
@@ -201,14 +201,14 @@ describe('Two teachers, two students tests', () => {
                     body: JSON.stringify(register)
                 }
             )
-            expect(response).toHaveProperty("status", 204);
+            expect(response).toHaveProperty("statusCode", 204);
             done();
             /*chai.request(app)
                 .post('/api/register')
                 .send(register)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("status", 204);
+                    expect(res).toHaveProperty("statusCode", 204);
                     expect(err).toBeNull();
                     done();
                 });*/
@@ -256,7 +256,7 @@ describe('Two teachers, two students tests', () => {
         it('it should GET students common to teacher1@example.com', () => new Promise<void>(async done => {
             const query = new URLSearchParams({ "teacher": "teacher1@example.com" })
             const response = await fetch(`https://localhost:${port}/api/commonstudents?${query.toString()}`)
-            expect(response).toHaveProperty("status", 200);
+            expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
             expect(response.body).toHaveProperty('students');
             expect(response.body.students).toBeTypeOf("array").that.includes('student1@example.com');
@@ -268,7 +268,7 @@ describe('Two teachers, two students tests', () => {
                         .query({ "teacher": "teacher1@example.com" })
                         .end((err, res) => {
                             //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
-                            expect(res).toHaveProperty("status", 200);
+                            expect(res).toHaveProperty("statusCode", 200);
                             expect(err).toBeNull();
                             expect(res).toHaveProperty('body');
                             expect(res.body).toHaveProperty('students');
@@ -286,7 +286,7 @@ describe('Two teachers, two students tests', () => {
         it('it should GET students common to teacher2@example.com', () => new Promise<void>(async done => {
             const query = new URLSearchParams({ "teacher": "teacher2@example.com" })
             const response = await fetch(`https://localhost:${port}/api/commonstudents?${query.toString()}`)
-            expect(response).toHaveProperty("status", 200);
+            expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
             expect(response.body).toHaveProperty('students');
             expect(response.body.students).toBeTypeOf("array").that.includes('student1@example.com', 'student2@example.com');
@@ -297,7 +297,7 @@ describe('Two teachers, two students tests', () => {
                 .query({ "teacher": "teacher2@example.com" })
                 .end((err, res) => {
                     //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
-                    expect(res).toHaveProperty("status", 200);
+                    expect(res).toHaveProperty("statusCode", 200);
                     expect(err).toBeNull();
                     expect(res).toHaveProperty('body');
                     expect(res.body).toHaveProperty('students');
@@ -315,7 +315,7 @@ describe('Two teachers, two students tests', () => {
             let query = new URLSearchParams({ teacher: 'teacher1@example.com' })
             query.append("teacher", 'teacher2@example.com');
             const response = await fetch(`https://localhost:${port}/api/commonstudents?${query.toString()}`)
-            expect(response).toHaveProperty("status", 200);
+            expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
             expect(response.body).toHaveProperty('students');
             expect(reresponses.body.students).toBeTypeOf("array").that.includes('student1@example.com');
@@ -327,7 +327,7 @@ describe('Two teachers, two students tests', () => {
                 .query({ teacher: ['teacher1@example.com', 'teacher2@example.com'] })
                 .end((err, res) => {
                     //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
-                    expect(res).toHaveProperty("status", 200);
+                    expect(res).toHaveProperty("statusCode", 200);
                     expect(err).toBeNull();
                     expect(res).toHaveProperty('body');
                     expect(res.body).toHaveProperty('students');
@@ -387,7 +387,7 @@ describe('Two teachers, two students tests', () => {
                     body: JSON.stringify(notifications)
                 }
             )
-            expect(response).toHaveProperty("status", 200);
+            expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
             expect(response.body).toHaveProperty('recipients');
             expect(response.body.recipients).toBeTypeOf("array").that.includes('student1@example.com');
@@ -398,7 +398,7 @@ describe('Two teachers, two students tests', () => {
                 .send(notifications)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("status", 200);
+                    expect(res).toHaveProperty("statusCode", 200);
                     expect(err).toBeNull();
                     expect(res).toHaveProperty('body');
                     expect(res.body).toHaveProperty('recipients');
@@ -427,7 +427,7 @@ describe('Two teachers, two students tests', () => {
                     body: JSON.stringify(notifications)
                 }
             )
-            expect(response).toHaveProperty("status", 200);
+            expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
             expect(response.body).toHaveProperty('recipients');
             expect(response.body.recipients).toBeTypeOf("array").that.includes('student1@example.com');
@@ -438,7 +438,7 @@ describe('Two teachers, two students tests', () => {
                 .send(notifications)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("status", 200);
+                    expect(res).toHaveProperty("statusCode", 200);
                     expect(err).toBeNull();
                     expect(res).toHaveProperty('body');
                     expect(res.body).toHaveProperty('recipients');
@@ -467,7 +467,7 @@ describe('Two teachers, two students tests', () => {
                     body: JSON.stringify(notifications)
                 }
             )
-            expect(response).toHaveProperty("status", 200);
+            expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
             expect(response.body).toHaveProperty('recipients');
             expect(response.body.recipients).toBeTypeOf("array").that.includes('student1@example.com', 'student2@example.com');
@@ -478,7 +478,7 @@ describe('Two teachers, two students tests', () => {
                 .send(notifications)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("status", 200);
+                    expect(res).toHaveProperty("statusCode", 200);
                     expect(err).toBeNull();
                     expect(res).toHaveProperty('body');
                     expect(res.body).toHaveProperty('recipients');
@@ -507,7 +507,7 @@ describe('Two teachers, two students tests', () => {
                     body: JSON.stringify(notifications)
                 }
             )
-            expect(response).toHaveProperty("status", 200);
+            expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
             expect(response.body).toHaveProperty('recipients');
             expect(response.body.recipients).toBeTypeOf("array").that.includes('student1@example.com');
@@ -518,7 +518,7 @@ describe('Two teachers, two students tests', () => {
                 .send(notifications)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("status", 200);
+                    expect(res).toHaveProperty("statusCode", 200);
                     expect(err).toBeNull();
                     expect(res).toHaveProperty('body');
                     expect(res.body).toHaveProperty('recipients');
@@ -547,7 +547,7 @@ describe('Two teachers, two students tests', () => {
                     body: JSON.stringify(notifications)
                 }
             )
-            expect(response).toHaveProperty("status", 200);
+            expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
             expect(response.body).toHaveProperty('recipients');
             expect(response.body.recipients).toBeTypeOf("array").that.includes('student1@example.com', 'student2@example.com');
@@ -558,7 +558,7 @@ describe('Two teachers, two students tests', () => {
                 .send(notifications)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("status", 200);
+                    expect(res).toHaveProperty("statusCode", 200);
                     expect(err).toBeNull();
                     expect(res).toHaveProperty('body');
                     expect(res.body).toHaveProperty('recipients');
@@ -664,14 +664,14 @@ describe('Two teachers, two students tests', () => {
                     body: JSON.stringify(suspend)
                 }
             )
-            expect(response).toHaveProperty("status", 204);
+            expect(response).toHaveProperty("statusCode", 204);
             done();
             /*chai.request(app)
                 .post('/api/suspend')
                 .send(suspend)
                 .end((err, res) => {
                     //console.log("/POST /api/suspend response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("status", 204);
+                    expect(res).toHaveProperty("statusCode", 204);
                     expect(err).toBeNull();
                     done();
                 });*/
@@ -685,7 +685,7 @@ describe('Two teachers, two students tests', () => {
             let query = new URLSearchParams({ teacher: 'teacher1@example.com' })
             query.append("teacher", 'teacher2@example.com');
             const response = await fetch(`https://localhost:${port}/api/commonstudents?${query.toString()}`)
-            expect(response).toHaveProperty("status", 200);
+            expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
             expect(response.body).toHaveProperty('students');
             expect(response.body.students).toBeTypeOf("array").that.includes('student1@example.com');
@@ -697,7 +697,7 @@ describe('Two teachers, two students tests', () => {
                 .query({ teacher: ['teacher1@example.com', 'teacher2@example.com'] })
                 .end((err, res) => {
                     //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
-                    expect(res).toHaveProperty("status", 200);
+                    expect(res).toHaveProperty("statusCode", 200);
                     expect(err).toBeNull();
                     expect(res).toHaveProperty('body');
                     expect(res.body).toHaveProperty('students');
@@ -727,7 +727,7 @@ describe('Two teachers, two students tests', () => {
                     body: JSON.stringify(notifications)
                 }
             )
-            expect(response).toHaveProperty("status", 200);
+            expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
             expect(response.body).toHaveProperty('recipients');
             expect(response.body.recipients).toBeTypeOf("array").that.is.empty;
@@ -738,7 +738,7 @@ describe('Two teachers, two students tests', () => {
                 .send(notifications)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("status", 200);
+                    expect(res).toHaveProperty("statusCode", 200);
                     expect(err).toBeNull();
                     expect(res).toHaveProperty('body');
                     expect(res.body).toHaveProperty('recipients');
@@ -767,7 +767,7 @@ describe('Two teachers, two students tests', () => {
                     body: JSON.stringify(notifications)
                 }
             )
-            expect(response).toHaveProperty("status", 200);
+            expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
             expect(response.body).toHaveProperty('recipients');
             expect(response.body.recipients).toBeTypeOf("array").that.includes('student2@example.com');
@@ -778,7 +778,7 @@ describe('Two teachers, two students tests', () => {
                 .send(notifications)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("status", 200);
+                    expect(res).toHaveProperty("statusCode", 200);
                     expect(err).toBeNull();
                     expect(res).toHaveProperty('body');
                     expect(res.body).toHaveProperty('recipients');
@@ -807,7 +807,7 @@ describe('Two teachers, two students tests', () => {
                     body: JSON.stringify(notifications)
                 }
             )
-            expect(response).toHaveProperty("status", 200);
+            expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
             expect(response.body).toHaveProperty('recipients');
             expect(response.body.recipients).toBeTypeOf("array").that.includes('student2@example.com');
@@ -818,7 +818,7 @@ describe('Two teachers, two students tests', () => {
                 .send(notifications)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("status", 200);
+                    expect(res).toHaveProperty("statusCode", 200);
                     expect(err).toBeNull();
                     expect(res).toHaveProperty('body');
                     expect(res.body).toHaveProperty('recipients');
@@ -847,7 +847,7 @@ describe('Two teachers, two students tests', () => {
                     body: JSON.stringify(notifications)
                 }
             )
-            expect(response).toHaveProperty("status", 200);
+            expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
             expect(response.body).toHaveProperty('recipients');
             expect(response.body.recipients).toBeTypeOf("array").that.includes('student2@example.com');
@@ -858,7 +858,7 @@ describe('Two teachers, two students tests', () => {
                 .send(notifications)
                 .end((err, res) => {
                     //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("status", 200);
+                    expect(res).toHaveProperty("statusCode", 200);
                     expect(err).toBeNull();
                     expect(res).toHaveProperty('body');
                     expect(res.body).toHaveProperty('recipients');
