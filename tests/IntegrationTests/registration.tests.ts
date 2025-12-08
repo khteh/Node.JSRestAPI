@@ -15,7 +15,7 @@ chai.use(chaiHttp)
 //console.log("NODE_ENV: "+config.util.getEnv('NODE_ENV')+ " : "+process.env.NODE_ENV)
 expect(config.util.getEnv('NODE_ENV')).toEqual('test');
 var verifyClientError = function (err: any, res: any) {
-    expect(res).toHaveProperty("status", 400);
+    expect(res).toHaveProperty("statusCode", 400);
     expect(res).toHaveProperty('body');
     expect(res.body).toHaveProperty('message');
     expect(res.body.message).not.toBe('');
@@ -49,7 +49,7 @@ describe.skip('Valid data should succeed tests', () => {
             .send(payload)
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
-                expect(res).toHaveProperty("status", 201);
+                expect(res).toHaveProperty("statusCode", 201);
                 expect(err).toBe('');
                 expect(res).toHaveProperty("Message").and.toBeTypeOf("string").and.to.equal("2 students registered successfully");
                 done();
@@ -91,7 +91,7 @@ describe.skip('Valid data should succeed tests', () => {
             .send(payload)
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
-                expect(res).toHaveProperty("status", 201);
+                expect(res).toHaveProperty("statusCode", 201);
                 expect(err).toBe('');
                 expect(res).toHaveProperty("Message").and.toBeTypeOf("string").and.to.equal("2 teachers registered successfully");
                 done();
@@ -126,7 +126,7 @@ describe.skip('InValid data should fail tests', () => {
             .send(payload)
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
-                expect(res).toHaveProperty("status", 400);
+                expect(res).toHaveProperty("statusCode", 400);
                 expect(err).not.toBe('');
                 expect(res).toHaveProperty("Message").and.toBeTypeOf("array").and.toContain("Student student1@b.c registration failed!");
                 done();
@@ -168,7 +168,7 @@ describe.skip('InValid data should fail tests', () => {
             .send(payload)
             .end((err, res) => {
                 //console.log("/POST /api/register response: " + JSON.stringify(res));
-                expect(res).toHaveProperty("status", 400);
+                expect(res).toHaveProperty("statusCode", 400);
                 expect(err).not.toBe('');
                 expect(res).toHaveProperty("Message").and.toBeTypeOf("array").and.toContain("Teacher teacher1@b.c registration failed!");
                 done();
