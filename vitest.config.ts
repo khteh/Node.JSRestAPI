@@ -42,10 +42,10 @@ export default defineConfig({
                     name: 'IntegrationTests',
                     root: './tests/IntegrationTests',
                     environment: 'node',
-                    setupFiles: ['./IntegrationTestSetup.ts'],
+                    //setupFiles: ['./IntegrationTestSetup.ts'],
                     globals: true,
                     include: ['*.{js,tsx,ts}'],
-                    exclude: ['./IntegrationTestSetup.ts'],
+                    //exclude: ['./IntegrationTestSetup.ts'],
                     clearMocks: true // Automatically calls vi.clearAllMocks() before each test
                 },
             },

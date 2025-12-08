@@ -22,7 +22,7 @@ describe('Greetings API tests', async () => {
       * Test the /GET /api/greetings
       */
     describe('/GET /api/greetings', async () => {
-        it('It should succeed with response containing current timestamp!', async (done) => {
+        it('It should succeed with response containing current timestamp!', () => new Promise<void>(async done => {
             const response = await fetch(`https://localhost:${port}/api/greetings`)
             expect(response.status).toBe(200);
             expect(response).toHaveProperty('body');
@@ -40,13 +40,14 @@ describe('Greetings API tests', async () => {
             })
             let expects = "Hello! It's " + time + " now.";
             assert.strictEqual(response.body.message, expects, 'Expects the greetings message including timestamp to be strictly equal');
-        });
+            done()
+        }));
     });
     /*
       * Test the /GET /api/greetings
       */
     describe('/GET /api/greetings?name=Mickey%20Mouse', async () => {
-        it('It should succeed with response containing name and current timestamp!', async (done) => {
+        it('It should succeed with response containing name and current timestamp!', () => new Promise<void>(async done => {
             const response = await fetch(`https://localhost:${port}/api/greetings?name=Mickey Mouse`)
             expect(response.status).toBe(200);
             expect(response).toHaveProperty('body');
@@ -64,6 +65,7 @@ describe('Greetings API tests', async () => {
             })
             let expects = "Hello Mickey Mouse! It's " + time + " now.";
             assert.strictEqual(response.body.message, expects, 'Expects the greetings message including timestamp to be strictly equal');
-        });
+            done()
+        }));
     });
 });
