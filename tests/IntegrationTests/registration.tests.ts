@@ -25,7 +25,7 @@ describe.skip('Valid data should succeed tests', () => {
     /*
       * Test the /POST /api/register passes with valid student data
       */
-    it('Valid student should succeed test', (done) => {
+    it('Valid student should succeed test', () => new Promise<void>(async done => {
         let payload = {
             "students": [
                 {
@@ -54,11 +54,11 @@ describe.skip('Valid data should succeed tests', () => {
                 expect(res).toHaveProperty("Message").and.toBeTypeOf("string").and.to.equal("2 students registered successfully");
                 done();
             });
-    });
+    }));
     /*
       * Test the /POST /api/register passes with valid student data
       */
-    it('Valid teacher should succeed test', (done) => {
+    it('Valid teacher should succeed test', () => new Promise<void>(async done => {
         let payload = {
             "teachers": [
                 {
@@ -96,13 +96,13 @@ describe.skip('Valid data should succeed tests', () => {
                 expect(res).toHaveProperty("Message").and.toBeTypeOf("string").and.to.equal("2 teachers registered successfully");
                 done();
             });
-    });
+    }));
 });
 describe.skip('InValid data should fail tests', () => {
     /*
       * Test the /POST /api/register fails with invalid student data
       */
-    it('InValid student should fail test', (done) => {
+    it('InValid student should fail test', () => new Promise<void>(async done => {
         let payload = {
             "students": [
                 {
@@ -131,11 +131,11 @@ describe.skip('InValid data should fail tests', () => {
                 expect(res).toHaveProperty("Message").and.toBeTypeOf("array").and.toContain("Student student1@b.c registration failed!");
                 done();
             });
-    });
+    }));
     /*
       * Test the /POST /api/register fails with invalid teacher data
       */
-    it('InValid teacher should fail test', (done) => {
+    it('InValid teacher should fail test', () => new Promise<void>(async done => {
         let payload = {
             "teachers": [
                 {
@@ -173,5 +173,5 @@ describe.skip('InValid data should fail tests', () => {
                 expect(res).toHaveProperty("Message").and.toBeTypeOf("array").and.toContain("Teacher teacher1@b.c registration failed!");
                 done();
             });
-    });
+    }));
 });
