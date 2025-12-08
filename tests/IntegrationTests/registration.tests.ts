@@ -44,7 +44,23 @@ describe.skip('Valid data should succeed tests', () => {
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(null);
         mockRepository.setup(i => i.Add(It.IsAny<Student>())).returnsAsync(It.IsAny<Student>());
-        request.execute(app)
+        const response = await fetch(`https://localhost:${port}/api/register`,
+            {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            }
+        )
+        expect(response).toHaveProperty("statusCode", 201);
+        expect(response).toHaveProperty('body');
+        const data = await response.json()
+        expect(data.body).toHaveProperty('message');
+        expect(data.body.message).toEqual("2 students registered successfully");
+        done();
+        /*request.execute(app)
             .post('/api/register')
             .send(payload)
             .end((err, res) => {
@@ -53,7 +69,7 @@ describe.skip('Valid data should succeed tests', () => {
                 expect(err).toBe('');
                 expect(res).toHaveProperty("Message").and.toBeTypeOf("string").and.to.equal("2 students registered successfully");
                 done();
-            });
+            });*/
     }));
     /*
       * Test the /POST /api/register passes with valid student data
@@ -86,7 +102,23 @@ describe.skip('Valid data should succeed tests', () => {
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(null);
         mockRepository.setup(i => i.Add(It.IsAny<Teacher>())).returnsAsync(It.IsAny<Teacher>());
-        request.execute(app)
+        const response = await fetch(`https://localhost:${port}/api/register`,
+            {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            }
+        )
+        expect(response).toHaveProperty("statusCode", 201);
+        expect(response).toHaveProperty('body');
+        const data = await response.json()
+        expect(data.body).toHaveProperty('message');
+        expect(data.body.message).toEqual("2 teachers registered successfully");
+        done();
+        /*request.execute(app)
             .post('/api/register')
             .send(payload)
             .end((err, res) => {
@@ -95,7 +127,7 @@ describe.skip('Valid data should succeed tests', () => {
                 expect(err).toBe('');
                 expect(res).toHaveProperty("Message").and.toBeTypeOf("string").and.to.equal("2 teachers registered successfully");
                 done();
-            });
+            });*/
     }));
 });
 describe.skip('InValid data should fail tests', () => {
@@ -121,7 +153,23 @@ describe.skip('InValid data should fail tests', () => {
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(It.IsAny<Student>());
         mockRepository.setup(i => i.Add(It.IsAny<Student>())).returnsAsync(null);
-        request.execute(app)
+        const response = await fetch(`https://localhost:${port}/api/register`,
+            {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            }
+        )
+        expect(response).toHaveProperty("statusCode", 400);
+        expect(response).toHaveProperty('body');
+        const data = await response.json()
+        expect(data.body).toHaveProperty('message');
+        expect(data.body.message).toEqual("Student student1@b.c registration failed!");
+        done();
+        /*request.execute(app)
             .post('/api/register')
             .send(payload)
             .end((err, res) => {
@@ -130,7 +178,7 @@ describe.skip('InValid data should fail tests', () => {
                 expect(err).not.toBe('');
                 expect(res).toHaveProperty("Message").and.toBeTypeOf("array").and.toContain("Student student1@b.c registration failed!");
                 done();
-            });
+            });*/
     }));
     /*
       * Test the /POST /api/register fails with invalid teacher data
@@ -163,7 +211,23 @@ describe.skip('InValid data should fail tests', () => {
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(It.IsAny<Teacher>());
         mockRepository.setup(i => i.Add(It.IsAny<Teacher>())).returnsAsync(null);
-        request.execute(app)
+        const response = await fetch(`https://localhost:${port}/api/register`,
+            {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            }
+        )
+        expect(response).toHaveProperty("statusCode", 400);
+        expect(response).toHaveProperty('body');
+        const data = await response.json()
+        expect(data.body).toHaveProperty('message');
+        expect(data.body.message).toEqual("Teacher teacher1@b.c registration failed!");
+        done();
+        /*request.execute(app)
             .post('/api/register')
             .send(payload)
             .end((err, res) => {
@@ -172,6 +236,6 @@ describe.skip('InValid data should fail tests', () => {
                 expect(err).not.toBe('');
                 expect(res).toHaveProperty("Message").and.toBeTypeOf("array").and.toContain("Teacher teacher1@b.c registration failed!");
                 done();
-            });
+            });*/
     }));
 });

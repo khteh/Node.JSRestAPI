@@ -258,10 +258,12 @@ describe('Two teachers, two students tests', () => {
             const response = await fetch(`https://localhost:${port}/api/commonstudents?${query.toString()}`)
             expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
-            expect(response.body).toHaveProperty('students');
-            expect(response.body.students).toBeTypeOf("array").that.includes('student1@example.com');
-            expect(response.body.students.length).toEqual(1);
-            expect(response.body.students[0]).toEqual('student1@example.com');
+            const data = await response.json()
+            expect(data.body).toHaveProperty('students');
+            expect(data.body).toEqual({
+                students: expect.arrayContaining(['student1@example.com'])
+            })
+            expect(data.body.students.length).toEqual(1);
             done();
             /*chai.request(app)
                         .get('/api/commonstudents')
@@ -288,9 +290,12 @@ describe('Two teachers, two students tests', () => {
             const response = await fetch(`https://localhost:${port}/api/commonstudents?${query.toString()}`)
             expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
-            expect(response.body).toHaveProperty('students');
-            expect(response.body.students).toBeTypeOf("array").that.includes('student1@example.com', 'student2@example.com');
-            expect(response.body.students.length).toEqual(2);
+            const data = await response.json()
+            expect(data.body).toHaveProperty('students');
+            expect(data.body).toEqual({
+                students: expect.arrayContaining(['student1@example.com', 'student2@example.com'])
+            })
+            expect(data.body.students.length).toEqual(2);
             done();
             /*chai.request(app)
                 .get('/api/commonstudents')
@@ -317,10 +322,12 @@ describe('Two teachers, two students tests', () => {
             const response = await fetch(`https://localhost:${port}/api/commonstudents?${query.toString()}`)
             expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
-            expect(response.body).toHaveProperty('students');
-            expect(reresponses.body.students).toBeTypeOf("array").that.includes('student1@example.com');
-            expect(response.body.students.length).toEqual(1);
-            expect(response.body.students[0]).toEqual('student1@example.com');
+            const data = await response.json()
+            expect(data.body).toHaveProperty('students');
+            expect(data.body).toEqual({
+                students: expect.arrayContaining(['student1@example.com'])
+            })
+            expect(data.body.students.length).toEqual(1);
             done();
             /*chai.request(app)
                 .get('/api/commonstudents')
@@ -389,9 +396,12 @@ describe('Two teachers, two students tests', () => {
             )
             expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
-            expect(response.body).toHaveProperty('recipients');
-            expect(response.body.recipients).toBeTypeOf("array").that.includes('student1@example.com');
-            expect(response.body.recipients.length).toEqual(1);
+            const data = await response.json()
+            expect(data.body).toHaveProperty('recipients');
+            expect(data.body).toEqual({
+                recipients: expect.arrayContaining(['student1@example.com'])
+            })
+            expect(data.body.recipients.length).toEqual(1);
             done();
             /*chai.request(app)
                 .post('/api/retrievefornotifications')
@@ -429,9 +439,12 @@ describe('Two teachers, two students tests', () => {
             )
             expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
-            expect(response.body).toHaveProperty('recipients');
-            expect(response.body.recipients).toBeTypeOf("array").that.includes('student1@example.com');
-            expect(response.body.recipients.length).toEqual(1);
+            const data = await response.json()
+            expect(data.body).toHaveProperty('recipients');
+            expect(data.body).toEqual({
+                recipients: expect.arrayContaining(['student1@example.com'])
+            })
+            expect(data.body.recipients.length).toEqual(1);
             done();
             /*chai.request(app)
                 .post('/api/retrievefornotifications')
@@ -469,9 +482,12 @@ describe('Two teachers, two students tests', () => {
             )
             expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
-            expect(response.body).toHaveProperty('recipients');
-            expect(response.body.recipients).toBeTypeOf("array").that.includes('student1@example.com', 'student2@example.com');
-            expect(response.body.recipients.length).toEqual(2);
+            const data = await response.json()
+            expect(data.body).toHaveProperty('recipients');
+            expect(data.body).toEqual({
+                recipients: expect.arrayContaining(['student1@example.com', 'student2@example.com'])
+            })
+            expect(data.body.recipients.length).toEqual(2);
             done();
             /*chai.request(app)
                 .post('/api/retrievefornotifications')
@@ -509,9 +525,12 @@ describe('Two teachers, two students tests', () => {
             )
             expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
-            expect(response.body).toHaveProperty('recipients');
-            expect(response.body.recipients).toBeTypeOf("array").that.includes('student1@example.com');
-            expect(response.body.recipients.length).toEqual(1);
+            const data = await response.json()
+            expect(data.body).toHaveProperty('recipients');
+            expect(data.body).toEqual({
+                recipients: expect.arrayContaining(['student1@example.com'])
+            })
+            expect(data.body.recipients.length).toEqual(1);
             done();
             /*chai.request(app)
                 .post('/api/retrievefornotifications')
@@ -549,9 +568,12 @@ describe('Two teachers, two students tests', () => {
             )
             expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
-            expect(response.body).toHaveProperty('recipients');
-            expect(response.body.recipients).toBeTypeOf("array").that.includes('student1@example.com', 'student2@example.com');
-            expect(response.body.recipients.length).toEqual(2);
+            const data = await response.json()
+            expect(data.body).toHaveProperty('recipients');
+            expect(data.body).toEqual({
+                recipients: expect.arrayContaining(['student1@example.com', 'student2@example.com'])
+            })
+            expect(data.body.recipients.length).toEqual(2);
             done();
             /*chai.request(app)
                 .post('/api/retrievefornotifications')
@@ -687,10 +709,12 @@ describe('Two teachers, two students tests', () => {
             const response = await fetch(`https://localhost:${port}/api/commonstudents?${query.toString()}`)
             expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
-            expect(response.body).toHaveProperty('students');
-            expect(response.body.students).toBeTypeOf("array").that.includes('student1@example.com');
-            expect(response.body.students.length).toEqual(1);
-            expect(response.body.students[0]).toEqual('student1@example.com');
+            const data = await response.json()
+            expect(data.body).toHaveProperty('students');
+            expect(data.body).toEqual({
+                students: expect.arrayContaining(['student1@example.com'])
+            })
+            expect(data.body.students.length).toEqual(1);
             done();
             /*chai.request(app)
                 .get('/api/commonstudents')
@@ -729,9 +753,12 @@ describe('Two teachers, two students tests', () => {
             )
             expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
-            expect(response.body).toHaveProperty('recipients');
-            expect(response.body.recipients).toBeTypeOf("array").that.is.empty;
-            expect(response.body.recipients.length).toEqual(0);
+            const data = await response.json()
+            expect(data.body).toHaveProperty('recipients');
+            expect(data.body).toEqual({
+                recipients: expect.arrayContaining([])
+            })
+            expect(data.body.recipients.length).toEqual(0);
             done();
             /*chai.request(app)
                 .post('/api/retrievefornotifications')
@@ -769,9 +796,12 @@ describe('Two teachers, two students tests', () => {
             )
             expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
-            expect(response.body).toHaveProperty('recipients');
-            expect(response.body.recipients).toBeTypeOf("array").that.includes('student2@example.com');
-            expect(response.body.recipients.length).toEqual(1);
+            const data = await response.json()
+            expect(data.body).toHaveProperty('recipients');
+            expect(data.body).toEqual({
+                recipients: expect.arrayContaining(['student2@example.com'])
+            })
+            expect(data.body.recipients.length).toEqual(1);
             done();
             /*chai.request(app)
                 .post('/api/retrievefornotifications')
@@ -809,9 +839,12 @@ describe('Two teachers, two students tests', () => {
             )
             expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
-            expect(response.body).toHaveProperty('recipients');
-            expect(response.body.recipients).toBeTypeOf("array").that.includes('student2@example.com');
-            expect(response.body.recipients.length).toEqual(1);
+            const data = await response.json()
+            expect(data.body).toHaveProperty('recipients');
+            expect(data.body).toEqual({
+                recipients: expect.arrayContaining(['student2@example.com'])
+            })
+            expect(data.body.recipients.length).toEqual(1);
             done();
             /*chai.request(app)
                 .post('/api/retrievefornotifications')
@@ -849,9 +882,12 @@ describe('Two teachers, two students tests', () => {
             )
             expect(response).toHaveProperty("statusCode", 200);
             expect(response).toHaveProperty('body');
-            expect(response.body).toHaveProperty('recipients');
-            expect(response.body.recipients).toBeTypeOf("array").that.includes('student2@example.com');
-            expect(response.body.recipients.length).toEqual(1);
+            const data = await response.json()
+            expect(data.body).toHaveProperty('recipients');
+            expect(data.body).toEqual({
+                recipients: expect.arrayContaining(['student2@example.com'])
+            })
+            expect(data.body.recipients.length).toEqual(1);
             done();
             /*chai.request(app)
                 .post('/api/retrievefornotifications')
