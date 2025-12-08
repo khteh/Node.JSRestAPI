@@ -1,6 +1,7 @@
 import 'reflect-metadata'
 import config from 'config'
 import { Mock, It, Times } from 'moq.ts';
+import { assert, test } from 'vitest'
 import { app } from "../../src/webapi/index.js"
 import * as chai from 'chai';
 import { default as chaiHttp, request } from "chai-http";
@@ -11,17 +12,16 @@ chai.use(chaiHttp)
 import { EntityBase, Student, IStudentRepository, ITeacherRepository, Teacher } from "webapi.core";
 import { reject } from 'async';
 import { send } from 'process';
-var expect = chai.expect
+/*var expect = chai.expect
 var assert = chai.assert
-var should = chai.should()
+var should = chai.should()*/
 //console.log("NODE_ENV: "+config.util.getEnv('NODE_ENV')+ " : "+process.env.NODE_ENV)
-expect(config.util.getEnv('NODE_ENV')).to.be.eql('test');
+expect(config.util.getEnv('NODE_ENV')).toEqual('test');
 var verifyClientError = function (err: any, res: any) {
-    expect(res).to.have.status(400);
-    expect(res).to.have.property('body');
-    expect(res.body).to.have.property('message');
-    expect(res.body.message).to.not.be.empty;
-    //console.log("/POST /api/register err: "+JSON.stringify(err));
+    expect(res).toHaveProperty("statusCode", 400);
+    expect(res).toHaveProperty('body');
+    expect(res.body).toHaveProperty('message');
+    expect(res.body.message).not.toBe('');
 }
 // WIP. Mock doesn't work for integration tests!
 describe.skip('Add students to teacher tests', () => {
