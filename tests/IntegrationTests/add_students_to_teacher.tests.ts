@@ -28,13 +28,12 @@ describe.skip('Add students to teacher tests', () => {
     /*
       * Test the /POST /api/addstudents passes with valid student data
       */
-    it('Valid student should succeed test', (done) => {
+    it('Valid student should succeed test', () => new Promise<void>(async done => {
         var mockTeacherRepository = new Mock<ITeacherRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(It.IsAny<Teacher>());
         mockTeacherRepository.setup(i => i.AddStudent(It.IsAny<Teacher>(), It.IsAny<Student>())).returnsAsync(It.IsAny<Teacher>());
-
-        let data = {
+        let payload = {
             teacher: {
                 "id": 123,
                 "firstName": "First Name",
@@ -58,8 +57,23 @@ describe.skip('Add students to teacher tests', () => {
         var mockStudentRepository = new Mock<IStudentRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(It.IsAny<Student>());
-
-        request.execute(app)
+        const response = await fetch(`https://localhost:${port}/api/addstudents`,
+            {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            }
+        )
+        expect(response).toHaveProperty("statusCode", 200);
+        expect(response).toHaveProperty('body');
+        const data = await response.json()
+        expect(data.body).toHaveProperty('message');
+        expect(data.body.message).toEqual("2 students added successfully to teacher teacher@example.com");
+        done();
+        /*request.execute(app)
             .post('/api/addstudents')
             .send(data)
             .end((err, res) => {
@@ -68,15 +82,14 @@ describe.skip('Add students to teacher tests', () => {
                 expect(err).to.be.empty;
                 expect(res).to.have.property("Message").and.to.be.a("string").and.to.equal("2 students added successfully to teacher teacher@example.com");
                 done();
-            });
-    });
-    it('InValid students should succeed test', (done) => {
+            });*/
+    }));
+    it('InValid students should succeed test', () => new Promise<void>(async done => {
         var mockTeacherRepository = new Mock<ITeacherRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(It.IsAny<Teacher>());
         mockTeacherRepository.setup(i => i.AddStudent(It.IsAny<Teacher>(), It.IsAny<Student>())).returnsAsync(It.IsAny<Teacher>());
-
-        let data = {
+        let payload = {
             teacher: {
                 "id": 123,
                 "firstName": "First Name",
@@ -100,8 +113,23 @@ describe.skip('Add students to teacher tests', () => {
         var mockStudentRepository = new Mock<IStudentRepository>()
             .setup(i => i.GetByEmail(It.IsAny<string>()))
             .returnsAsync(null);
-
-        request.execute(app)
+        const response = await fetch(`https://localhost:${port}/api/addstudents`,
+            {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            }
+        )
+        expect(response).toHaveProperty("statusCode", 200);
+        expect(response).toHaveProperty('body');
+        const data = await response.json()
+        expect(data.body).toHaveProperty('message');
+        expect(data.body.message).toEqual("2 students added successfully to teacher teacher@example.com");
+        done();
+        /*request.execute(app)
             .post('/api/addstudents')
             .send(data)
             .end((err, res) => {
@@ -110,6 +138,6 @@ describe.skip('Add students to teacher tests', () => {
                 expect(err).to.be.empty;
                 expect(res).to.have.property("Message").and.to.be.a("string").and.to.equal("2 students added successfully to teacher teacher@example.com");
                 done();
-            });
-    });
+            });*/
+    }));
 });
