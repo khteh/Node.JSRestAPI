@@ -1,4 +1,4 @@
-import 'reflect-metadata'
+/*import 'reflect-metadata'
 import config from 'config'
 import express from 'express'
 import { Container } from "inversify";
@@ -18,12 +18,13 @@ import { ILogger } from "webapi.core";
 import multer from 'multer';
 const upload = multer({ dest: 'uploads/' })
 var api = express.Router();
-const di = new Container();
+const di = new Container();*/
 /*
 console.log('### LoggerTypes.ILogger ###');
 console.log(LoggerTypes.ILogger);
 console.log(`LoggerImpl: ${LoggerImpl}, Database: ${Database}, StudentRepository: ${StudentRepository}, TeacherRepository: ${TeacherRepository}`); //, GenerateContentUseCase: ${GenerateContentUseCase}`);
 */
+/*
 di.bind<ILogger>(LoggerTypes.ILogger).to(LoggerImpl);
 di.bind<IGenerateContentUseCase>(UseCaseTypes.IGenerateContentUseCase).to(GenerateContentUseCase);
 di.bind<IRegisterStudentUseCase>(UseCaseTypes.IRegisterStudentUseCase).to(RegisterStudentUseCase);
@@ -51,4 +52,4 @@ api.post('/addstudents', function (req, res, next) { addStudentsToTeacher.AddStu
 api.post('/commonstudents', function (req, res, next) { commonStudents.CommonStudents(req, res, next); });
 api.post('/suspendstudent', function (req, res, next) { suspendStudent.SuspendStudent(req, res, next); })
 api.post('/notifystudents', function (req, res, next) { studentNotifications.NotifyStudents(req, res, next); })
-export { api, di };
+export { api, di };*/

@@ -3,6 +3,7 @@
     "include": [
         "**/*.ts",
         "views/*.pug",
+        "Schemas/*.json",
         "fastify-plugins.d.ts"
     ],
     "exclude": [

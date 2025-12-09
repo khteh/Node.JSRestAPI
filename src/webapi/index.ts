@@ -1,11 +1,15 @@
 import 'reflect-metadata'
 import config from 'config';
-import { di } from "./routes/app.js"
-import { FastifyRequest, FastifyReply } from "fastify"
+//import { di } from "./routes/app.js"
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import createError from 'http-errors'
-import Fastify, { FastifyReply } from 'fastify'
+import Fastify, { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
+import { Http2SecureServer, Http2ServerRequest, Http2ServerResponse } from 'http2';
+// import json schemas as normal
+import AddStudentSchema from './Schemas/AddStudentsSchema.json' with { type: "json" };
+// import the generated interfaces
+import { AddStudentsToTeacherSchema } from './types/AddStudentsSchema.js'
 import formbody from '@fastify/formbody'
 import view from '@fastify/view'
 import compression from 'compression'
@@ -41,7 +45,6 @@ import { StudentRepository, TeacherRepository, LoggerImpl, DatabaseTypes, Databa
 import multer from 'multer';
 const upload = multer({ dest: 'uploads/' })
 
-var db = new Database(di.get<ILogger>(LoggerTypes.ILogger));
 //import homeRoute from './routes/home.js'
 //import fileUpload from 'express-fileupload';
 const __filename = fileURLToPath(import.meta.url);
@@ -64,7 +67,7 @@ declare module 'fastify' {
     render: (view: string, data?: object) => FastifyReply;
   }
 }
-var app = Fastify({
+var app: FastifyInstance<Http2SecureServer, Http2ServerRequest, Http2ServerResponse> = Fastify({
   logger: {
     level: 'info',
     file: '/var/log/node.js/nodejsrestapp.log', // Will use pino.destination()
@@ -229,7 +232,8 @@ if (config.util.getEnv('NODE_ENV') !== "test") {
     exitOnError: false,
   }))*/
 }
-const shouldCompress = (req: Request, res: Response) => {
+/*
+const shouldCompress = (req: FastifyRequest, res: FastifyReply) => {
   // don't compress responses asking explicitly not
   if (req.headers['x-no-compression']) {
     return false
@@ -237,7 +241,7 @@ const shouldCompress = (req: Request, res: Response) => {
   // use compression filter function
   return compression.filter(req, res)
 }
-
+*/
 await app.register(require('@fastify/cookie'), {
   secret: config.get("Secret"), // Optional: for signed cookies
   hook: 'onRequest', // set to false to disable cookie autoparsing or set autoparsing on any of the following hooks: 'onRequest', 'preParsing', 'preHandler', 'preValidation'. default: 'onRequest'
@@ -296,6 +300,8 @@ di.bind<IStudentNotificationsUseCase>(UseCaseTypes.IStudentNotificationsUseCase)
 di.bind<IStudentRepository>(RepositoryTypes.IStudentRepository).to(StudentRepository);
 di.bind<ITeacherRepository>(RepositoryTypes.ITeacherRepository).to(TeacherRepository);
 di.bind(DatabaseTypes.DatabaseService).to(Database);
+var db = new Database(di.get<ILogger>(LoggerTypes.ILogger));
+
 var fibonacci = new FibonacciController(di.get<ILogger>(LoggerTypes.ILogger));
 var greetings = new GreetingsController(di.get<ILogger>(LoggerTypes.ILogger));
 var gemini = new GeminiController(di.get<ILogger>(LoggerTypes.ILogger), di.get<IGenerateContentUseCase>(UseCaseTypes.IGenerateContentUseCase));
@@ -304,14 +310,52 @@ var addStudentsToTeacher = new AddStudentsToTeacherController(di.get<ILogger>(Lo
 var commonStudents = new CommonStudentsController(di.get<ILogger>(LoggerTypes.ILogger), di.get<ICommonStudentsUseCase>(UseCaseTypes.ICommonStudentsUseCase));
 var suspendStudent = new SuspendStudentController(di.get<ISuspendStudentUseCase>(UseCaseTypes.ISuspendStudentUseCase));
 var studentNotifications = new StudentNotificationsController(di.get<IStudentNotificationsUseCase>(UseCaseTypes.IStudentNotificationsUseCase));
-app.get('/greetings', async (req, res) => { greetings.Greetings(req, res, next); });
-app.get('/fibonacci', async (req, res) => { fibonacci.Fibonacci(req, res, next); });
-app.post('/gemini', upload.single('image'), async (req, res) => { gemini.GenerateText(req, res, next); });
-app.post('/register', async (req, res) => { registration.Register(req, res, next); });
-app.post('/addstudents', async (req, res) => { addStudentsToTeacher.AddStudentsToTeacher(req, res, next); });
-app.post('/commonstudents', async (req, res) => { commonStudents.CommonStudents(req, res, next); });
-app.post('/suspendstudent', async (req, res) => { suspendStudent.SuspendStudent(req, res, next); })
-app.post('/notifystudents', async (req, res) => { studentNotifications.NotifyStudents(req, res, next); })
+app.get('/greetings', async (req, res) => { greetings.Greetings(req, res); });
+app.get('/fibonacci', async (req, res) => { fibonacci.Fibonacci(req, res); });
+app.post('/gemini', upload.single('image'), async (req, res) => { gemini.GenerateText(req, res); });
+app.post('/register', async (req, res) => { registration.Register(req, res); });
+/*
+{
+  "teacher": {
+      "email": "teacher1@gmail.com"
+   },
+  "students":
+    [
+      "student1@gmail.com",
+      "student2@gmail.com"
+    ]
+}
+*/
+// https://fastify.dev/docs/latest/Reference/TypeScript/
+const addStudentsSchema = {
+  type: 'object',
+  required: ['teacher', 'students'],
+  properties: {
+    teacher: {
+      type: 'object',
+      required: ['email'],
+      properties: {
+        email: { type: 'string', format: 'email' }
+      }
+    },
+    students: {
+      type: 'array',
+      items: {
+        type: 'string',
+        format: 'email'
+      },
+    }
+  }
+}
+app.post('/addstudents', {
+  schema: {
+    body: addStudentsSchema
+  },
+  handler: async (req, res) => { return await addStudentsToTeacher.AddStudentsToTeacher(req, res); }
+});
+app.post('/commonstudents', async (req, res) => { commonStudents.CommonStudents(req, res); });
+app.post('/suspendstudent', async (req, res) => { suspendStudent.SuspendStudent(req, res); })
+app.post('/notifystudents', async (req, res) => { studentNotifications.NotifyStudents(req, res); })
 
 //await app.register('/', async (req, res) =>  { res.render('home', { title: 'Node.JS Express Application' }); }); // This is catch-all
 // catch 404 and forward to error handler

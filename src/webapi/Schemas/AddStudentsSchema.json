@@ -1,0 +1,21 @@
+{
+    "title": "Add Students To Teacher Schema",
+    "type": "object",
+    "required": ["teacher", "students"],
+    "properties": {
+        "teacher": {
+            "type": "object",
+            "required": ["email"],
+            "properties": {
+                "email": { "type": "string", "format": "email" }
+            }
+        },
+        "students": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "format": "email"
+            }
+        }
+    }
+}

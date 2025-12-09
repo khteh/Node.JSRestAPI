@@ -22,6 +22,35 @@ export class AddStudentsToTeacherController {
             //let studentsModel: RegisterStudentModel[] = [];
             let students: Student[] = [];
             let message = { 'message': 'Calling /api/addstudents' };
+            /*
+            {
+            "teacher": {
+                "email": "teacher1@gmail.com"
+            },
+            "students":
+                [
+                "student1@gmail.com",
+                "student2@gmail.com"
+                ]
+            }            
+            */
+            const { teacher, students } = req.body;
+            req.validateInput({ foo: 'bar' }, {
+                type: 'object',
+                properties: {
+                    teacher: {
+                        type: 'object',
+                        properties: {
+                            email: {
+                                type: 'string'
+                            }
+                        }
+                    },
+                    students: {
+                        type: 'array'
+                    }
+                }
+            }, 'body') // true           
             if (!req.body.hasOwnProperty('teacher') || req.body.teacher === undefined) {
                 message.message += ' without a teacher specified!';
             } else if (emailvalidator.validate(req.body.teacher.email) === false)

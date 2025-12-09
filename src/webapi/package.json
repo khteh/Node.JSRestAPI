@@ -8,7 +8,9 @@
   "exports": "./build/index.js",
   "private": true,
   "scripts": {
-    "build": "tsc --project tsconfig.json && npm run rollup",
+    "compile-schemas": "json2ts -i Schemas -o types",
+    "build_webapi": "tsc --project tsconfig.json && npm run rollup",
+    "build": "npm-run-all compile-schemas build_webapi",
     "build:watch": "nodemon -e ts --exec \"npm run build\" --ignore build/** --ignore tests/**",
     "rollup": "rollup -c",
     "dev": "export NODE_ENV=development&& concurrently \"npx tsc --watch\" \"nodemon -q build/server.js\"",
