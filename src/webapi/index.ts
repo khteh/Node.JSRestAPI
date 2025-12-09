@@ -349,7 +349,11 @@ const addStudentsSchema = {
 }
 app.post('/addstudents', {
   schema: {
-    body: addStudentsSchema
+    body: AddStudentsToTeacherSchema
+  },
+  preValidation: (request, reply, done) => {
+    const { teacher, students } = request.body
+    done(teacher.email !== '' && students.length > 0 ? new Error('Must be admin') : undefined)
   },
   handler: async (req, res) => { return await addStudentsToTeacher.AddStudentsToTeacher(req, res); }
 });
