@@ -1,5 +1,5 @@
 FROM node:25
-MAINTAINER Kok How, Teh <funcoolgeek@gmail.com>
+LABEL org.opencontainers.image.authors="Kok How, Teh <funcoolgeeek@gmail.com>"
 WORKDIR /app
 ADD package.json .
 ADD tsconfig.json .
