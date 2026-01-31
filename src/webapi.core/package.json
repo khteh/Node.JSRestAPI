@@ -15,7 +15,7 @@
   "dependencies": {
     "async": "^3.2.6s",
     "express": "^5.2.1",
-    "inversify": "^7.10.6",
+    "inversify": "^7.11.0",
     "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.28"
   },
@@ -23,9 +23,9 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/express": "^5.0.6",
-    "@types/node": "^24.10.1",
+    "@types/node": "^25.1.0",
     "nodemon": "^3.1.11",
-    "rollup": "^4.53.3",
+    "rollup": "^4.57.1",
     "rollup-plugin-dts": "^6.3.0",
     "tslib": "^2.8.1",
     "typescript": "^5.9.3"
