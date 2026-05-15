@@ -43,7 +43,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 if (config.util.getEnv('NODE_ENV') !== "test") {
   var accessLogStream = rfs.createStream('access.log', {
     interval: '1d', // rotate daily
-    path: "/var/log/node.js"
+    path: "/var/log/nodejsrestapi"
   })
   //var format: string = ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent - :response-time ms"';
   const format = json({
@@ -121,7 +121,7 @@ if (config.util.getEnv('NODE_ENV') !== "test") {
     transports: [
       new DailyRotateFile({
         level: 'info',
-        filename: '/var/log/kyberlife/log-%DATE%',
+        filename: '/var/log/nodejsrestapi/log-%DATE%',
         handleExceptions: true,
         format: winston.format.combine(
           winston.format.splat(),

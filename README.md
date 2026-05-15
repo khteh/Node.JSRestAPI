@@ -233,7 +233,7 @@ Image: ![Shoe to sell](./GeminiPromptWithImage.png?raw=true "Shoe to sell")
 
 # Logs
 
-Logs available at `/var/log/node.js/nodejsrestapi.log`
+Logs available at `/var/log/nodejsrestapi/log`
 
 # Run tests:
 
