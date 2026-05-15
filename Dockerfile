@@ -1,4 +1,4 @@
-FROM node:25
+FROM node:26
 LABEL org.opencontainers.image.authors="Kok How, Teh <funcoolgeeek@gmail.com>"
 WORKDIR /app
 ADD package.json .

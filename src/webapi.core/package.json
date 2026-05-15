@@ -15,25 +15,25 @@
   "dependencies": {
     "async": "^3.2.6s",
     "express": "^5.2.1",
-    "inversify": "^7.11.0",
+    "inversify": "^8.1.0",
     "reflect-metadata": "^0.2.2",
-    "typeorm": "^0.3.28"
+    "typeorm": "^0.3.29"
   },
   "devDependencies": {
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/express": "^5.0.6",
-    "@types/node": "^25.1.0",
-    "nodemon": "^3.1.11",
-    "rollup": "^4.57.1",
-    "rollup-plugin-dts": "^6.3.0",
+    "@types/node": "^25.8.0",
+    "nodemon": "^3.1.14",
+    "rollup": "^4.60.4",
+    "rollup-plugin-dts": "^6.4.1",
     "tslib": "^2.8.1",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "keywords": [],
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "engines": {
-    "node": ">=25.0.0"
+    "node": ">=26.1.0"
   }
 }
