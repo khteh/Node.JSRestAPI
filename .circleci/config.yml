@@ -125,7 +125,8 @@ jobs: # a collection of steps
       - run:
           name: Update Node.JS RestAPI application
           command: |
-            kubectl patch statefulset nodejsrestapi --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"'$AWS_ACCOUNT_ID'.dkr.ecr.ap-southeast-1.amazonaws.com/nodejsrestapi:'$CIRCLE_BUILD_NUM_DOCKER'"}]'
+            #kubectl patch statefulset nodejsrestapi --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"'$AWS_ACCOUNT_ID'.dkr.ecr.ap-southeast-1.amazonaws.com/nodejsrestapi:'$CIRCLE_BUILD_NUM_DOCKER'"}]'
+            kubectl set image sts/nodejsrestapi nodejsrestapi=$AWS_ACCOUNT_ID.dkr.ecr.ap-southeast-1.amazonaws.com/nodejsrestapi:$CIRCLE_BUILD_NUM_DOCKER
 workflows:
   main:
     jobs:
