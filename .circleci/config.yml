@@ -154,6 +154,6 @@ workflows:
 #              only: master
 #      - notification:
 #          context: slack-secrets
-#          name: Node.JSRestAPI Slack Notification
+#          name: Node.JS RestAPI Slack Notification
 #          requires:
 #            - BuildTestAndDeploy
