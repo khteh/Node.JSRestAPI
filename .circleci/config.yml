@@ -154,6 +154,6 @@ workflows:
 #              only: master
 #      - notification:
 #          context: slack-secrets
-#          name: BuyerPortal2.0
+#          name: Node.JSRestAPI Slack Notification
 #          requires:
 #            - BuildTestAndDeploy
