@@ -16,7 +16,7 @@
     "run_migration": "npx typeorm-ts-node-esm migration:run"
   },
   "dependencies": {
-    "config": "^4.4.1",
+    "config": "^5.0.0",
     "inversify": "^8.1.0",
     "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.29",
