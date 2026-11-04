@@ -1,4 +1,8 @@
 {
+    "files.exclude": {
+        "**/*.js": { "when": "$(basename).ts" },
+        "**/**.js": { "when": "$(basename).tsx" }
+    },
     "window.zoomLevel": -1,
     "mochaExplorer.files": "tests/**/*_tests.ts",
     "mochaExplorer.require": "ts-node/register",
