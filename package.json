@@ -58,8 +58,7 @@
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.28.6",
-    "@babel/plugin-syntax-import-assertions": "^7.28.6",
+    "@babel/eslint-parser": "^8.1.2",
     "@tsconfig/node24": "^24.0.4",
     "@types/async": "3.2.25",
     "@types/chai-as-promised": "^8.0.2",
@@ -101,5 +100,10 @@
     "src/webapi.core",
     "src/infrastructure",
     "src/webapi"
-  ]
+  ],
+  "overrides": {
+    "madge": {
+      "typescript": "$typescript"
+    }
+  }
 }
