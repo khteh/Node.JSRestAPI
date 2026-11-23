@@ -33,10 +33,10 @@
     "sonarqube": "./node_modules/.bin/mocha --reporter mocha-sonarqube-reporter tests --reporter-options output=test_reports/sonarqube/test_results.xml"
   },
   "dependencies": {
-    "@google/genai": "^2.32.0",
+    "@google/genai": "^3.6.1",
     "@grpc/grpc-js": "^1.14.7",
     "@grpc/proto-loader": "^0.8.1",
-    "ansi-regex": "^6.5.0",
+    "ansi-regex": "^6.6.0",
     "async": "^3.2.6",
     "compression": "^1.8.2",
     "config": "^5.0.1",
