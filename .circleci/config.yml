@@ -79,7 +79,7 @@ jobs: # a collection of steps
       - run: # run tests
           name: Typescript Tests
           no_output_timeout: 5m
-          command: npm test:ci
+          command: npm run test:ci
           when: always
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: coverage
