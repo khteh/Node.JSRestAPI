@@ -10,11 +10,11 @@ import { AddStudentsToTeacherController } from '../Controllers/AddStudentsToTeac
 import { CommonStudentsController } from '../Controllers/CommonStudentsController.js';
 import { SuspendStudentController } from '../Controllers/SuspendStudentController.js';
 import { StudentNotificationsController } from '../Controllers/StudentNotificationsController.js';
-import { IRegisterStudentUseCase, IRegisterTeacherUseCase, IAddStudentsToTeacherUseCase, ICommonStudentsUseCase, ISuspendStudentUseCase, IStudentNotificationsUseCase, IGenerateContentUseCase, Student, UseCaseTypes } from "webapi.core"
-import { IStudentRepository, ITeacherRepository, RepositoryTypes, LoggerTypes } from "webapi.core";
+import { type IRegisterStudentUseCase, type IRegisterTeacherUseCase, type IAddStudentsToTeacherUseCase, type ICommonStudentsUseCase, type ISuspendStudentUseCase, type IStudentNotificationsUseCase, type IGenerateContentUseCase, Student, UseCaseTypes } from "webapi.core"
+import { type IStudentRepository, type ITeacherRepository, RepositoryTypes, LoggerTypes } from "webapi.core";
 import { RegisterStudentUseCase, SuspendStudentUseCase, RegisterTeacherUseCase, AddStudentsToTeacherUseCase, CommonStudentsUseCase, GenerateContentUseCase, StudentNotificationsUseCase } from "webapi.core";
 import { StudentRepository, TeacherRepository, LoggerImpl, DatabaseTypes, Database } from "infrastructure"
-import { ILogger } from "webapi.core";
+import { type ILogger } from "webapi.core";
 import multer from 'multer';
 const upload = multer({ dest: 'uploads/' })
 var api = express.Router();

@@ -17,4 +17,4 @@ const LogLevels = {
 interface ILogger {
   Log (level: number, message: string): void;
 }
-export { LogLevels, LogLevelsType, ILogger }
+export { LogLevels, type LogLevelsType, type ILogger }

@@ -1,12 +1,12 @@
 {
-	"DB_HOST": "10.152.183.210",
+	"DB_HOST": "10.152.183.86",
 	"DB_PORT": "5432",
 	"DB_DATABASE" : "school",
 	"DB_USERNAME": "guest",
 	"DB_PASSWORD": "P@$$w0rd",
 	"typeorm": {
 		"type": "postgres",
-		"host": "10.152.183.210",
+		"host": "10.152.183.86",
 		"port": 5432,
 		"username": "guest",
 		"password": "P@$$w0rd",

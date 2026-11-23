@@ -1,8 +1,8 @@
 import "reflect-metadata"
 import config from 'config'
-import { DataSource, EntityTarget, Repository } from "typeorm"
+import { DataSource, type EntityTarget, Repository } from "typeorm"
 import { injectable, inject } from "inversify";
-import { Student, Teacher, ILogger, LogLevels, LoggerTypes, EntityBase } from "webapi.core"
+import { Student, Teacher, type ILogger, LogLevels, LoggerTypes, EntityBase } from "webapi.core"
 
 @injectable()
 export class Database {

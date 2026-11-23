@@ -1,9 +1,10 @@
 import config from 'config';
-import { Request, Response, NextFunction } from 'express';
+import { type Request, type Response, type NextFunction } from 'express';
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import createError from 'http-errors'
 import express from 'express'
+import http2Express from 'http2-express'
 import compression from 'compression'
 //import helmet from 'helmet'
 import cors from 'cors'
@@ -20,7 +21,10 @@ import DailyRotateFile from 'winston-daily-rotate-file';
 import bodyParser from 'body-parser';
 import homeRoute from './routes/home.js'
 //import fileUpload from 'express-fileupload';
-var app = express();
+// http2-express lets Express handle requests from Node's http2 server (HTTP/2 and, via allowHTTP1, HTTP/1.1).
+var app = http2Express(express);
+// Don't advertise the server stack (Express and http2-express both set X-Powered-By when this is enabled).
+app.disable('x-powered-by');
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 // view engine setup

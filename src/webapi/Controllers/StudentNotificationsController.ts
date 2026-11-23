@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
+import { type Request, type Response, type NextFunction } from 'express';
 import emailvalidator from 'email-validator'
-import { IStudentNotificationsUseCase, StudentNotificationsRequest, StudentNotificationsResponse, Student, Teacher } from "webapi.core"
+import { type IStudentNotificationsUseCase, StudentNotificationsRequest, StudentNotificationsResponse, Student, Teacher } from "webapi.core"
 import { StudentNotificationsPresenter } from "../Presenters/StudentNotificationsPresenter.js"
 import { inject } from "inversify";
 import { UseCaseTypes } from "webapi.core";

@@ -1,5 +1,5 @@
 import config from 'config';
-import { ILogger, LogLevelsType } from "webapi.core"
+import { type ILogger, type LogLevelsType } from "webapi.core"
 import { injectable, inject } from "inversify";
 import winston from 'winston'
 import * as rfs from 'rotating-file-stream'

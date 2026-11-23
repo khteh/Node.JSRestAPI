@@ -1,4 +1,4 @@
-import { Student, Teacher, IStudentRepository, ILogger, LoggerTypes, LogLevels } from "webapi.core"
+import { Student, Teacher, type IStudentRepository, type ILogger, LoggerTypes, LogLevels } from "webapi.core"
 import { RepositoryBase } from "./RepositoryBase.js"
 import { injectable, inject } from "inversify";
 import { DatabaseTypes } from "../../types.js";
@@ -21,7 +21,7 @@ export class StudentRepository extends RepositoryBase<Student> implements IStude
         });
     }
     public override async ListAll (): Promise<Student[]> {
-        return await this._repository.find({ relations: ["teachers"] });
+        return await this._repository.find({ relations: { teachers: true } });
     }
     public async AddTeacher (student: Student, teacher: Teacher): Promise<Student | null> {
         if (teacher && student) {

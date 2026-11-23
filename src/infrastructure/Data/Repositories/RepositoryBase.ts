@@ -1,6 +1,6 @@
-import { IRepository, EntityBase, ILogger, LoggerTypes } from "webapi.core"
+import { type IRepository, EntityBase, type ILogger, LoggerTypes } from "webapi.core"
 import { Database } from "../../db.js"
-import { EntityTarget, Repository } from "typeorm"
+import { type EntityTarget, Repository } from "typeorm"
 import { injectable, unmanaged, inject } from "inversify";
 import { DatabaseTypes } from "../../types.js";
 import { timingSafeEqual } from "crypto";

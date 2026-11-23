@@ -1,6 +1,6 @@
 import { injectable, inject } from "inversify";
-import { Request, Response, NextFunction } from 'express';
-import { ILogger, LoggerTypes, LogLevels, LogLevelsType, GenerateContentRequest, IGenerateContentUseCase } from "webapi.core";
+import { type Request, type Response, type NextFunction } from 'express';
+import { type ILogger, LoggerTypes, LogLevels, type LogLevelsType, GenerateContentRequest, type IGenerateContentUseCase } from "webapi.core";
 import { GenerateTextPresenter } from "../Presenters/GenerateTextPresenter.js"
 import { UseCaseTypes, ImagePart } from "webapi.core";
 export class GeminiController {

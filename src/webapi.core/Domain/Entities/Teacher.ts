@@ -1,4 +1,4 @@
-import { Entity, Column, JoinTable, ManyToMany, Relation } from "typeorm"
+import { Entity, Column, JoinTable, ManyToMany, type Relation } from "typeorm"
 import { EntityBase } from "./EntityBase.js"
 import type { Student } from "./Student.js"
 @Entity()

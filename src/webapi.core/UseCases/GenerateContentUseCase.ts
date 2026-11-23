@@ -1,13 +1,13 @@
 import fs from 'fs';
-import { GoogleGenAI, createUserContent, Part, GenerateContentResponse, Type, GenerateContentConfig } from "@google/genai";
-import { IGenerateContentUseCase } from "../Interfaces/UseCases/IGenerateContentUseCase.js"
-import { IOutputPort } from "../Interfaces/IOutputPort.js";
+import { GoogleGenAI, createUserContent, type Part, GenerateContentResponse, Type, type GenerateContentConfig } from "@google/genai";
+import { type IGenerateContentUseCase } from "../Interfaces/UseCases/IGenerateContentUseCase.js"
+import { type IOutputPort } from "../Interfaces/IOutputPort.js";
 import { UseCaseResponseMessage } from "../DTO/UseCaseResponse/UseCaseResponseMessage.js"
 import { GenerateContentRequest } from "../DTO/UseCaseRequests/GenerateContentRequest.js"
 import { Error } from "../DTO/Error.js"
 import { ReceiptModel } from "../DTO/ReceiptModel.js"
 import { injectable, inject } from "inversify";
-import { ILogger, LogLevels } from "../Interfaces/ILogger.js";
+import { type ILogger, LogLevels } from "../Interfaces/ILogger.js";
 import { LoggerTypes, RepositoryTypes } from "../types.js";
 import e from "express";
 @injectable()

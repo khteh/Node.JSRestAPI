@@ -1,9 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
+import { type Request, type Response, type NextFunction } from 'express';
 import emailvalidator from 'email-validator'
 import { RegisterStudentRequest, RegisterTeacherRequest, Error } from "webapi.core"
 import { RegisterStudentModel } from "../Models/Request/RegisterStudentModel.js"
 import { RegisterTeacherModel } from "../Models/Request/RegisterTeacherModel.js"
-import { ILogger, LogLevels, LoggerTypes, IRegisterStudentUseCase, IRegisterTeacherUseCase, Student, Teacher } from "webapi.core"
+import { type ILogger, LogLevels, LoggerTypes, type IRegisterStudentUseCase, type IRegisterTeacherUseCase, Student, Teacher } from "webapi.core"
 import { RegisterUserPresenter } from "../Presenters/RegisterUserPresenter.js"
 import { inject } from "inversify";
 import { UseCaseTypes } from "webapi.core";

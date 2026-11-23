@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import { ILogger, LogLevels, LoggerTypes, ICommonStudentsUseCase, CommonStudentsRequest, Student, Teacher } from "webapi.core"
+import { type Request, type Response, type NextFunction } from 'express';
+import { type ILogger, LogLevels, LoggerTypes, type ICommonStudentsUseCase, CommonStudentsRequest, Student, Teacher } from "webapi.core"
 import { CommonStudentsPresenter } from "../Presenters/CommonStudentsPresenter.js"
 import { inject } from "inversify";
 import { UseCaseTypes } from "webapi.core";
