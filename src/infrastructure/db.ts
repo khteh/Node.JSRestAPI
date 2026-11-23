@@ -15,11 +15,11 @@ export class Database {
 		try {
 			Database._dataSource = new DataSource({
 				type: "postgres",
-				host: process.env.POSTGRESQL_HOST || config.get('DBHost'),
-				port: Number(process.env.POSTGRESQL_PORT || config.get('DBPort')),
-				username: process.env.POSTGRESQL_USER || config.get('Username'),
-				password: process.env.POSTGRESQL_PASSWORD || config.get('Password'),
-				database: process.env.POSTGRESQL_DB || config.get('Database'),
+				host: process.env.DB_HOST || config.get('DB_HOST'),
+				port: Number(process.env.DB_PORT || config.get('DB_PORT')),
+				username: process.env.DB_USERNAME || config.get('DB_USERNAME'),
+				password: process.env.DB_PASSWORD || config.get('DB_PASSWORD'),
+				database: process.env.DB_DATABASE || config.get('DB_DATABASE'),
 				entities: [Student, Teacher],
 				synchronize: true,
 				logging: false,
