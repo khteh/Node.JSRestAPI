@@ -28,9 +28,13 @@ jobs: # a collection of steps
         environment:
           DB_HOST: 127.0.0.1
           DB_DATABASE: school_test
+          POSTGRESQL_HOST: 127.0.0.1
+          POSTGRESQL_DB: school_test
           POSTGRESQL_ALLOW_EMPTY_PASSWORD: true
           DB_USERNAME: $POSTGRESQL_USER
           DB_PASSWORD: $POSTGRESQL_PASSWORD
+          POSTGRESQL_USER: $POSTGRESQL_USER
+          POSTGRES_PASSWORD: $POSTGRESQL_PASSWORD
     steps:
       - checkout:
           method: full
