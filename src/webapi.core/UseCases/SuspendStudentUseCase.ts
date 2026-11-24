@@ -47,7 +47,7 @@ export class SuspendStudentUseCase implements ISuspendStudentUseCase {
         else {
             errors.push(new Error("", `Invalid request student ${request.Student}!`));
         }
-        response = new UseCaseResponseMessage("", !errors.length, `Student ${request.Student} registered successfully`, errors);
+        response = new UseCaseResponseMessage("", !errors.length, `Student ${request.Student} suspended successfully`, errors);
         outputPort.Handle(response);
         return response.Success;
     }

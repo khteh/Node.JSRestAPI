@@ -1,837 +1,193 @@
 import 'reflect-metadata'
-// Set env variable to test during the tests
 import config from 'config'
-//import assert from assert
-import * as chai from 'chai'
-import chaiHttp from 'chai-http'
+import { expect } from 'vitest'
 import port from "../../src/webapi/server.js"
-import { app } from "../../src/webapi/index.js"
-import { di } from "../../src/webapi/routes/api.js"
-import { EntityBase, Student, StudentDTO, IStudentRepository, ITeacherRepository, Teacher, RepositoryTypes } from "webapi.core";
-//var expect = chai.expect
-chai.use(chaiHttp)
+import { post as postTo, errorMessages, resetDatabase } from "../helpers/integration.js"
+
+/*
+ * End-to-end scenario against the real API and database: register two teachers and two students, link them,
+ * then check common students, notifications and suspension. The tests in this file build on each other and
+ * run in order. WARNING: the beforeAll hook empties the student and teacher tables of the test database.
+ */
 expect(config.util.getEnv('NODE_ENV')).toEqual('test');
-var verifyClientError = async function (response: Response) {
-    expect(response.status).toBe(400);
-    const data = await response.json();
-    expect(data).toHaveProperty('message');
-    expect(data.message).not.toBe('');
-}
+
+const teacher1 = { firstName: "Teacher", lastName: "One", email: "teacher1@example.com" };
+const teacher2 = { firstName: "Teacher", lastName: "Two", email: "teacher2@example.com" };
+const student1 = { firstName: "Student", lastName: "One", email: "student1@example.com" };
+const student2 = { firstName: "Student", lastName: "Two", email: "student2@example.com" };
+const unregistered = "student3@example.com";
+
+const post = (path: string, body: unknown) => postTo(port, path, body);
+const commonStudents = async (teachers: string[]) => {
+    const { status, data } = await post('commonstudents', { teachers });
+    expect(status).toBe(200);
+    return (data["Common Students"] as { email: string, isSuspended: boolean }[]);
+};
+const recipients = async (teacher: string, notification: string) => {
+    const { status, data } = await post('notifystudents', { teacher, notification });
+    expect(status).toBe(200);
+    return data.recipients as string[];
+};
+
 describe('Two teachers, two students tests', () => {
-    //Clean up before all tests in this block
-    beforeAll(/* Cleanup teacher_student table! */ async () => {
-        let studentRepo = di.get<IStudentRepository>(RepositoryTypes.IStudentRepository);
-        let result = await studentRepo.DeleteAllRelations();
-        expect(result).toBe(true);
-        //console.log("Cleanup teacher_student table!");
-        /*Query('delete from teacher_student', function (error, result) {
-            expect(error).toBeNull();
-        });*/
-    });
-    beforeAll(/* Cleanup students table! */ async () => {
-        let studentRepo = di.get<IStudentRepository>(RepositoryTypes.IStudentRepository);
-        let result = await studentRepo.DeleteAllStudents();
-        expect(result).toBe(true);
-        //console.log("Cleanup students table!");
-        /*Query('delete from students', function (error, result) {
-            expect(error).toBeNull();
-        });*/
-    });
-    beforeAll(/* Cleanup teachers table! */ async () => {
-        //console.log("Cleanup teachers table!");
-        let teacherRepo = di.get<ITeacherRepository>(RepositoryTypes.ITeacherRepository);
-        let result = await teacherRepo.DeleteAllTeachers();
-        expect(result).toBe(true);
-        /*Query('delete from teachers', function (error, result) {
-            expect(error).toBeNull();
-        });*/
-    });
-    /*
-      * Test the /POST /api/register
-      */
-    describe('/POST /api/register', async () => {
-        it('It should FAIL to register due to empty data!', async () => {
-            const response = await fetch(`https://localhost:${port}/api/register`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: ""
-                }
-            )
-            await verifyClientError(response);
-            /*
-            chai.request(app)
-                .post('/api/register')
-                .send({})
-                .end((err, res) => {
-                    verifyClientError(err, res);
-                });*/
-        });
-    });
-    /*
-      * Test the /POST /api/register
-      */
+    beforeAll(resetDatabase);
+
     describe('/POST /api/register', () => {
-        it('It should NOT register teacher1 and student1 due to invalid email of the teacher!', async () => {
-            let register = {
-                "teacher": "teacher1 @example.com",
-                "students": [
-                    "student1@example.com",
-                ]
-            }
-            const response = await fetch(`https://localhost:${port}/api/register`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(register)
-                }
-            )
-            await verifyClientError(response);
-            /*chai.request(app)
-                .post('/api/register')
-                .send(register)
-                .end((err, res) => {
-                    verifyClientError(err, res);
-                });*/
+        it('fails without students or teachers', async () => {
+            const { status, data } = await post('register', {});
+            expect(status).toBe(400);
+            expect(data.message).not.toBe('');
+        });
+        it('fails for a teacher with an invalid email', async () => {
+            const { status, data } = await post('register', { teachers: [{ ...teacher1, email: "teacher1" }] });
+            expect(status).toBe(400);
+            expect(errorMessages(data).join()).toContain("teacher1");
+        });
+        it('fails for a student with an invalid email', async () => {
+            const { status, data } = await post('register', { students: [{ ...student1, email: "student1" }] });
+            expect(status).toBe(400);
+            expect(errorMessages(data).join()).toContain("student1");
+        });
+        it('registers both teachers and both students', async () => {
+            const { status, data } = await post('register', { teachers: [teacher1, teacher2], students: [student1, student2] });
+            expect(status).toBe(201);
+            expect(data.errors).toEqual([]);
+        });
+        it('fails to register an existing teacher again', async () => {
+            const { status, data } = await post('register', { teachers: [teacher1] });
+            expect(status).toBe(400);
+            expect(errorMessages(data).join()).toContain(teacher1.email);
         });
     });
-    /*
-      * Test the /POST /api/register
-      */
-    describe('/POST /api/register', () => {
-        it('It should NOT register teacher1 and student1 due to invalid email of the student!', async () => {
-            let register = {
-                "teacher": "teacher1@example.com",
-                "students": [
-                    "student1 @example.com",
-                ]
-            }
-            const response = await fetch(`https://localhost:${port}/api/register`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(register)
-                }
-            )
-            await verifyClientError(response);
-            /*
-            chai.request(app)
-                .post('/api/register')
-                .send(register)
-                .end((err, res) => {
-                    verifyClientError(err, res);
-                });*/
+
+    describe('/POST /api/addstudents', () => {
+        it('fails without a teacher', async () => {
+            const { status } = await post('addstudents', { students: [student1.email] });
+            expect(status).toBe(400);
+        });
+        it('fails for a teacher with an invalid email', async () => {
+            const { status } = await post('addstudents', { teacher: { email: "teacher1" }, students: [student1.email] });
+            expect(status).toBe(400);
+        });
+        it('fails without any valid student', async () => {
+            const { status } = await post('addstudents', { teacher: { email: teacher1.email }, students: ["student1"] });
+            expect(status).toBe(400);
+        });
+        it('fails for an unregistered teacher', async () => {
+            const { status, data } = await post('addstudents', { teacher: { email: "teacher3@example.com" }, students: [student1.email] });
+            expect(status).toBe(400);
+            expect(errorMessages(data).join()).toContain("teacher3@example.com");
+        });
+        it('fails for an unregistered student', async () => {
+            const { status, data } = await post('addstudents', { teacher: { email: teacher1.email }, students: [unregistered] });
+            expect(status).toBe(400);
+            expect(errorMessages(data).join()).toContain(unregistered);
+        });
+        it('adds student1 to teacher1', async () => {
+            const { status, data } = await post('addstudents', { teacher: { email: teacher1.email }, students: [student1.email] });
+            expect(status).toBe(200);
+            expect(data.errors).toEqual([]);
+        });
+        it('adds student1 and student2 to teacher2', async () => {
+            const { status, data } = await post('addstudents', { teacher: { email: teacher2.email }, students: [student1.email, student2.email] });
+            expect(status).toBe(200);
+            expect(data.errors).toEqual([]);
+        });
+        it('fails to add student1 to teacher1 twice', async () => {
+            const { status, data } = await post('addstudents', { teacher: { email: teacher1.email }, students: [student1.email] });
+            expect(status).toBe(400);
+            expect(errorMessages(data).join()).toContain(student1.email);
         });
     });
-    /*
-      * Test the /POST /api/register
-      */
-    describe('/POST /api/register', () => {
-        it('It should register teacher1 and student1', async () => {
-            let register = {
-                "teacher": "teacher1@example.com",
-                "students": [
-                    "student1@example.com",
-                ]
-            }
-            const response = await fetch(`https://localhost:${port}/api/register`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(register)
-                }
-            )
-            expect(response.status).toBe(204);
-            /*chai.request(app)
-                .post('/api/register')
-                .send(register)
-                .end((err, res) => {
-                    //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("statusCode", 204);
-                    expect(err).toBeNull();
-                });*/
+
+    describe('/POST /api/commonstudents', () => {
+        it('fails without teachers', async () => {
+            expect((await post('commonstudents', {})).status).toBe(400);
+            expect((await post('commonstudents', { teachers: [] })).status).toBe(400);
+        });
+        it('fails for a teacher with an invalid email', async () => {
+            const { status } = await post('commonstudents', { teachers: ["teacher1"] });
+            expect(status).toBe(400);
+        });
+        it('fails for an unregistered teacher', async () => {
+            const { status } = await post('commonstudents', { teachers: ["teacher3@example.com"] });
+            expect(status).toBe(400);
+        });
+        it('finds the students of teacher1', async () => {
+            expect((await commonStudents([teacher1.email])).map(s => s.email)).toEqual([student1.email]);
+        });
+        it('finds the students of teacher2', async () => {
+            expect((await commonStudents([teacher2.email])).map(s => s.email).sort()).toEqual([student1.email, student2.email]);
+        });
+        it('finds the students common to teacher1 and teacher2', async () => {
+            expect((await commonStudents([teacher1.email, teacher2.email])).map(s => s.email)).toEqual([student1.email]);
         });
     });
-    /*
-      * Test the /POST /api/register
-      */
-    describe('/POST /api/register', () => {
-        it('It should register teacher2 and student2', async () => {
-            let register = {
-                "teacher": "teacher2@example.com",
-                "students": [
-                    "student1@example.com",
-                    "student2@example.com",
-                ]
-            }
-            const response = await fetch(`https://localhost:${port}/api/register`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(register)
-                }
-            )
-            expect(response.status).toBe(204);
-            /*chai.request(app)
-                .post('/api/register')
-                .send(register)
-                .end((err, res) => {
-                    //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("statusCode", 204);
-                    expect(err).toBeNull();
-                });*/
+
+    describe('/POST /api/notifystudents', () => {
+        it('fails for a teacher with an invalid email', async () => {
+            const { status } = await post('notifystudents', { teacher: "teacher1", notification: "Hello students!" });
+            expect(status).toBe(400);
+        });
+        it('fails without a notification', async () => {
+            const { status } = await post('notifystudents', { teacher: teacher1.email });
+            expect(status).toBe(400);
+        });
+        it('fails for an unregistered teacher', async () => {
+            const { status } = await post('notifystudents', { teacher: "teacher3@example.com", notification: "Hello students!" });
+            expect(status).toBe(400);
+        });
+        it("notifies teacher1's students", async () => {
+            expect(await recipients(teacher1.email, "Hello students!")).toEqual([student1.email]);
+        });
+        it('also notifies a mentioned student of another teacher', async () => {
+            expect((await recipients(teacher1.email, `Hello students! @${student2.email}`)).sort()).toEqual([student1.email, student2.email]);
+        });
+        it('ignores a mentioned student who is not registered', async () => {
+            expect(await recipients(teacher1.email, `Hello students! @${unregistered}`)).toEqual([student1.email]);
+        });
+        it('lists a mentioned student who is also a student of the teacher only once', async () => {
+            expect(await recipients(teacher1.email, `Hello students! @${student1.email}`)).toEqual([student1.email]);
         });
     });
-    /*
-      * Test the /GET commonstudents
-      */
-    describe('/GET commonstudents', () => {
-        it('it should GET students common to empty query string which results in error', async () => {
-            const response = await fetch(`https://localhost:${port}/api/commonstudents`)
-            await verifyClientError(response);
-            /*chai.request(app)
-                .get('/api/commonstudents')
-                .query({})
-                .end((err, res) => {
-                    verifyClientError(err, res);
-                });*/
+
+    describe('/POST /api/suspendstudent', () => {
+        it('fails without a student', async () => {
+            expect((await post('suspendstudent', {})).status).toBe(400);
+        });
+        it('fails for an invalid email', async () => {
+            expect((await post('suspendstudent', { student: "student1" })).status).toBe(400);
+        });
+        it('fails for a student that is not a string', async () => {
+            expect((await post('suspendstudent', { student: 123 })).status).toBe(400);
+        });
+        it('fails for an unregistered student', async () => {
+            const { status, data } = await post('suspendstudent', { student: unregistered });
+            expect(status).toBe(400);
+            expect(errorMessages(data).join()).toContain(unregistered);
+        });
+        it('suspends student1', async () => {
+            const { status, data } = await post('suspendstudent', { student: student1.email });
+            expect(status).toBe(200);
+            expect(data.errors).toEqual([]);
         });
     });
-    /*
-      * Test the /GET commonstudents
-      */
-    describe('/GET commonstudents', () => {
-        it('it should GET students common to invalid email in query string which results in error', async () => {
-            const query = new URLSearchParams({ "teacher": "teacher1 @example.com" })
-            const response = await fetch(`https://localhost:${port}/api/commonstudents?${query.toString()}`)
-            await verifyClientError(response);
-            /*chai.request(app)
-                .get('/api/commonstudents')
-                .query({ "teacher": "teacher1 @example.com" })
-                .end((err, res) => {
-                    verifyClientError(err, res);
-                });*/
+
+    describe('After suspending student1', () => {
+        it('still lists student1 as common to teacher1 and teacher2, marked suspended', async () => {
+            expect(await commonStudents([teacher1.email, teacher2.email])).toEqual([expect.objectContaining({ email: student1.email, isSuspended: true })]);
         });
-    });
-    /*
-      * Test the /GET commonstudents
-      */
-    describe('/GET commonstudents', () => {
-        it('it should GET students common to teacher1@example.com', async () => {
-            const query = new URLSearchParams({ "teacher": "teacher1@example.com" })
-            const response = await fetch(`https://localhost:${port}/api/commonstudents?${query.toString()}`)
-            expect(response.status).toBe(200);
-            const data = await response.json()
-            expect(data).toHaveProperty('students');
-            expect(data).toEqual({
-                students: expect.arrayContaining(['student1@example.com'])
-            })
-            expect(data.students.length).toEqual(1);
-            /*chai.request(app)
-                        .get('/api/commonstudents')
-                        .query({ "teacher": "teacher1@example.com" })
-                        .end((err, res) => {
-                            //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
-                            expect(res).toHaveProperty("statusCode", 200);
-                            expect(err).toBeNull();
-                            expect(res).toHaveProperty('body');
-                            expect(res.body).toHaveProperty('students');
-                            expect(res.body.students).toBeTypeOf("array").that.includes('student1@example.com');
-                            expect(res.body.students.length).toEqual(1);
-                            expect(res.body.students[0]).toEqual('student1@example.com');
-                        });*/
+        it("no longer notifies student1 as one of teacher1's students", async () => {
+            expect(await recipients(teacher1.email, "Hello students!")).toEqual([]);
         });
-    });
-    /*
-      * Test the /GET commonstudents
-      */
-    describe('/GET commonstudents', () => {
-        it('it should GET students common to teacher2@example.com', async () => {
-            const query = new URLSearchParams({ "teacher": "teacher2@example.com" })
-            const response = await fetch(`https://localhost:${port}/api/commonstudents?${query.toString()}`)
-            expect(response.status).toBe(200);
-            const data = await response.json()
-            expect(data).toHaveProperty('students');
-            expect(data).toEqual({
-                students: expect.arrayContaining(['student1@example.com', 'student2@example.com'])
-            })
-            expect(data.students.length).toEqual(2);
-            /*chai.request(app)
-                .get('/api/commonstudents')
-                .query({ "teacher": "teacher2@example.com" })
-                .end((err, res) => {
-                    //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
-                    expect(res).toHaveProperty("statusCode", 200);
-                    expect(err).toBeNull();
-                    expect(res).toHaveProperty('body');
-                    expect(res.body).toHaveProperty('students');
-                    expect(res.body.students).toBeTypeOf("array").that.includes('student1@example.com', 'student2@example.com');
-                    expect(res.body.students.length).toEqual(2);
-                });*/
+        it('notifies only student2 when teacher1 mentions student2', async () => {
+            expect(await recipients(teacher1.email, `Hello students! @${student2.email}`)).toEqual([student2.email]);
         });
-    });
-    /*
-      * Test the /GET commonstudents
-      */
-    describe('/GET commonstudents', () => {
-        it('it should GET students common to teacher1 and teacher2', async () => {
-            let query = new URLSearchParams({ teacher: 'teacher1@example.com' })
-            query.append("teacher", 'teacher2@example.com');
-            const response = await fetch(`https://localhost:${port}/api/commonstudents?${query.toString()}`)
-            expect(response.status).toBe(200);
-            const data = await response.json()
-            expect(data).toHaveProperty('students');
-            expect(data).toEqual({
-                students: expect.arrayContaining(['student1@example.com'])
-            })
-            expect(data.students.length).toEqual(1);
-            /*chai.request(app)
-                .get('/api/commonstudents')
-                .query({ teacher: ['teacher1@example.com', 'teacher2@example.com'] })
-                .end((err, res) => {
-                    //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
-                    expect(res).toHaveProperty("statusCode", 200);
-                    expect(err).toBeNull();
-                    expect(res).toHaveProperty('body');
-                    expect(res.body).toHaveProperty('students');
-                    expect(res.body.students).toBeTypeOf("array").that.includes('student1@example.com');
-                    expect(res.body.students.length).toEqual(1);
-                    expect(res.body.students[0]).toEqual('student1@example.com');
-                });*/
+        it("notifies only student2 of teacher2's students", async () => {
+            expect(await recipients(teacher2.email, "Hello students!")).toEqual([student2.email]);
         });
-    });
-    /*
-     * Test the /POST /api/retrievefornotifications
-     */
-    describe('/POST /api/retrievefornotifications', () => {
-        it('it should NOT retrieve a list of students who can receive a given notification due to invalid teacher1 email', async () => {
-            let notifications = {
-                "teacher": "teacher1 @example.com",
-                "notification": "Hello students!"
-            }
-            const response = await fetch(`https://localhost:${port}/api/retrievefornotifications`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(notifications)
-                }
-            )
-            await verifyClientError(response);
-            /*chai.request(app)
-                .post('/api/retrievefornotifications')
-                .send(notifications)
-                .end((err, res) => {
-                    verifyClientError(err, res);
-                });*/
-        });
-    });
-    /*
-     * Test the /POST /api/retrievefornotifications
-     */
-    describe('/POST /api/retrievefornotifications', () => {
-        it('it should retrieve a list of students who can receive a given notification from teacher1', async () => {
-            let notifications = {
-                "teacher": "teacher1@example.com",
-                "notification": "Hello students!"
-            }
-            const response = await fetch(`https://localhost:${port}/api/retrievefornotifications`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(notifications)
-                }
-            )
-            expect(response.status).toBe(200);
-            const data = await response.json()
-            expect(data).toHaveProperty('recipients');
-            expect(data).toEqual({
-                recipients: expect.arrayContaining(['student1@example.com'])
-            })
-            expect(data.recipients.length).toEqual(1);
-            /*chai.request(app)
-                .post('/api/retrievefornotifications')
-                .send(notifications)
-                .end((err, res) => {
-                    //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("statusCode", 200);
-                    expect(err).toBeNull();
-                    expect(res).toHaveProperty('body');
-                    expect(res.body).toHaveProperty('recipients');
-                    expect(res.body.recipients).toBeTypeOf("array").that.includes('student1@example.com');
-                    expect(res.body.recipients.length).toEqual(1);
-                });*/
-        });
-    });
-    /*
-     * Test the /POST /api/retrievefornotifications
-     */
-    describe('/POST /api/retrievefornotifications', () => {
-        it('it should retrieve a list of students who can receive a given notification from teacher1. Unregistered student mentioned should not be considered', async () => {
-            let notifications = {
-                "teacher": "teacher1@example.com",
-                "notification": "Hello students! @invalidstudent@example.com"
-            }
-            const response = await fetch(`https://localhost:${port}/api/retrievefornotifications`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(notifications)
-                }
-            )
-            expect(response.status).toBe(200);
-            const data = await response.json()
-            expect(data).toHaveProperty('recipients');
-            expect(data).toEqual({
-                recipients: expect.arrayContaining(['student1@example.com'])
-            })
-            expect(data.recipients.length).toEqual(1);
-            /*chai.request(app)
-                .post('/api/retrievefornotifications')
-                .send(notifications)
-                .end((err, res) => {
-                    //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("statusCode", 200);
-                    expect(err).toBeNull();
-                    expect(res).toHaveProperty('body');
-                    expect(res.body).toHaveProperty('recipients');
-                    expect(res.body.recipients).toBeTypeOf("array").that.includes('student1@example.com');
-                    expect(res.body.recipients.length).toEqual(1);
-                });*/
-        });
-    });
-    /*
-     * Test the /POST /api/retrievefornotifications
-     */
-    describe('/POST /api/retrievefornotifications', () => {
-        it('it should retrieve a student1 and student2 who can receive a given notification from teacher1', async () => {
-            let notifications = {
-                "teacher": "teacher1@example.com",
-                "notification": "Hello students! @student2@example.com"
-            }
-            const response = await fetch(`https://localhost:${port}/api/retrievefornotifications`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(notifications)
-                }
-            )
-            expect(response.status).toBe(200);
-            const data = await response.json()
-            expect(data).toHaveProperty('recipients');
-            expect(data).toEqual({
-                recipients: expect.arrayContaining(['student1@example.com', 'student2@example.com'])
-            })
-            expect(data.recipients.length).toEqual(2);
-            /*chai.request(app)
-                .post('/api/retrievefornotifications')
-                .send(notifications)
-                .end((err, res) => {
-                    //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("statusCode", 200);
-                    expect(err).toBeNull();
-                    expect(res).toHaveProperty('body');
-                    expect(res.body).toHaveProperty('recipients');
-                    expect(res.body.recipients).toBeTypeOf("array").that.includes('student1@example.com', 'student2@example.com');
-                    expect(res.body.recipients.length).toEqual(2);
-                });*/
-        });
-    });
-    /*
-     * Test the /POST /api/retrievefornotifications
-     */
-    describe('/POST /api/retrievefornotifications', () => {
-        it('it should retrieve a student1 WITHOUT student2 who can receive a given notification from teacher1 due to invalid student2 email', async () => {
-            let notifications = {
-                "teacher": "teacher1@example.com",
-                "notification": "Hello students! @student2 @example.com"
-            }
-            const response = await fetch(`https://localhost:${port}/api/retrievefornotifications`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(notifications)
-                }
-            )
-            expect(response.status).toBe(200);
-            const data = await response.json()
-            expect(data).toHaveProperty('recipients');
-            expect(data).toEqual({
-                recipients: expect.arrayContaining(['student1@example.com'])
-            })
-            expect(data.recipients.length).toEqual(1);
-            /*chai.request(app)
-                .post('/api/retrievefornotifications')
-                .send(notifications)
-                .end((err, res) => {
-                    //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("statusCode", 200);
-                    expect(err).toBeNull();
-                    expect(res).toHaveProperty('body');
-                    expect(res.body).toHaveProperty('recipients');
-                    expect(res.body.recipients).toBeTypeOf("array").that.includes('student1@example.com');
-                    expect(res.body.recipients.length).toEqual(1);
-                });*/
-        });
-    });
-    /*
-     * Test the /POST /api/retrievefornotifications
-     */
-    describe('/POST /api/retrievefornotifications', () => {
-        it('it should retrieve a list of students who can receive a given notification from teacher2 without any student mentioned', async () => {
-            let notifications = {
-                "teacher": "teacher2@example.com",
-                "notification": "Hello students!"
-            }
-            const response = await fetch(`https://localhost:${port}/api/retrievefornotifications`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(notifications)
-                }
-            )
-            expect(response.status).toBe(200);
-            const data = await response.json()
-            expect(data).toHaveProperty('recipients');
-            expect(data).toEqual({
-                recipients: expect.arrayContaining(['student1@example.com', 'student2@example.com'])
-            })
-            expect(data.recipients.length).toEqual(2);
-            /*chai.request(app)
-                .post('/api/retrievefornotifications')
-                .send(notifications)
-                .end((err, res) => {
-                    //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("statusCode", 200);
-                    expect(err).toBeNull();
-                    expect(res).toHaveProperty('body');
-                    expect(res.body).toHaveProperty('recipients');
-                    expect(res.body.recipients).toBeTypeOf("array").that.includes('student1@example.com', 'student2@example.com');
-                    expect(res.body.recipients.length).toEqual(2);
-                });*/
-        });
-    });
-    /*
-     * Test the /POST /api/suspend
-     */
-    describe('/POST /api/suspend', () => {
-        it('it should FAIL to suspend due to empty data!', async () => {
-            const response = await fetch(`https://localhost:${port}/api/suspend`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: ""
-                }
-            )
-            await verifyClientError(response);
-            /*chai.request(app)
-                .post('/api/suspend')
-                .send({})
-                .end((err, res) => {
-                    verifyClientError(err, res);
-                });*/
-        });
-    });
-    /*
-     * Test the /POST /api/suspend
-     */
-    describe('/POST /api/suspend', () => {
-        it('it should FAIL to suspend due to invalid email provided!', async () => {
-            let suspend = { "student": "student @example.com" };
-            const response = await fetch(`https://localhost:${port}/api/suspend`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(suspend)
-                }
-            )
-            await verifyClientError(response);
-            /*chai.request(app)
-                .post('/api/suspend')
-                .send({})
-                .end((err, res) => {
-                    verifyClientError(err, res);
-                });*/
-        });
-    });
-    /*
-     * Test the /POST /api/suspend
-     */
-    describe('/POST /api/suspend', () => {
-        it('it should FAIL to suspend due to invalid student datatype provided!', async () => {
-            let suspend = { "student": ["student @example.com"] };
-            const response = await fetch(`https://localhost:${port}/api/suspend`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(suspend)
-                }
-            )
-            await verifyClientError(response);
-            /*chai.request(app)
-                .post('/api/suspend')
-                .send({})
-                .end((err, res) => {
-                    verifyClientError(err, res);
-                });*/
-        });
-    });
-    /*
-     * Test the /POST /api/suspend
-     */
-    describe('/POST /api/suspend', () => {
-        it('it should suspend student1', async () => {
-            let suspend = { "student": "student1@example.com" };
-            const response = await fetch(`https://localhost:${port}/api/suspend`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(suspend)
-                }
-            )
-            expect(response.status).toBe(204);
-            /*chai.request(app)
-                .post('/api/suspend')
-                .send(suspend)
-                .end((err, res) => {
-                    //console.log("/POST /api/suspend response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("statusCode", 204);
-                    expect(err).toBeNull();
-                });*/
-        });
-    });
-    /*
-      * Test the /GET commonstudents
-      */
-    describe('/GET commonstudents', () => {
-        it('it should GET students common to teacher1 and teacher2 after suspending student1', async () => {
-            let query = new URLSearchParams({ teacher: 'teacher1@example.com' })
-            query.append("teacher", 'teacher2@example.com');
-            const response = await fetch(`https://localhost:${port}/api/commonstudents?${query.toString()}`)
-            expect(response.status).toBe(200);
-            const data = await response.json()
-            expect(data).toHaveProperty('students');
-            expect(data).toEqual({
-                students: expect.arrayContaining(['student1@example.com'])
-            })
-            expect(data.students.length).toEqual(1);
-            /*chai.request(app)
-                .get('/api/commonstudents')
-                .query({ teacher: ['teacher1@example.com', 'teacher2@example.com'] })
-                .end((err, res) => {
-                    //console.log("/GET /api/commonstudents response: "+JSON.stringify(res.body));
-                    expect(res).toHaveProperty("statusCode", 200);
-                    expect(err).toBeNull();
-                    expect(res).toHaveProperty('body');
-                    expect(res.body).toHaveProperty('students');
-                    expect(res.body.students).toBeTypeOf("array").that.includes('student1@example.com');
-                    expect(res.body.students.length).toEqual(1);
-                    expect(res.body.students[0]).toEqual('student1@example.com');
-                });*/
-        });
-    });
-    /*
-     * Test the /POST /api/retrievefornotifications
-     */
-    describe('/POST /api/retrievefornotifications', () => {
-        it('it should retrieve a list of EMPTY students who can receive a given notification from teacher1', async () => {
-            let notifications = {
-                "teacher": "teacher1@example.com",
-                "notification": "Hello students!"
-            }
-            const response = await fetch(`https://localhost:${port}/api/retrievefornotifications`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(notifications)
-                }
-            )
-            expect(response.status).toBe(200);
-            const data = await response.json()
-            expect(data).toHaveProperty('recipients');
-            expect(data).toEqual({
-                recipients: expect.arrayContaining([])
-            })
-            expect(data.recipients.length).toEqual(0);
-            /*chai.request(app)
-                .post('/api/retrievefornotifications')
-                .send(notifications)
-                .end((err, res) => {
-                    //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("statusCode", 200);
-                    expect(err).toBeNull();
-                    expect(res).toHaveProperty('body');
-                    expect(res.body).toHaveProperty('recipients');
-                    expect(res.body.recipients).toBeTypeOf("array").that.is.empty;
-                    expect(res.body.recipients.length).toEqual(0);
-                });*/
-        });
-    });
-    /*
-     * Test the /POST /api/retrievefornotifications
-     */
-    describe('/POST /api/retrievefornotifications', () => {
-        it('it should retrieve a list of students who can receive a given notification from teacher1 when student2 is mentioned', async () => {
-            let notifications = {
-                "teacher": "teacher1@example.com",
-                "notification": "Hello students! @student2@example.com"
-            }
-            const response = await fetch(`https://localhost:${port}/api/retrievefornotifications`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(notifications)
-                }
-            )
-            expect(response.status).toBe(200);
-            const data = await response.json()
-            expect(data).toHaveProperty('recipients');
-            expect(data).toEqual({
-                recipients: expect.arrayContaining(['student2@example.com'])
-            })
-            expect(data.recipients.length).toEqual(1);
-            /*chai.request(app)
-                .post('/api/retrievefornotifications')
-                .send(notifications)
-                .end((err, res) => {
-                    //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("statusCode", 200);
-                    expect(err).toBeNull();
-                    expect(res).toHaveProperty('body');
-                    expect(res.body).toHaveProperty('recipients');
-                    expect(res.body.recipients).toBeTypeOf("array").that.includes('student2@example.com');
-                    expect(res.body.recipients.length).toEqual(1);
-                });*/
-        });
-    });
-    /*
-     * Test the /POST /api/retrievefornotifications
-     */
-    describe('/POST /api/retrievefornotifications', () => {
-        it('it should retrieve a list of students who can receive a given notification from teacher2', async () => {
-            let notifications = {
-                "teacher": "teacher2@example.com",
-                "notification": "Hello students!"
-            }
-            const response = await fetch(`https://localhost:${port}/api/retrievefornotifications`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(notifications)
-                }
-            )
-            expect(response.status).toBe(200);
-            const data = await response.json()
-            expect(data).toHaveProperty('recipients');
-            expect(data).toEqual({
-                recipients: expect.arrayContaining(['student2@example.com'])
-            })
-            expect(data.recipients.length).toEqual(1);
-            /*chai.request(app)
-                .post('/api/retrievefornotifications')
-                .send(notifications)
-                .end((err, res) => {
-                    //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("statusCode", 200);
-                    expect(err).toBeNull();
-                    expect(res).toHaveProperty('body');
-                    expect(res.body).toHaveProperty('recipients');
-                    expect(res.body.recipients).toBeTypeOf("array").that.includes('student2@example.com');
-                    expect(res.body.recipients.length).toEqual(1);
-                });*/
-        });
-    });
-    /*
-     * Test the /POST /api/retrievefornotifications
-     */
-    describe('/POST /api/retrievefornotifications', () => {
-        it('it should retrieve a list of students who can receive a given notification from teacher2 when student1 is mentioned', async () => {
-            let notifications = {
-                "teacher": "teacher2@example.com",
-                "notification": "Hello students! @student1@example.com"
-            }
-            const response = await fetch(`https://localhost:${port}/api/retrievefornotifications`,
-                {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(notifications)
-                }
-            )
-            expect(response.status).toBe(200);
-            const data = await response.json()
-            expect(data).toHaveProperty('recipients');
-            expect(data).toEqual({
-                recipients: expect.arrayContaining(['student2@example.com'])
-            })
-            expect(data.recipients.length).toEqual(1);
-            /*chai.request(app)
-                .post('/api/retrievefornotifications')
-                .send(notifications)
-                .end((err, res) => {
-                    //console.log("/POST /api/register response: " + JSON.stringify(res));
-                    expect(res).toHaveProperty("statusCode", 200);
-                    expect(err).toBeNull();
-                    expect(res).toHaveProperty('body');
-                    expect(res.body).toHaveProperty('recipients');
-                    expect(res.body.recipients).toBeTypeOf("array").that.includes('student2@example.com');
-                    expect(res.body.recipients.length).toEqual(1);
-                });*/
+        it('does not notify student1 even when mentioned', async () => {
+            expect(await recipients(teacher2.email, `Hello students! @${student1.email}`)).toEqual([student2.email]);
         });
     });
 });

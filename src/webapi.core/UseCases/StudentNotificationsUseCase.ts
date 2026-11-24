@@ -43,7 +43,8 @@ export class StudentNotificationsUseCase implements IStudentNotificationsUseCase
                 for (let s of request.Students) {
                     if (emailvalidator.validate(s)) {
                         let student = await this._studentRepository.GetByEmail(s);
-                        if (student !== undefined && student !== null) {
+                        // Suspended students get no notifications, mentioned or not; don't list anyone twice.
+                        if (student !== undefined && student !== null && !student.isSuspended && !recipients.includes(s)) {
                             recipients.push(s);
                         }
                     }

@@ -13,7 +13,8 @@ export class Teacher extends EntityBase {
     public email: string
 
     //@ManyToMany((type) => Student, (student) => student.teachers)
-    @ManyToMany("Student")
+    // Inverse side of Student.teachers, so both directions use the same student_teachers_teacher join table.
+    @ManyToMany("Student", "teachers")
     //@JoinTable()// Note that the inverse relation does not have a @JoinTable. @JoinTable must be only on one side of the relation.
     public students: Relation<Student>[]
 

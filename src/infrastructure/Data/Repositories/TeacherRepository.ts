@@ -29,9 +29,14 @@ export class TeacherRepository extends RepositoryBase<Teacher> implements ITeach
     public async AddStudent (teacher: Teacher, student: Student): Promise<Teacher | null> {
         if (teacher && student) {
             try {
-                teacher.students.push(student);
-                return await this.Update(teacher);
-            } catch (e) { console.log(e); }
+                // Insert just this one join-table row. Saving the whole teacher would cascade to the student and
+                // rewrite the join table from the student's teachers as loaded earlier, dropping rows added since.
+                await (await this.repository()).createQueryBuilder().relation("students").of(teacher).add(student);
+                (teacher.students ??= []).push(student);
+                return teacher;
+            } catch (e) {
+                this._logger.Log(LogLevels.error, `AddStudent(): ${e}`);
+            }
         }
         return null;
     }

@@ -26,9 +26,14 @@ export class StudentRepository extends RepositoryBase<Student> implements IStude
     public async AddTeacher (student: Student, teacher: Teacher): Promise<Student | null> {
         if (teacher && student) {
             try {
-                student.teachers.push(teacher);
-                return await this.Update(student);
-            } catch (e) { console.log(e); }
+                // Insert just this one join-table row. Saving the whole student would cascade to the teacher and
+                // rewrite the join table from the teacher's students as loaded earlier, dropping rows added since.
+                await (await this.repository()).createQueryBuilder().relation("teachers").of(student).add(teacher);
+                (student.teachers ??= []).push(teacher);
+                return student;
+            } catch (e) {
+                this._logger.Log(LogLevels.error, `AddTeacher(): ${e}`);
+            }
         }
         return null;
     }
