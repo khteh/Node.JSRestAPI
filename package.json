@@ -1,6 +1,6 @@
 {
   "name": "node.jsrestapi",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
   "exports": "./src/webapi/server.ts",
   "type": "module",
@@ -22,8 +22,8 @@
     "build_all": "npm-run-all clean build_core build_infra build_webapi build copy-assets",
     "proto": "npm run proto --workspace=webapi",
     "lint": "eslint --ext .js --ignore-path .gitignore ./",
-    "dev": "export NODE_ENV=development&& concurrently \"npx tsc --watch\" \"nodemon -q build/src/webapi/server.js\"",
-    "start": "export NODE_ENV=development&& node --env-file-if-exists=.env build/src/webapi/server.js",
+    "dev": "export NODE_ENV=development PORT=4433&& concurrently \"npx tsc --watch\" \"nodemon -q build/src/webapi/server.js\"",
+    "start": "export NODE_ENV=development PORT=4433&& node --env-file-if-exists=.env build/src/webapi/server.js",
     "test": "export NODE_ENV=test PORT=4433 NODE_EXTRA_CA_CERTS=server.crt&& vitest run",
     "test:ci": "export NODE_ENV=test PORT=4433 NODE_EXTRA_CA_CERTS=server.crt&& vitest run --coverage --reporter=default --reporter=junit --outputFile.junit=test_reports/junit/test-results.xml"
   },
