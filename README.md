@@ -268,6 +268,50 @@ $ npm run proto
 
 Messages are plain objects. When calling the service, build requests with the generated `fromPartial()`, which fills in the fields you leave out, for example `AddStudentsToTeacherRequest.fromPartial({ teacher: { email }, students: [...] })`. See `tests/IntegrationTests/grpc.tests.ts` for a client.
 
+## Postman
+
+- File > Settings > Certificates > Add Certificate
+  - Add `server.crt`, `server.key`
+  - Use gRPC port number 4434
+  - Add the TLS cert Passphrase
+
+- File > New > gRPC
+  - In Service Definition, import `school.proto`
+  - In Settings, turn off "Enable server certificate verification".
+  - Use gRPC port number 4434 in the address bar.
+  - Select the method to use in the drop-down box.
+  - Add the payload in the Message tab
+
+## grpcurl
+
+1. Students Registration:
+
+```
+$ grpcurl -cacert server.crt -cert server.crt -key server.key \
+  -import-path src/webapi/grpc/proto -proto school.proto \
+  -d '{"teachers":[{"firstName":"Teacher","lastName":"One","email":"teacher1@example.com"}],
+       "students":[{"firstName":"Student","lastName":"One","email":"student1@example.com"}]}' \
+  localhost:4434 school.School/Register
+```
+
+2. Add Students To Teacher:
+
+```
+$ grpcurl -cacert server.crt -cert server.crt -key server.key \
+  -import-path src/webapi/grpc/proto -proto school.proto \
+  -d '{"teacher":{"email":"teacher1@example.com"},"students":["student1@example.com"]}' \
+  localhost:4434 school.School/AddStudentsToTeacher
+```
+
+1. Common Students:
+
+```
+$ grpcurl -cacert server.crt -cert server.crt -key server.key \
+  -import-path src/webapi/grpc/proto -proto school.proto \
+  -d '{"teachers":["teacher1@example.com"]}' \
+  localhost:4434 school.School/CommonStudents
+```
+
 # Logs
 
 Logs available at `/var/log/nodejsrestapi/log`
