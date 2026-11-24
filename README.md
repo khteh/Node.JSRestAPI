@@ -6,7 +6,7 @@ Simple RESTful API using HTTP/2 SPDY server for Node.JS with Clean Architecture 
 
 ### School Teacher-Student Administration
 
-Teachers need a system where they can perform administrative functions for their students. Teachers and students are identified by their email addresses. Unit tests using mocha framework with chai assertion library. Test coverage report is generated with Istanbul library and SonarQube. Dependency check is done with OWASP dependency check CLI.
+Teachers need a system where they can perform administrative functions for their students. Teachers and students are identified by their email addresses. Unit tests using the Vitest framework with chai assertion library. Test coverage report is generated with Vitest (V8 coverage) and SonarQube. Dependency check is done with OWASP dependency check CLI.
 
 ### Google Gemini API
 
@@ -23,10 +23,7 @@ Teachers need a system where they can perform administrative functions for their
 ## Google Gemini API
 
 - Obtain an API key from https://aistudio.google.com/apikey
-- Add a `.env` file with the following content:
-  ```
-  GEMINI_API_KEY=<api key>
-  ```
+- Set it as `gemini.apiKey` in `config/local-development.json`, or in the `GEMINI_API_KEY` environment variable (see [Configuration](#configuration)).
 
 ## Dependencies:
 
@@ -34,10 +31,39 @@ Teachers need a system where they can perform administrative functions for their
 $ npm install
 ```
 
+# Configuration
+
+Configuration is loaded with [node-config](https://github.com/node-config/node-config) from `config/`. Only non-secret defaults are committed; environment-specific values come from outside the repository. Later sources override earlier ones:
+
+1. `config/default.json` (committed): defaults such as the database port and name.
+   `config/{NODE_ENV}.json` (committed, e.g. `test.json`): optional non-secret defaults for one environment; empty by default.
+2. `config/local-{NODE_ENV}.json` (git-ignored): the values for one environment, e.g. `local-development.json`, `local-test.json` or `local-production.json`.
+3. Environment variables, mapped to settings in `config/custom-environment-variables.json` (committed): `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, `DB_CONNECT_TIMEOUT_MS`, `GEMINI_API_KEY`. Unset or empty variables are ignored. A `.env` file is not read: put local values in `config/local-{NODE_ENV}.json` instead.
+
+The database settings are `db.host`, `db.port`, `db.database`, `db.username` and `db.password`, plus `db.connectTimeoutMS` (default 5000; 0 waits forever). A missing setting fails with its name when the application first connects, and a connection failure is logged with the host, port, database and user it tried. The Gemini API key is `gemini.apiKey`; without it, `/api/gemini` returns 503.
+
+- **Local development:** create `config/local-development.json` (and `config/local-test.json` for the tests), for example:
+
+  ```json
+  {
+    "db": {
+      "host": "localhost",
+      "username": "guest",
+      "password": "..."
+    },
+    "gemini": {
+      "apiKey": "..."
+    }
+  }
+  ```
+
+- **Kubernetes (staging / production):** run with `NODE_ENV=production`. Supply `config/local-production.json` from a ConfigMap, mounted as a single file with `subPath`, and passwords and API keys as environment variables from a Secret. See `kubernetes/configmap.example.yml`.
+- **CircleCI:** the "Write test configuration" step writes `config/local-test.json` from the `POSTGRESQL_USER` and `POSTGRESQL_PASSWORD` project environment variables.
+
 # Start the application:
 
 - Generate self-signed cert for serving HTTP/2 over HTTPS.
-- Edit `config/default.json` to configure the database connection parameters
+- Configure the database connection (see [Configuration](#configuration)), e.g. in `config/local-development.json`.
 - To run in development mode with nodemon:
 
   ```
@@ -233,13 +259,16 @@ Image: ![Shoe to sell](./GeminiPromptWithImage.png?raw=true "Shoe to sell")
 
 # Logs
 
-Logs available at `/var/log/node.js/nodejsrestapi.log`
+Logs available at `/var/log/nodejsrestapi/log`
 
 # Run tests:
 
-- Edit `config/test.json` to configure the database connection parameters.
+- Tests use [Vitest](https://vitest.dev/), configured in `vitest.config.ts` as three projects: `UnitTests`, `UseCaseTests` and `IntegrationTests`.
+- Configure the test database in `config/local-test.json` (see [Configuration](#configuration)). The integration tests need that database and `server.key` / `server.crt`.
+- The test scripts trust the self-signed `server.crt` through `NODE_EXTRA_CA_CERTS`, so there's no need to set `NODE_TLS_REJECT_UNAUTHORIZED=0`.
+- Integration test files run one at a time, because each one starts the server on `PORT` (4433).
 - WARNING! All tables in the database configured for test will be emptied for testing purpose.
-- Generates test_reports/mocha/test-results.xml
+- Tests import the workspace packages from their build output, so run `npm run build_all` first.
 
 ```
 $ npm test
@@ -247,38 +276,13 @@ $ npm test
 
 ## Run tests with coverage report:
 
-- Use Istanbul library with mocha to generate test coverage report.
-- Generates text and html reports
+- `npm run coverage` writes lcov, text, text-summary and html coverage reports to `coverage/`.
+- `npm run ts_test` does the same and also writes a JUnit report to `test_reports/junit/test-results.xml`.
 
 ```
-$ npm run cover
+$ npm run coverage
+$ npm run ts_test
 ```
-
-- Sample output:
-
-  ```
-  ------------------------------|----------|----------|----------|----------|-------------------|
-  File | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s |
-  ------------------------------|----------|----------|----------|----------|-------------------|
-  All files | 87.38 | 63.32 | 97.52 | 87.06 | |
-  Node.JSRestAPI | 80 | 0 | 0 | 80 | |
-  app.js | 80 | 0 | 0 | 80 | 24,30,31,34,35 |
-  Node.JSRestAPI/BusinessLogic | 78.53 | 64.92 | 100 | 77.78 | |
-  commonstudents.js | 76.14 | 67.39 | 100 | 74.07 |... 07,108,109,110 |
-  greetings.js | 100 | 100 | 100 | 100 | |
-  notifications.js | 77.22 | 70.21 | 100 | 76.62 |... 93,94,96,97,98 |
-  registration.js | 81.25 | 63.64 | 100 | 80.8 |... 79,187,188,189 |
-  suspend.js | 69.05 | 50 | 100 | 69.05 |... 61,62,63,64,66 |
-  Node.JSRestAPI/lib | 78.57 | 50 | 100 | 78.57 | |
-  db.js | 78.57 | 50 | 100 | 78.57 | 17,18,23 |
-  Node.JSRestAPI/routes | 95.65 | 100 | 83.33 | 94.44 | |
-  api.js | 100 | 100 | 100 | 100 | |
-  index.js | 80 | 100 | 0 | 80 | 6 |
-  Node.JSRestAPI/tests | 98.62 | 100 | 98.9 | 98.62 | |
-  greetingsapi_tests.js | 90.91 | 100 | 87.5 | 90.91 | 15,16,17,18 |
-  teachersapi_tests.js | 100 | 100 | 100 | 100 | |
-  ------------------------------|----------|----------|----------|----------|-------------------|
-  ```
 
 ## Run dependency check
 

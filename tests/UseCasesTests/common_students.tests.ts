@@ -20,10 +20,15 @@ describe('Common students among teachers tests', () => {
     it('Valid students and teacher should have common students test', async () => {
         // arrange
         let student1 = new Student("First Name1", "LastName1", "student1@gmail.com");
+        student1.id = 1; // ids normally come from the database
         let student2 = new Student("First Name2", "LastName2", "student2@gmail.com");
+        student2.id = 2; // ids normally come from the database
         let student3 = new Student("First Name3", "LastName3", "student3@gmail.com");
+        student3.id = 3; // ids normally come from the database
         let student4 = new Student("First Name4", "LastName4", "student4@gmail.com");
+        student4.id = 4; // ids normally come from the database
         let student5 = new Student("First Name5", "LastName5", "student5@gmail.com");
+        student5.id = 5; // ids normally come from the database
 
         let teacher1 = new Teacher("First Name1", "LastName1", "teacher1@gmail.com");
         let teacher2 = new Teacher("First Name2", "LastName2", "teacher2@gmail.com");
@@ -31,7 +36,6 @@ describe('Common students among teachers tests', () => {
         teacher1.students = [student1, student2, student3];
         teacher2.students = [student2, student3, student4];
         teacher3.students = [student3, student4, student5];
-        var mockStudentRepository = new Mock<IStudentRepository>()
         var mockTeacherRepository = new Mock<ITeacherRepository>()
             .setup(i => i.GetByEmail("teacher1@gmail.com"))
             .returnsAsync(teacher1)
@@ -40,7 +44,7 @@ describe('Common students among teachers tests', () => {
             .setup(i => i.GetByEmail("teacher3@gmail.com"))
             .returnsAsync(teacher3)
         // 2. The use case and star of this test
-        var useCase = new CommonStudentsUseCase(logger, mockStudentRepository.object(), mockTeacherRepository.object());
+        var useCase = new CommonStudentsUseCase(logger, mockTeacherRepository.object());
 
         // 3. The output port is the mechanism to pass response data from the use case to a Presenter 
         // for final preparation to deliver back to the UI/web page/api response etc.
@@ -68,17 +72,21 @@ describe('Common students among teachers tests', () => {
     it('Valid students and teacher should NOT have common students test', async () => {
         // arrange
         let student1 = new Student("First Name1", "LastName1", "student1@gmail.com");
+        student1.id = 1; // ids normally come from the database
         let student2 = new Student("First Name2", "LastName2", "student2@gmail.com");
+        student2.id = 2; // ids normally come from the database
         let student3 = new Student("First Name3", "LastName3", "student3@gmail.com");
+        student3.id = 3; // ids normally come from the database
         let student4 = new Student("First Name4", "LastName4", "student4@gmail.com");
+        student4.id = 4; // ids normally come from the database
         let student5 = new Student("First Name5", "LastName5", "student5@gmail.com");
+        student5.id = 5; // ids normally come from the database
         let teacher1 = new Teacher("First Name1", "LastName1", "teacher1@gmail.com");
         let teacher2 = new Teacher("First Name2", "LastName2", "teacher2@gmail.com");
         let teacher3 = new Teacher("First Name3", "LastName3", "teacher3@gmail.com");
         teacher1.students = [student1, student2, student3];
         teacher2.students = [student4, student5];
         teacher3.students = [student3, student4, student5];
-        var mockStudentRepository = new Mock<IStudentRepository>()
         var mockTeacherRepository = new Mock<ITeacherRepository>()
             .setup(i => i.GetByEmail("teacher1@gmail.com"))
             .returnsAsync(teacher1)
@@ -87,7 +95,7 @@ describe('Common students among teachers tests', () => {
             .setup(i => i.GetByEmail("teacher3@gmail.com"))
             .returnsAsync(teacher3)
         // 2. The use case and star of this test
-        var useCase = new CommonStudentsUseCase(logger, mockStudentRepository.object(), mockTeacherRepository.object());
+        var useCase = new CommonStudentsUseCase(logger, mockTeacherRepository.object());
 
         // 3. The output port is the mechanism to pass response data from the use case to a Presenter 
         // for final preparation to deliver back to the UI/web page/api response etc.

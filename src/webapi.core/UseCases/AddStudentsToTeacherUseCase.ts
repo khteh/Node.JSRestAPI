@@ -1,14 +1,14 @@
-import { IAddStudentsToTeacherUseCase } from "../Interfaces/UseCases/IAddStudentsToTeacherUseCase.js"
-import { IStudentRepository } from "../Interfaces/IStudentRepository.js"
-import { ITeacherRepository } from "../Interfaces/ITeacherRepository.js"
-import { IOutputPort } from "../Interfaces/IOutputPort.js";
+import { type IAddStudentsToTeacherUseCase } from "../Interfaces/UseCases/IAddStudentsToTeacherUseCase.js"
+import { type IStudentRepository } from "../Interfaces/IStudentRepository.js"
+import { type ITeacherRepository } from "../Interfaces/ITeacherRepository.js"
+import { type IOutputPort } from "../Interfaces/IOutputPort.js";
 import { UseCaseResponseMessage } from "../DTO/UseCaseResponse/UseCaseResponseMessage.js"
 import { AddStudentsToTeacherRequest } from "../DTO/UseCaseRequests/AddStudentsToTeacherRequest.js"
 import { Student } from "../Domain/Entities/Student.js";
 import { Teacher } from "../Domain/Entities/Teacher.js";
 import { Error } from "../DTO/Error.js"
 import { injectable, inject } from "inversify";
-import { ILogger, LogLevels } from "../Interfaces/ILogger.js";
+import { type ILogger, LogLevels } from "../Interfaces/ILogger.js";
 import { LoggerTypes, RepositoryTypes } from "../types.js";
 @injectable()
 export class AddStudentsToTeacherUseCase implements IAddStudentsToTeacherUseCase {
@@ -25,10 +25,17 @@ export class AddStudentsToTeacherUseCase implements IAddStudentsToTeacherUseCase
         let errors: Error[] = [];
         let response: UseCaseResponseMessage;
         try {
+            const t: Teacher | null = await this._teacherRepository.GetByEmail(request.Teacher.email);
+            if (t === null) {
+                this._logger.Log(LogLevels.error, `Invalid teacher ${request.Teacher.email}`);
+                errors.push(new Error("", `Invalid teacher ${request.Teacher.email}`));
+                response = new UseCaseResponseMessage("", false, `Invalid teacher ${request.Teacher.email}!`, errors);
+                outputPort.Handle(response);
+                return false;
+            }
             for (let i of request.Students) {
                 let s: Student | null = await this._studentRepository.GetByEmail(i.email);
-                let t: Teacher | null = await this._teacherRepository.GetByEmail(request.Teacher.email);
-                if (s !== null && t !== null && !t.students.some(ii => ii.id === s!.id) && !s.teachers.some(ii => ii.id === t!.id)) {
+                if (s !== null && !t.students.some(ii => ii.id === s!.id) && !s.teachers.some(ii => ii.id === t.id)) {
                     this._logger.Log(LogLevels.debug, `Adding student: ${JSON.stringify(s, null, 2)} to teacher ${JSON.stringify(t, null, 2)}`);
                     let student = await this._studentRepository.AddTeacher(s, t!);
                     this._logger.Log(LogLevels.debug, `student: ${JSON.stringify(student, null, 2)}`);
@@ -40,9 +47,6 @@ export class AddStudentsToTeacherUseCase implements IAddStudentsToTeacherUseCase
                     }
                 } else if (s === null) {
                     this._logger.Log(LogLevels.error, `Invalid student ${i.email}`);
-                    errors.push(new Error("", `Invalid student ${i.email}`));
-                } else if (t === null) {
-                    this._logger.Log(LogLevels.error, `Invalid teacher ${i.email}`);
                     errors.push(new Error("", `Invalid student ${i.email}`));
                 } else {
                     this._logger.Log(LogLevels.warn, `Skip duplicate student ${i.email} <-> teacher ${t.email}`);

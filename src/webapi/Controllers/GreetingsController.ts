@@ -1,7 +1,7 @@
 import express from 'express'
-import { Request, Response, NextFunction } from 'express';
+import { type Request, type Response, type NextFunction } from 'express';
 import { injectable, inject } from "inversify";
-import { ILogger, LoggerTypes, LogLevels, LogLevelsType, } from "webapi.core";
+import { type ILogger, LoggerTypes, LogLevels, type LogLevelsType, } from "webapi.core";
 import url from 'url'
 export class GreetingsController {
     private _logger: ILogger;

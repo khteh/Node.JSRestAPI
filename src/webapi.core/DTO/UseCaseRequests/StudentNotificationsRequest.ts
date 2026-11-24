@@ -5,7 +5,7 @@
 }
 */
 import { Student } from "../../Domain/Entities/Student.js";
-import { IUseCaseRequest } from "../../Interfaces/IUseCaseRequest.js";
+import { type IUseCaseRequest } from "../../Interfaces/IUseCaseRequest.js";
 import { StudentNotificationsResponse } from "../UseCaseResponse/StudentNotificationsResponse.js";
 export class StudentNotificationsRequest implements IUseCaseRequest<StudentNotificationsResponse> {
     public Message: string;

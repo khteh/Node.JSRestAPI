@@ -1,6 +1,6 @@
-import { Student, Teacher, ITeacherRepository, ILogger, LoggerTypes, LogLevels } from "webapi.core"
+import { Student, Teacher, type ITeacherRepository, type ILogger, LoggerTypes, LogLevels } from "webapi.core"
 import { RepositoryBase } from "./RepositoryBase.js"
-import { IStudentRepository, RepositoryTypes } from "webapi.core"
+import { type IStudentRepository, RepositoryTypes } from "webapi.core"
 import { injectable, inject } from "inversify";
 import { DatabaseTypes } from "../../types.js";
 import { Database } from "../../db.js"
@@ -12,26 +12,31 @@ export class TeacherRepository extends RepositoryBase<Teacher> implements ITeach
         this._studentRepository = studentRepo;
     }
     public override async GetById (id: number): Promise<Teacher | null> {
-        return await this._repository.findOne({
+        return await (await this.repository()).findOne({
             relations: { students: true },
             where: { id: id }
         });
     }
     public override async GetByEmail (email: string): Promise<Teacher | null> {
-        return await this._repository.findOne({
+        return await (await this.repository()).findOne({
             relations: { students: true },
             where: { email: email }
         });
     }
     public override async ListAll (): Promise<Teacher[]> {
-        return await this._repository.find({ relations: ["teachers"] });
+        return await (await this.repository()).find({ relations: { students: true } });
     }
     public async AddStudent (teacher: Teacher, student: Student): Promise<Teacher | null> {
         if (teacher && student) {
             try {
-                teacher.students.push(student);
-                return await this.Update(teacher);
-            } catch (e) { console.log(e); }
+                // Insert just this one join-table row. Saving the whole teacher would cascade to the student and
+                // rewrite the join table from the student's teachers as loaded earlier, dropping rows added since.
+                await (await this.repository()).createQueryBuilder().relation("students").of(teacher).add(student);
+                (teacher.students ??= []).push(student);
+                return teacher;
+            } catch (e) {
+                this._logger.Log(LogLevels.error, `AddStudent(): ${e}`);
+            }
         }
         return null;
     }

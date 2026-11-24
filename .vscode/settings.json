@@ -1,7 +1,11 @@
 {
-    "window.zoomLevel": -1,
-    "mochaExplorer.files": "tests/**/*_tests.ts",
-    "mochaExplorer.require": "ts-node/register",
-    "mochaExplorer.autoload": true,
-    "mochaExplorer.esmLoader": false
+    "files.exclude": {
+        "**/*.js": {
+            "when": "$(basename).ts"
+        },
+        "**/**.js": {
+            "when": "$(basename).tsx"
+        }
+    },
+    "window.zoomLevel": -1
 }

@@ -10,11 +10,11 @@ import { AddStudentsToTeacherController } from '../Controllers/AddStudentsToTeac
 import { CommonStudentsController } from '../Controllers/CommonStudentsController.js';
 import { SuspendStudentController } from '../Controllers/SuspendStudentController.js';
 import { StudentNotificationsController } from '../Controllers/StudentNotificationsController.js';
-import { IRegisterStudentUseCase, IRegisterTeacherUseCase, IAddStudentsToTeacherUseCase, ICommonStudentsUseCase, ISuspendStudentUseCase, IStudentNotificationsUseCase, IGenerateContentUseCase, Student, UseCaseTypes } from "webapi.core"
-import { IStudentRepository, ITeacherRepository, RepositoryTypes, LoggerTypes } from "webapi.core";
+import { type IRegisterStudentUseCase, type IRegisterTeacherUseCase, type IAddStudentsToTeacherUseCase, type ICommonStudentsUseCase, type ISuspendStudentUseCase, type IStudentNotificationsUseCase, type IGenerateContentUseCase, Student, UseCaseTypes } from "webapi.core"
+import { type IStudentRepository, type ITeacherRepository, RepositoryTypes, LoggerTypes, ConfigTypes } from "webapi.core";
 import { RegisterStudentUseCase, SuspendStudentUseCase, RegisterTeacherUseCase, AddStudentsToTeacherUseCase, CommonStudentsUseCase, GenerateContentUseCase, StudentNotificationsUseCase } from "webapi.core";
 import { StudentRepository, TeacherRepository, LoggerImpl, DatabaseTypes, Database } from "infrastructure"
-import { ILogger } from "webapi.core";
+import { type ILogger } from "webapi.core";
 import multer from 'multer';
 const upload = multer({ dest: 'uploads/' })
 var api = express.Router();
@@ -25,6 +25,8 @@ console.log(LoggerTypes.ILogger);
 console.log(`LoggerImpl: ${LoggerImpl}, Database: ${Database}, StudentRepository: ${StudentRepository}, TeacherRepository: ${TeacherRepository}`); //, GenerateContentUseCase: ${GenerateContentUseCase}`);
 */
 di.bind<ILogger>(LoggerTypes.ILogger).to(LoggerImpl);
+// From config/: local-{NODE_ENV}.json or the GEMINI_API_KEY environment variable (see custom-environment-variables.json).
+di.bind<string>(ConfigTypes.GeminiApiKey).toConstantValue(config.has('gemini.apiKey') ? config.get<string>('gemini.apiKey') : '');
 di.bind<IGenerateContentUseCase>(UseCaseTypes.IGenerateContentUseCase).to(GenerateContentUseCase);
 di.bind<IRegisterStudentUseCase>(UseCaseTypes.IRegisterStudentUseCase).to(RegisterStudentUseCase);
 di.bind<ISuspendStudentUseCase>(UseCaseTypes.ISuspendStudentUseCase).to(SuspendStudentUseCase);

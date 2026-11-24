@@ -64,7 +64,7 @@ describe('Valid data should succeed tests', () => {
 
         // act
         // 4. We need a request model to carry data into the use case from the upper layer (UI, Controller etc.)
-        var response: Boolean = await useCase.Handle(new RegisterTeacherRequest(teacher.firstName, teacher.lastName, teacher.email), mockOutputPort.object());
+        var response: Boolean = await useCase.Handle(new RegisterTeacherRequest([teacher]), mockOutputPort.object());
 
         // assert
         expect(response).to.be.true;
@@ -124,7 +124,7 @@ describe('InValid data should fail tests', () => {
 
         // act
         // 4. We need a request model to carry data into the use case from the upper layer (UI, Controller etc.)
-        var response: Boolean = await useCase.Handle(new RegisterTeacherRequest(teacher.firstName, teacher.lastName, teacher.email), mockOutputPort.object());
+        var response: Boolean = await useCase.Handle(new RegisterTeacherRequest([teacher]), mockOutputPort.object());
 
         // assert
         expect(response).to.be.false;
@@ -175,7 +175,7 @@ describe('InValid data should fail tests', () => {
 
         // act
         // 4. We need a request model to carry data into the use case from the upper layer (UI, Controller etc.)
-        var response: Boolean = await useCase.Handle(new RegisterTeacherRequest(teacher.firstName, teacher.lastName, teacher.email), mockOutputPort.object());
+        var response: Boolean = await useCase.Handle(new RegisterTeacherRequest([teacher]), mockOutputPort.object());
 
         // assert
         expect(response).to.be.false;

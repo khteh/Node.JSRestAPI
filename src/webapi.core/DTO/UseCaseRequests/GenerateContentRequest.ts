@@ -1,4 +1,4 @@
-import { IUseCaseRequest } from "../../Interfaces/IUseCaseRequest.js";
+import { type IUseCaseRequest } from "../../Interfaces/IUseCaseRequest.js";
 import { ImagePart } from "../ImagePart.js";
 import { UseCaseResponseMessage } from "../UseCaseResponse/UseCaseResponseMessage.js";
 export class GenerateContentRequest implements IUseCaseRequest<UseCaseResponseMessage> {

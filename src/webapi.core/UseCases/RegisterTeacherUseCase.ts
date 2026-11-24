@@ -1,14 +1,14 @@
 import emailvalidator from 'email-validator'
-import { IRegisterTeacherUseCase } from "../Interfaces/UseCases/IRegisterTeacherUseCase.js"
-import { ITeacherRepository } from "../Interfaces/ITeacherRepository.js"
-import { IOutputPort } from "../Interfaces/IOutputPort.js";
+import { type IRegisterTeacherUseCase } from "../Interfaces/UseCases/IRegisterTeacherUseCase.js"
+import { type ITeacherRepository } from "../Interfaces/ITeacherRepository.js"
+import { type IOutputPort } from "../Interfaces/IOutputPort.js";
 import { RegistrationRequest } from '../DTO/UseCaseRequests/RegistrationRequest.js';
 import { UseCaseResponseMessage } from "../DTO/UseCaseResponse/UseCaseResponseMessage.js"
 import { RegisterTeacherRequest } from "../DTO/UseCaseRequests/RegisterTeacherRequest.js"
 import { Teacher } from "../Domain/Entities/Teacher.js";
 import { Error } from "../DTO/Error.js"
 import { injectable, inject } from "inversify";
-import { ILogger, LogLevels } from "../Interfaces/ILogger.js";
+import { type ILogger, LogLevels } from "../Interfaces/ILogger.js";
 import { LoggerTypes, RepositoryTypes } from "../types.js";
 @injectable()
 export class RegisterTeacherUseCase implements IRegisterTeacherUseCase {

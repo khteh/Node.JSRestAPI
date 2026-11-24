@@ -14,4 +14,8 @@ const RepositoryTypes = {
 const LoggerTypes = {
     ILogger: Symbol.for("ILogger")
 }
-export { UseCaseTypes, RepositoryTypes, LoggerTypes };
+/** Configuration values the web layer binds into the container (webapi.core doesn't read config itself). */
+const ConfigTypes = {
+    GeminiApiKey: Symbol.for("GeminiApiKey")
+}
+export { UseCaseTypes, RepositoryTypes, LoggerTypes, ConfigTypes };

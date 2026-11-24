@@ -1,6 +1,6 @@
 import { injectable, inject } from "inversify";
-import { Request, Response, NextFunction } from 'express';
-import { ILogger, LoggerTypes, LogLevels, LogLevelsType, Fibonacci } from "webapi.core";
+import { type Request, type Response, type NextFunction } from 'express';
+import { type ILogger, LoggerTypes, LogLevels, type LogLevelsType, Fibonacci } from "webapi.core";
 import url from 'url'
 export class FibonacciController {
     private _fibonacci: Fibonacci;

@@ -1,7 +1,7 @@
 version: 2.1 # use CircleCI 2.0
 orbs:
-  aws-cli: circleci/aws-cli@3.1.4
-  slack: circleci/slack@4.10.1
+  aws-cli: circleci/aws-cli@5.4.1
+  slack: circleci/slack@6.1.3
 
 executors:
   node:
@@ -26,9 +26,13 @@ jobs: # a collection of steps
       - image: khteh/ubuntu:latest
       - image: postgres:latest
         environment:
+          DB_HOST: 127.0.0.1
+          DB_DATABASE: school_test
           POSTGRESQL_HOST: 127.0.0.1
           POSTGRESQL_DB: school_test
           POSTGRESQL_ALLOW_EMPTY_PASSWORD: true
+          DB_USERNAME: $POSTGRESQL_USER
+          DB_PASSWORD: $POSTGRESQL_PASSWORD
           POSTGRESQL_USER: $POSTGRESQL_USER
           POSTGRES_PASSWORD: $POSTGRESQL_PASSWORD
     steps:
@@ -61,32 +65,46 @@ jobs: # a collection of steps
             psql -h localhost -U postgres -c "CREATE USER $POSTGRESQL_USER WITH PASSWORD '$POSTGRESQL_PASSWORD' ;"
             psql -h localhost -U postgres -c "CREATE DATABASE school WITH OWNER = $POSTGRESQL_USER ;"
             psql -h localhost -U $POSTGRESQL_USER -w -d school < school.sql
+      - run:
+          name: Generate TLS certs for tests
+          command: |
+            openssl genrsa -aes256 -passout pass:Node.JSRestAPI -out server.key 4096
+            openssl rsa -in server.key -out server.key.insecure -passin pass:Node.JSRestAPI
+            mv server.key server.key.secure
+            mv server.key.insecure server.key
+            openssl req -new -newkey rsa:4096 -x509 -nodes -days 365 -keyout server.key -out server.crt -subj "/C=SG/ST=Singapore/L=Singapore /O=Kok How Pte. Ltd./OU=Node.JSRestAPI/CN=localhost/emailAddress=funcoolgeek@gmail.com" -passin pass:Node.JSRestAPI -addext "subjectAltName = DNS:localhost"
+      - run:
+          name: Write test configuration
+          # config/local-test.json is git-ignored; node-config loads it when NODE_ENV=test.
+          # Output goes to /dev/null so the password isn't printed in the build log.
+          command: |
+            tee config/local-test.json > /dev/null \<<EOF
+            {
+              "db": {
+                "host": "localhost",
+                "port": 5432,
+                "database": "school",
+                "username": "$POSTGRESQL_USER",
+                "password": "$POSTGRESQL_PASSWORD"
+              }
+            }
+            EOF
       - run: mkdir test_reports
-      #- run: # run tests
-      #    name: Javascript Tests
-      #    no_output_timeout: 5m
-      #    command: export NODE_ENV=test && ./node_modules/.bin/nyc --timeout 10000 --recursive --check-leaks --reporter=lcov --reporter=text --reporter=text-summary --reporter=html ./node_modules/.bin/mocha --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml tests --exit
-      #    when: always
-      #- run: # run tests
-      #    name: Typescript Tests
-      #    no_output_timeout: 5m
-      #    command: export NODE_ENV=test && ./node_modules/.bin/nyc --timeout 10000 --recursive --check-leaks --reporter=lcov --reporter=text --reporter=text-summary --reporter=html ./node_modules/.bin/mocha -r ts-node/register tests/**/*.ts --reporter mocha-junit-reporter --reporter-options mochaFile=test_reports/mocha/test-results.xml --exit
-      #    when: always
       - run: # run tests
           name: Typescript Tests
           no_output_timeout: 5m
-          command: npm run test
+          command: npm run test:ci
           when: always
       - store_artifacts: # for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: coverage
           prefix: coverage
       - store_artifacts:
-          path: test_reports/mocha/test-results.xml
-          prefix: mocha
+          path: test_reports/junit/test-results.xml
+          prefix: junit
       - store_test_results: # special step to save test results as as artifact
           # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: test_reports
-          prefix: mocha
+          prefix: junit
       - run:
           name: Build docker image
           command: |
@@ -125,7 +143,23 @@ jobs: # a collection of steps
       - run:
           name: Update Node.JS RestAPI application
           command: |
-            kubectl patch statefulset nodejsrestapi --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"'$AWS_ACCOUNT_ID'.dkr.ecr.ap-southeast-1.amazonaws.com/nodejsrestapi:'$CIRCLE_BUILD_NUM_DOCKER'"}]'
+            #kubectl patch statefulset nodejsrestapi --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"'$AWS_ACCOUNT_ID'.dkr.ecr.ap-southeast-1.amazonaws.com/nodejsrestapi:'$CIRCLE_BUILD_NUM_DOCKER'"}]'
+            kubectl set image sts/nodejsrestapi nodejsrestapi=$AWS_ACCOUNT_ID.dkr.ecr.ap-southeast-1.amazonaws.com/nodejsrestapi:$CIRCLE_BUILD_NUM_DOCKER
+
+  notification:
+    docker:
+      - image: "cimg/base:stable"
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS # context / project UI env-var reference
+    steps:
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
+
 workflows:
   main:
     jobs:
@@ -136,3 +170,8 @@ workflows:
 #          filters:
 #            branches:
 #              only: master
+#      - notification:
+#          context: slack-secrets
+#          name: Node.JS RestAPI Slack Notification
+#          requires:
+#            - BuildTestAndDeploy

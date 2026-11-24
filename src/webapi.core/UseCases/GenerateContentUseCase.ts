@@ -1,22 +1,28 @@
 import fs from 'fs';
-import { GoogleGenAI, createUserContent, Part, GenerateContentResponse, Type, GenerateContentConfig } from "@google/genai";
-import { IGenerateContentUseCase } from "../Interfaces/UseCases/IGenerateContentUseCase.js"
-import { IOutputPort } from "../Interfaces/IOutputPort.js";
+import { GoogleGenAI, createUserContent, type Part, GenerateContentResponse, Type, type GenerateContentConfig } from "@google/genai";
+import { type IGenerateContentUseCase } from "../Interfaces/UseCases/IGenerateContentUseCase.js"
+import { type IOutputPort } from "../Interfaces/IOutputPort.js";
 import { UseCaseResponseMessage } from "../DTO/UseCaseResponse/UseCaseResponseMessage.js"
 import { GenerateContentRequest } from "../DTO/UseCaseRequests/GenerateContentRequest.js"
 import { Error } from "../DTO/Error.js"
 import { ReceiptModel } from "../DTO/ReceiptModel.js"
 import { injectable, inject } from "inversify";
-import { ILogger, LogLevels } from "../Interfaces/ILogger.js";
-import { LoggerTypes, RepositoryTypes } from "../types.js";
-import e from "express";
+import { type ILogger, LogLevels } from "../Interfaces/ILogger.js";
+import { LoggerTypes, ConfigTypes } from "../types.js";
+/** Error codes this use case reports, so the web layer can map them to HTTP status codes. */
+export const GenerateContentErrors = {
+  NotConfigured: "GEMINI_NOT_CONFIGURED",
+  RequestFailed: "GEMINI_REQUEST_FAILED",
+} as const;
 @injectable()
 export class GenerateContentUseCase implements IGenerateContentUseCase {
   private _logger: ILogger;
-  private readonly _genAI: GoogleGenAI;
-  public constructor(@inject(LoggerTypes.ILogger) logger: ILogger) {
+  // Null when no API key is configured (gemini.apiKey). Without an API key, the SDK would silently fall back to
+  // whatever Google credentials the machine has (Application Default Credentials), and fail with confusing OAuth errors.
+  private readonly _genAI: GoogleGenAI | null;
+  public constructor(@inject(LoggerTypes.ILogger) logger: ILogger, @inject(ConfigTypes.GeminiApiKey) apiKey: string) {
     this._logger = logger;
-    this._genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+    this._genAI = apiKey ? new GoogleGenAI({ apiKey }) : null;
   }
   private FileToGenerativePart (path: string, mimeType: string) {
     return {
@@ -32,7 +38,11 @@ export class GenerateContentUseCase implements IGenerateContentUseCase {
     let response: UseCaseResponseMessage;
     try {
       this._logger.Log(LogLevels.debug, 'POST /api/gemini query: ' + JSON.stringify(request, null, 2));
-      if (request.Prompt) {
+      if (!this._genAI) {
+        this._logger.Log(LogLevels.error, "Gemini API key is not configured: set gemini.apiKey in config/local-{NODE_ENV}.json or the GEMINI_API_KEY environment variable.");
+        errors.push(new Error(GenerateContentErrors.NotConfigured, "Gemini API key is not configured!"));
+        response = new UseCaseResponseMessage("", false, "Gemini is not available!", errors);
+      } else if (request.Prompt) {
         let result: GenerateContentResponse;
         let config: GenerateContentConfig = {};
         if (request.IsReceipt)
@@ -102,10 +112,6 @@ export class GenerateContentUseCase implements IGenerateContentUseCase {
             https://ai.google.dev/gemini-api/docs/structured-output
             */
             config: config
-          });
-          fs.unlink(request.Image.Path, (err) => {
-            if (err) throw err;
-            this._logger.Log(LogLevels.debug, `${request!.Image!.Path} was deleted successfully`);
           });
         } else {
           result = await this._genAI.models.generateContent({
@@ -188,18 +194,21 @@ export class GenerateContentUseCase implements IGenerateContentUseCase {
       outputPort.Handle(response);
       return response.Success;
     } catch (e) {
-      console.error(e);
-      if (typeof e === "string") {
-        this._logger.Log(LogLevels.error, `Exception! ${e}`);
-        errors.push(new Error("", e));
-        response = new UseCaseResponseMessage("", false, e, errors);
-      } else {
-        this._logger.Log(LogLevels.error, `Exception! ${JSON.stringify(e, null, 2)}`);
-        errors.push(new Error("", JSON.stringify(e, null, 2)));
-        response = new UseCaseResponseMessage("", false, "Exception!", errors);
-      }
+      // Log and return only the message: the error objects of Google's auth library include the request,
+      // and with it credentials such as OAuth refresh tokens.
+      const message = e instanceof globalThis.Error ? e.message : String(e);
+      const status = (e as { status?: unknown })?.status;
+      this._logger.Log(LogLevels.error, `Gemini request failed${status ? ` (${status})` : ""}: ${message}`);
+      errors.push(new Error(GenerateContentErrors.RequestFailed, message));
+      response = new UseCaseResponseMessage("", false, "Gemini request failed!", errors);
       outputPort.Handle(response);
       return false;
+    } finally {
+      // Delete the uploaded image whether or not the request succeeded.
+      if (request.Image)
+        fs.promises.unlink(request.Image.Path)
+          .then(() => this._logger.Log(LogLevels.debug, `${request.Image!.Path} was deleted successfully`))
+          .catch(err => this._logger.Log(LogLevels.warn, `Failed to delete ${request.Image!.Path}: ${err}`));
     }
   }
 }

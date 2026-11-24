@@ -1,4 +1,4 @@
-import { ILogger, LogLevels } from "../../Interfaces/ILogger.js";
+import { type ILogger, LogLevels } from "../../Interfaces/ILogger.js";
 import { injectable, inject } from "inversify";
 import { LoggerTypes } from '../../types.js';
 import { StateContext } from "./StateContext.js";

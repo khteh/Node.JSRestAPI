@@ -1,13 +1,13 @@
 import emailvalidator from 'email-validator'
-import { ISuspendStudentUseCase } from "../Interfaces/UseCases/ISuspendStudentUseCase.js"
-import { IStudentRepository } from "../Interfaces/IStudentRepository.js"
-import { IOutputPort } from "../Interfaces/IOutputPort.js";
+import { type ISuspendStudentUseCase } from "../Interfaces/UseCases/ISuspendStudentUseCase.js"
+import { type IStudentRepository } from "../Interfaces/IStudentRepository.js"
+import { type IOutputPort } from "../Interfaces/IOutputPort.js";
 import { UseCaseResponseMessage } from "../DTO/UseCaseResponse/UseCaseResponseMessage.js"
 import { SuspendStudentRequest } from "../DTO/UseCaseRequests/SuspendStudentRequest.js"
 import { Student } from "../Domain/Entities/Student.js";
 import { Error } from "../DTO/Error.js"
 import { injectable, inject } from "inversify";
-import { ILogger, LogLevels } from "../Interfaces/ILogger.js";
+import { type ILogger, LogLevels } from "../Interfaces/ILogger.js";
 import { LoggerTypes, RepositoryTypes } from "../types.js";
 @injectable()
 export class SuspendStudentUseCase implements ISuspendStudentUseCase {
@@ -47,7 +47,7 @@ export class SuspendStudentUseCase implements ISuspendStudentUseCase {
         else {
             errors.push(new Error("", `Invalid request student ${request.Student}!`));
         }
-        response = new UseCaseResponseMessage("", !errors.length, `Student ${request.Student} registered successfully`, errors);
+        response = new UseCaseResponseMessage("", !errors.length, `Student ${request.Student} suspended successfully`, errors);
         outputPort.Handle(response);
         return response.Success;
     }

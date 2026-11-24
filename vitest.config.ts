@@ -7,6 +7,15 @@ export default defineConfig({
         swc.vite(),
     ],
     test: {
+        coverage: {
+            provider: 'v8',
+            include: ['src/**/*.ts'],
+            exclude: ['**/build/**', '**/node_modules/**', '**/*.d.ts'],
+            reporter: ['lcov', 'text', 'text-summary', 'html'],
+            reportsDirectory: './coverage',
+            // Still write the reports when some tests fail (e.g. integration tests without a database).
+            reportOnFailure: true,
+        },
         projects: [
             // you can use a list of glob patterns to define your projects
             // Vitest expects a list of config files
@@ -29,7 +38,7 @@ export default defineConfig({
             {
                 test: {
                     name: 'UseCaseTests',
-                    root: './tests/UseCaseTests',
+                    root: './tests/UseCasesTests',
                     environment: 'node',
                     //setupFiles: ['./setup.node.ts'],
                     globals: true,
@@ -41,6 +50,8 @@ export default defineConfig({
                 test: {
                     name: 'IntegrationTests',
                     root: './tests/IntegrationTests',
+                    // Each test file starts the server on the same port, so run the files one at a time.
+                    fileParallelism: false,
                     environment: 'node',
                     //setupFiles: ['./IntegrationTestSetup.ts'],
                     globals: true,

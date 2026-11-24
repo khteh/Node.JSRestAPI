@@ -1,0 +1,7 @@
+{
+	"db": {
+		"port": 5432,
+		"database": "school",
+		"connectTimeoutMS": 5000
+	}
+}

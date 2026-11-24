@@ -1,9 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
-import emailvalidator from 'email-validator'
+import { type Request, type Response, type NextFunction } from 'express';
 import { RegisterStudentRequest, RegisterTeacherRequest, Error } from "webapi.core"
 import { RegisterStudentModel } from "../Models/Request/RegisterStudentModel.js"
 import { RegisterTeacherModel } from "../Models/Request/RegisterTeacherModel.js"
-import { ILogger, LogLevels, LoggerTypes, IRegisterStudentUseCase, IRegisterTeacherUseCase, Student, Teacher } from "webapi.core"
+import { type ILogger, LogLevels, LoggerTypes, type IRegisterStudentUseCase, type IRegisterTeacherUseCase, Student, Teacher } from "webapi.core"
 import { RegisterUserPresenter } from "../Presenters/RegisterUserPresenter.js"
 import { inject } from "inversify";
 import { UseCaseTypes } from "webapi.core";
@@ -11,52 +10,48 @@ export class RegistrationController {
     private _logger: ILogger;
     private studentUseCase: IRegisterStudentUseCase;
     private teacherUseCase: IRegisterTeacherUseCase;
-    private presenter: RegisterUserPresenter;
     public constructor(@inject(LoggerTypes.ILogger) logger: ILogger, @inject(UseCaseTypes.IRegisterStudentUseCase) student: IRegisterStudentUseCase, @inject(UseCaseTypes.IRegisterTeacherUseCase) teacher: IRegisterTeacherUseCase) {
         this._logger = logger;
         this.studentUseCase = student;
         this.teacherUseCase = teacher;
-        this.presenter = new RegisterUserPresenter();
     }
+    /**
+     * POST /api/register { students?: [{ firstName, lastName, email }], teachers?: [...] }
+     * 201 when every student and teacher is registered; 400 when nothing valid is given, or any entry is
+     * invalid or already registered (the "errors" list says which).
+     */
     public async Register (req: Request, res: Response, next: NextFunction) {
         try {
-            let message: string = "";
-            let errors: Array<Error> = [];
             this._logger.Log(LogLevels.debug, 'POST /api/register query: ' + JSON.stringify(req.body, null, 2));
-            if (req.body.hasOwnProperty('students') && req.body.students !== undefined || Array.isArray(req.body.students) && req.body.students.length) {
-                let students: Student[] = [];
-                req.body.students.map((i: RegisterStudentModel) => {
-                    if (emailvalidator.validate(i.email)) {
-                        students.push(new Student(i.firstName, i.lastName, i.email))
-                    }
-                });
-                if (students.length) {
-                    let request = new RegisterStudentRequest(students);
-                    await this.studentUseCase.Handle(request, this.presenter);
-                    message = this.presenter.Message;
-                    errors = this.presenter.Errors;
-                }
+            const students: RegisterStudentModel[] = Array.isArray(req.body?.students) ? req.body.students : [];
+            const teachers: RegisterTeacherModel[] = Array.isArray(req.body?.teachers) ? req.body.teachers : [];
+            if (!students.length && !teachers.length) {
+                res.status(400).json({ 'message': 'Calling /api/register without students or teachers to register!', "errors": [] });
+                return;
             }
-            if (req.body.hasOwnProperty('teachers') && req.body.teachers !== undefined || Array.isArray(req.body.teachers) && req.body.teachers.length) {
-                let teachers: Teacher[] = [];
-                req.body.teachers.map((i: RegisterTeacherModel) => {
-                    if (emailvalidator.validate(i.email)) {
-                        teachers.push(new Teacher(i.firstName, i.lastName, i.email))
-                    }
-                });
-                if (teachers.length) {
-                    let request = new RegisterTeacherRequest(teachers);
-                    await this.teacherUseCase.Handle(request, this.presenter);
-                    message += `, ${this.presenter.Message}`;
-                    this.presenter.Errors.forEach(function (item) {
-                        errors.push(item);
-                    });
-                }
+            const messages: string[] = [];
+            const errors: Array<Error> = [];
+            let code = 201;
+            // A new presenter per request and per use case: the controller is shared by all requests.
+            // Invalid emails are passed on, so the use cases report them as errors instead of dropping them.
+            if (students.length) {
+                const presenter = new RegisterUserPresenter();
+                await this.studentUseCase.Handle(new RegisterStudentRequest(students.map(i => new Student(i?.firstName, i?.lastName, i?.email))), presenter);
+                messages.push(presenter.Message);
+                errors.push(...presenter.Errors);
+                if (presenter.Code !== 201) code = presenter.Code;
             }
-            res.status(this.presenter.Code);
-            res.json({ 'message': message, "errors": errors });
+            if (teachers.length) {
+                const presenter = new RegisterUserPresenter();
+                await this.teacherUseCase.Handle(new RegisterTeacherRequest(teachers.map(i => new Teacher(i?.firstName, i?.lastName, i?.email))), presenter);
+                messages.push(presenter.Message);
+                errors.push(...presenter.Errors);
+                if (presenter.Code !== 201) code = presenter.Code;
+            }
+            res.status(code).json({ 'message': messages.join(', '), "errors": errors });
         } catch (e) {
-            console.error(e);
+            this._logger.Log(LogLevels.error, `POST /api/register: ${e}`);
+            res.status(500).json({ 'message': 'Failed to register!', "errors": [] });
         }
     }
 }

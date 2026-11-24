@@ -22,6 +22,7 @@ describe('Add students to teacher tests', () => {
         let student = new Student("First Name", "LastName", "student@gmail.com");
         let teacher = new Teacher("First Name", "LastName", "teacher@gmail.com");
         teacher.students = [];
+        student.teachers = [];
         var mockStudentRepository = new Mock<IStudentRepository>()
             .setup(i => i.GetByEmail("student@gmail.com"))
             .returnsAsync(student)
@@ -46,7 +47,8 @@ describe('Add students to teacher tests', () => {
         // assert
         mockStudentRepository.verify(i => i.GetByEmail("student@gmail.com"), Times.Once());
         mockTeacherRepository.verify(i => i.GetByEmail("teacher@gmail.com"), Times.Once());
-        mockTeacherRepository.verify(i => i.AddStudent(It.IsAny<Teacher>(), It.IsAny<Student>()), Times.Once());
+        // Student owns the many-to-many join table, so only AddTeacher() is needed.
+        mockTeacherRepository.verify(i => i.AddStudent(It.IsAny<Teacher>(), It.IsAny<Student>()), Times.Never());
         mockStudentRepository.verify(i => i.AddTeacher(It.IsAny<Student>(), It.IsAny<Teacher>()), Times.Once());
         //mockOutputPort.verify(i => i.Handle(It.IsAny<UseCaseResponseMessage>()), Times.Once());
         expect(presenter.Errors).to.be.an("array").that.is.empty;
