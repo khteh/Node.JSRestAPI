@@ -78,7 +78,7 @@ jobs: # a collection of steps
           # config/local-test.json is git-ignored; node-config loads it when NODE_ENV=test.
           # Output goes to /dev/null so the password isn't printed in the build log.
           command: |
-            tee config/local-test.json > /dev/null <<EOF
+            tee config/local-test.json > /dev/null \<<EOF
             {
               "db": {
                 "host": "localhost",
