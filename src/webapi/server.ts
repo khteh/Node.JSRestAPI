@@ -31,7 +31,7 @@ server.on('error', onError);
 server.listen(port);
 /*
 The gRPC server needs its own port: two servers can't listen on the same one. grpc.port in config/
-(GRPC_PORT), default 50051. With grpc.requireClientCertificate (the default), clients must present a
+(GRPC_PORT), default 4434. With grpc.requireClientCertificate (the default), clients must present a
 certificate signed by server.crt (mutual TLS).
 */
 const grpcPort: number = config.get<number>('grpc.port');

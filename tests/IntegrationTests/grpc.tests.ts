@@ -40,13 +40,18 @@ describe('gRPC School service tests', () => {
     afterAll(() => client?.close());
 
     it('rejects a client without a certificate', async () => {
+        // First prove the TLS setup works: the same call with a client certificate gets an answer. Otherwise
+        // any TLS problem (an expired server.crt, say) would also reject the call below and pass this test.
+        expect((await register({})).success).toBe(false);
         const anonymous = new SchoolClient(`localhost:${await grpcReady}`, credentials.createSsl(ca));
         try {
-            await expect(new Promise((resolve, reject) => anonymous.register(RegisterRequest.fromPartial({}), { deadline: Date.now() + 5000 }, (e, r) => e ? reject(e) : resolve(r)))).rejects.toMatchObject({ code: expect.any(Number) });
+            // The rejection can come as an error or, depending on TLS timing, only as the deadline expiring;
+            // either way the call must not succeed. The deadline is well inside this test's timeout.
+            await expect(new Promise((resolve, reject) => anonymous.register(RegisterRequest.fromPartial({}), { deadline: Date.now() + 2000 }, (e, r) => e ? reject(e) : resolve(r)))).rejects.toMatchObject({ code: expect.any(Number) });
         } finally {
             anonymous.close();
         }
-    });
+    }, 10000);
 
     describe('Register', () => {
         it('fails without students or teachers', async () => {

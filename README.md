@@ -258,7 +258,7 @@ Image: ![Shoe to sell](./GeminiPromptWithImage.png?raw=true "Shoe to sell")
 
 # gRPC
 
-Besides the HTTPS API, the application serves the `school.School` gRPC service (`grpc/proto/school.proto`: `Register`, `AddStudentsToTeacher`, `CommonStudents`) on its own port: `grpc.port` in `config/` (`GRPC_PORT`), default 50051. It uses TLS with `server.crt` / `server.key`. With `grpc.requireClientCertificate` (`GRPC_REQUIRE_CLIENT_CERTIFICATE`, default `true`), clients must also present a certificate signed by `server.crt` (mutual TLS).
+Besides the HTTPS API, the application serves the `school.School` gRPC service (`grpc/proto/school.proto`: `Register`, `AddStudentsToTeacher`, `CommonStudents`) on its own port: `grpc.port` in `config/` (`GRPC_PORT`), default 4434. It uses TLS with `server.crt` / `server.key`. With `grpc.requireClientCertificate` (`GRPC_REQUIRE_CLIENT_CERTIFICATE`, default `true`), clients must also present a certificate signed by `server.crt` (mutual TLS).
 
 The TypeScript message and service code in `src/webapi/grpc/generated/` is generated from `src/webapi/grpc/proto/*.proto` by [ts-proto](https://github.com/stephenh/ts-proto) for `@grpc/grpc-js`, and committed. After changing a `.proto` file, regenerate it with:
 

@@ -5,7 +5,7 @@
 		"connectTimeoutMS": 5000
 	},
 	"grpc": {
-		"port": 50051,
+		"port": 4434,
 		"requireClientCertificate": true
 	}
 }
