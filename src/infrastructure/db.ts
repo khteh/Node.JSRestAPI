@@ -7,7 +7,7 @@ import { Student, Teacher, type ILogger, LogLevels, LoggerTypes, EntityBase } fr
 // Required database settings. Their values come from config/: default.json, then local-{NODE_ENV}.json (not in git;
 // a ConfigMap in Kubernetes), then the environment variables mapped in custom-environment-variables.json.
 const dbSettings = ['db.host', 'db.port', 'db.database', 'db.username', 'db.password'] as const;
-const setting = <T> (key: typeof dbSettings[number]): T | undefined => config.has(key) ? config.get<T>(key) : undefined;
+const setting = <T> (key: string): T | undefined => config.has(key) ? config.get<T>(key) : undefined;
 
 @injectable()
 export class Database {
@@ -38,7 +38,7 @@ export class Database {
 					this._logger.Log(LogLevels.info, "TypeORM initialized successfully!");
 					return dataSource;
 				}, error => {
-					this._logger.Log(LogLevels.error, `TypeORM initialization failed! ${error}`);
+					this._logger.Log(LogLevels.error, `TypeORM initialization failed connecting to ${setting('db.host')}:${setting('db.port')}/${setting('db.database')} as ${setting('db.username')}! ${error}`);
 					Database._initialized = undefined;
 					throw error;
 				});
@@ -58,6 +58,8 @@ export class Database {
 				username: setting<string>('db.username'),
 				password: setting<string>('db.password'),
 				database: setting<string>('db.database'),
+				// Without a timeout, an address that never answers makes every query wait indefinitely.
+				connectTimeoutMS: setting<number>('db.connectTimeoutMS'),
 				entities: [Student, Teacher],
 				synchronize: true,
 				logging: false,

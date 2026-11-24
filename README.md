@@ -41,9 +41,9 @@ Configuration is loaded with [node-config](https://github.com/node-config/node-c
 1. `config/default.json` (committed): defaults such as the database port and name.
    `config/{NODE_ENV}.json` (committed, e.g. `test.json`): optional non-secret defaults for one environment; empty by default.
 2. `config/local-{NODE_ENV}.json` (git-ignored): the values for one environment, e.g. `local-development.json`, `local-test.json` or `local-production.json`.
-3. Environment variables, mapped to settings in `config/custom-environment-variables.json` (committed): `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`. Unset or empty variables are ignored.
+3. Environment variables, mapped to settings in `config/custom-environment-variables.json` (committed): `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, `DB_CONNECT_TIMEOUT_MS`. Unset or empty variables are ignored.
 
-The database settings are `db.host`, `db.port`, `db.database`, `db.username` and `db.password`. A missing setting fails with its name when the application first connects. `GEMINI_API_KEY` is read directly from the environment.
+The database settings are `db.host`, `db.port`, `db.database`, `db.username` and `db.password`, plus `db.connectTimeoutMS` (default 5000; 0 waits forever). A missing setting fails with its name when the application first connects, and a connection failure is logged with the host, port, database and user it tried. `GEMINI_API_KEY` is read directly from the environment.
 
 - **Local development:** create `config/local-development.json` (and `config/local-test.json` for the tests), for example:
 

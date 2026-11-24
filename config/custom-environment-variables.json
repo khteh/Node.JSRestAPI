@@ -7,6 +7,10 @@
 		},
 		"database": "DB_DATABASE",
 		"username": "DB_USERNAME",
-		"password": "DB_PASSWORD"
+		"password": "DB_PASSWORD",
+		"connectTimeoutMS": {
+			"__name": "DB_CONNECT_TIMEOUT_MS",
+			"__format": "number"
+		}
 	}
 }
