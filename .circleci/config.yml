@@ -73,6 +73,22 @@ jobs: # a collection of steps
             mv server.key server.key.secure
             mv server.key.insecure server.key
             openssl req -new -newkey rsa:4096 -x509 -nodes -days 365 -keyout server.key -out server.crt -subj "/C=SG/ST=Singapore/L=Singapore /O=Kok How Pte. Ltd./OU=Node.JSRestAPI/CN=localhost/emailAddress=funcoolgeek@gmail.com" -passin pass:Node.JSRestAPI -addext "subjectAltName = DNS:localhost"
+      - run:
+          name: Write test configuration
+          # config/local-test.json is git-ignored; node-config loads it when NODE_ENV=test.
+          # Output goes to /dev/null so the password isn't printed in the build log.
+          command: |
+            tee config/local-test.json > /dev/null <<EOF
+            {
+              "db": {
+                "host": "localhost",
+                "port": 5432,
+                "database": "school",
+                "username": "$POSTGRESQL_USER",
+                "password": "$POSTGRESQL_PASSWORD"
+              }
+            }
+            EOF
       - run: mkdir test_reports
       - run: # run tests
           name: Typescript Tests

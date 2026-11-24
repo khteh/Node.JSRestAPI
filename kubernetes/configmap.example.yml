@@ -1,0 +1,42 @@
+# Example ConfigMap with the application's non-secret configuration. Copy it per environment
+# (e.g. one per staging / production namespace) and fill in the values; don't commit real values.
+#
+# Secrets don't belong in a ConfigMap. Create them as a Secret instead, for example:
+#   kubectl create secret generic nodejsrestapi-secrets \
+#     --from-literal=db-password='...' --from-literal=gemini-api-key='...'
+#
+# Then, in the Deployment's pod spec:
+#   containers:
+#     - name: nodejsrestapi
+#       env:
+#         - name: NODE_ENV
+#           value: production
+#         - name: DB_PASSWORD
+#           valueFrom:
+#             secretKeyRef: { name: nodejsrestapi-secrets, key: db-password }
+#         - name: GEMINI_API_KEY
+#           valueFrom:
+#             secretKeyRef: { name: nodejsrestapi-secrets, key: gemini-api-key }
+#       volumeMounts:
+#         # Mount only this file, next to the image's default.json and custom-environment-variables.json.
+#         - name: config
+#           mountPath: /app/config/local-production.json
+#           subPath: local-production.json
+#           readOnly: true
+#   volumes:
+#     - name: config
+#       configMap: { name: nodejsrestapi-config }
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nodejsrestapi-config
+data:
+  local-production.json: |
+    {
+      "db": {
+        "host": "postgresql.database.svc.cluster.local",
+        "port": 5432,
+        "database": "school",
+        "username": "school"
+      }
+    }

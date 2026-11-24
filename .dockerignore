@@ -1,2 +1,6 @@
 **/*.sock
 npm-debug.log
+# Never bake environment-specific configuration into the image: Kubernetes supplies
+# config/local-production.json from a ConfigMap, and secrets as environment variables.
+config/local.*
+config/local-*

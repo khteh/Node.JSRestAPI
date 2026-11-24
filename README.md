@@ -34,10 +34,36 @@ Teachers need a system where they can perform administrative functions for their
 $ npm install
 ```
 
+# Configuration
+
+Configuration is loaded with [node-config](https://github.com/node-config/node-config) from `config/`. Only non-secret defaults are committed; environment-specific values come from outside the repository. Later sources override earlier ones:
+
+1. `config/default.json` (committed): defaults such as the database port and name.
+   `config/{NODE_ENV}.json` (committed, e.g. `test.json`): optional non-secret defaults for one environment; empty by default.
+2. `config/local-{NODE_ENV}.json` (git-ignored): the values for one environment, e.g. `local-development.json`, `local-test.json` or `local-production.json`.
+3. Environment variables, mapped to settings in `config/custom-environment-variables.json` (committed): `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`. Unset or empty variables are ignored.
+
+The database settings are `db.host`, `db.port`, `db.database`, `db.username` and `db.password`. A missing setting fails with its name when the application first connects. `GEMINI_API_KEY` is read directly from the environment.
+
+- **Local development:** create `config/local-development.json` (and `config/local-test.json` for the tests), for example:
+
+  ```json
+  {
+    "db": {
+      "host": "localhost",
+      "username": "guest",
+      "password": "..."
+    }
+  }
+  ```
+
+- **Kubernetes (staging / production):** run with `NODE_ENV=production`. Supply `config/local-production.json` from a ConfigMap, mounted as a single file with `subPath`, and passwords and API keys as environment variables from a Secret. See `kubernetes/configmap.example.yml`.
+- **CircleCI:** the "Write test configuration" step writes `config/local-test.json` from the `POSTGRESQL_USER` and `POSTGRESQL_PASSWORD` project environment variables.
+
 # Start the application:
 
 - Generate self-signed cert for serving HTTP/2 over HTTPS.
-- Edit `config/default.json` to configure the database connection parameters
+- Configure the database connection (see [Configuration](#configuration)), e.g. in `config/local-development.json`.
 - To run in development mode with nodemon:
 
   ```
@@ -238,7 +264,7 @@ Logs available at `/var/log/nodejsrestapi/log`
 # Run tests:
 
 - Tests use [Vitest](https://vitest.dev/), configured in `vitest.config.ts` as three projects: `UnitTests`, `UseCaseTests` and `IntegrationTests`.
-- Edit `config/test.json` to configure the database connection parameters. The integration tests need that database and `server.key` / `server.crt`.
+- Configure the test database in `config/local-test.json` (see [Configuration](#configuration)). The integration tests need that database and `server.key` / `server.crt`.
 - The test scripts trust the self-signed `server.crt` through `NODE_EXTRA_CA_CERTS`, so there's no need to set `NODE_TLS_REJECT_UNAUTHORIZED=0`.
 - Integration test files run one at a time, because each one starts the server on `PORT` (4433).
 - WARNING! All tables in the database configured for test will be emptied for testing purpose.

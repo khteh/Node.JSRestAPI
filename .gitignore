@@ -12,3 +12,7 @@ node_modules
 test_reports
 .nyc_output
 coverage
+
+# Environment-specific configuration: local files, Kubernetes ConfigMaps, CI-generated files
+config/local.*
+config/local-*
