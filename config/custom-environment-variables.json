@@ -12,5 +12,8 @@
 			"__name": "DB_CONNECT_TIMEOUT_MS",
 			"__format": "number"
 		}
+	},
+	"gemini": {
+		"apiKey": "GEMINI_API_KEY"
 	}
 }

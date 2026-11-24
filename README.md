@@ -23,10 +23,7 @@ Teachers need a system where they can perform administrative functions for their
 ## Google Gemini API
 
 - Obtain an API key from https://aistudio.google.com/apikey
-- Add a `.env` file with the following content:
-  ```
-  GEMINI_API_KEY=<api key>
-  ```
+- Set it as `gemini.apiKey` in `config/local-development.json`, or in the `GEMINI_API_KEY` environment variable (see [Configuration](#configuration)).
 
 ## Dependencies:
 
@@ -41,9 +38,9 @@ Configuration is loaded with [node-config](https://github.com/node-config/node-c
 1. `config/default.json` (committed): defaults such as the database port and name.
    `config/{NODE_ENV}.json` (committed, e.g. `test.json`): optional non-secret defaults for one environment; empty by default.
 2. `config/local-{NODE_ENV}.json` (git-ignored): the values for one environment, e.g. `local-development.json`, `local-test.json` or `local-production.json`.
-3. Environment variables, mapped to settings in `config/custom-environment-variables.json` (committed): `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, `DB_CONNECT_TIMEOUT_MS`. Unset or empty variables are ignored.
+3. Environment variables, mapped to settings in `config/custom-environment-variables.json` (committed): `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, `DB_CONNECT_TIMEOUT_MS`, `GEMINI_API_KEY`. Unset or empty variables are ignored. A `.env` file is not read: put local values in `config/local-{NODE_ENV}.json` instead.
 
-The database settings are `db.host`, `db.port`, `db.database`, `db.username` and `db.password`, plus `db.connectTimeoutMS` (default 5000; 0 waits forever). A missing setting fails with its name when the application first connects, and a connection failure is logged with the host, port, database and user it tried. `GEMINI_API_KEY` is read directly from the environment.
+The database settings are `db.host`, `db.port`, `db.database`, `db.username` and `db.password`, plus `db.connectTimeoutMS` (default 5000; 0 waits forever). A missing setting fails with its name when the application first connects, and a connection failure is logged with the host, port, database and user it tried. The Gemini API key is `gemini.apiKey`; without it, `/api/gemini` returns 503.
 
 - **Local development:** create `config/local-development.json` (and `config/local-test.json` for the tests), for example:
 
@@ -53,6 +50,9 @@ The database settings are `db.host`, `db.port`, `db.database`, `db.username` and
       "host": "localhost",
       "username": "guest",
       "password": "..."
+    },
+    "gemini": {
+      "apiKey": "..."
     }
   }
   ```

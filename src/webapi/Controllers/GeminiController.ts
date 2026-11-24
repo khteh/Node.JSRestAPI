@@ -6,17 +6,16 @@ import { UseCaseTypes, ImagePart } from "webapi.core";
 export class GeminiController {
     private _logger: ILogger;
     private _usecase: IGenerateContentUseCase;
-    private presenter: GenerateTextPresenter;
     public constructor(@inject(LoggerTypes.ILogger) logger: ILogger, @inject(UseCaseTypes.IGenerateContentUseCase) usecase: IGenerateContentUseCase) {
         this._logger = logger;
         this._usecase = usecase;
-        this.presenter = new GenerateTextPresenter();
     }
     public async GenerateText (req: Request, res: Response, next: NextFunction) {
         this._logger.Log(LogLevels.debug, `POST /api/gemini query: ${JSON.stringify(req.body, null, 2)}`);
+        const presenter = new GenerateTextPresenter(); // per request: the controller is shared by all requests
         let message = { 'message': 'Calling /api/gemini' };
         try {
-            if (req.body.prompt === undefined || !req.body.prompt.length) {
+            if (typeof req.body?.prompt !== 'string' || !req.body.prompt.length) {
                 message.message += ' invalid prompt!';
                 res.status(400);
                 res.json(message);
@@ -40,10 +39,13 @@ export class GeminiController {
                             TaxAmount (One GST/tax for the entire receipt) \
                             Total";
                 let request: GenerateContentRequest = new GenerateContentRequest(req.body.prompt, req.body.receipt, imagePart);
-                await this._usecase.Handle(request, this.presenter);
-                res.status(this.presenter.Code);
-                res.json({ 'message': this.presenter.Message, "errors": this.presenter.Errors });
+                await this._usecase.Handle(request, presenter);
+                res.status(presenter.Code);
+                res.json({ 'message': presenter.Message, "errors": presenter.Errors });
             }
-        } catch (e) { console.log(e); }
+        } catch (e) {
+            this._logger.Log(LogLevels.error, `POST /api/gemini: ${e instanceof Error ? e.message : e}`);
+            res.status(500).json({ 'message': 'Failed to generate content!', "errors": [] });
+        }
     }
 }

@@ -11,7 +11,7 @@ import { CommonStudentsController } from '../Controllers/CommonStudentsControlle
 import { SuspendStudentController } from '../Controllers/SuspendStudentController.js';
 import { StudentNotificationsController } from '../Controllers/StudentNotificationsController.js';
 import { type IRegisterStudentUseCase, type IRegisterTeacherUseCase, type IAddStudentsToTeacherUseCase, type ICommonStudentsUseCase, type ISuspendStudentUseCase, type IStudentNotificationsUseCase, type IGenerateContentUseCase, Student, UseCaseTypes } from "webapi.core"
-import { type IStudentRepository, type ITeacherRepository, RepositoryTypes, LoggerTypes } from "webapi.core";
+import { type IStudentRepository, type ITeacherRepository, RepositoryTypes, LoggerTypes, ConfigTypes } from "webapi.core";
 import { RegisterStudentUseCase, SuspendStudentUseCase, RegisterTeacherUseCase, AddStudentsToTeacherUseCase, CommonStudentsUseCase, GenerateContentUseCase, StudentNotificationsUseCase } from "webapi.core";
 import { StudentRepository, TeacherRepository, LoggerImpl, DatabaseTypes, Database } from "infrastructure"
 import { type ILogger } from "webapi.core";
@@ -25,6 +25,8 @@ console.log(LoggerTypes.ILogger);
 console.log(`LoggerImpl: ${LoggerImpl}, Database: ${Database}, StudentRepository: ${StudentRepository}, TeacherRepository: ${TeacherRepository}`); //, GenerateContentUseCase: ${GenerateContentUseCase}`);
 */
 di.bind<ILogger>(LoggerTypes.ILogger).to(LoggerImpl);
+// From config/: local-{NODE_ENV}.json or the GEMINI_API_KEY environment variable (see custom-environment-variables.json).
+di.bind<string>(ConfigTypes.GeminiApiKey).toConstantValue(config.has('gemini.apiKey') ? config.get<string>('gemini.apiKey') : '');
 di.bind<IGenerateContentUseCase>(UseCaseTypes.IGenerateContentUseCase).to(GenerateContentUseCase);
 di.bind<IRegisterStudentUseCase>(UseCaseTypes.IRegisterStudentUseCase).to(RegisterStudentUseCase);
 di.bind<ISuspendStudentUseCase>(UseCaseTypes.ISuspendStudentUseCase).to(SuspendStudentUseCase);

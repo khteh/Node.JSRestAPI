@@ -69,7 +69,8 @@ export class Database {
 			throw new Error('failed to initialized pool');
 		}
 		// Start connecting right away, as before; queries wait for it through Ready().
-		void this.Ready();
+		// Failures are logged in Ready() and reported to each query; don't let this unawaited call crash the process.
+		this.Ready().catch(() => { });
 		return Database._dataSource;
 	}
 }
