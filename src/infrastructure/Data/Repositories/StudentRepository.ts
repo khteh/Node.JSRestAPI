@@ -9,19 +9,19 @@ export class StudentRepository extends RepositoryBase<Student> implements IStude
         super(logger, Student, db);
     }
     public override async GetById (id: number): Promise<Student | null> {
-        return await this._repository.findOne({
+        return await (await this.repository()).findOne({
             relations: { teachers: true },
             where: { id: id }
         });
     }
     public override async GetByEmail (email: string): Promise<Student | null> {
-        return await this._repository.findOne({
+        return await (await this.repository()).findOne({
             relations: { teachers: true },
             where: { email: email }
         });
     }
     public override async ListAll (): Promise<Student[]> {
-        return await this._repository.find({ relations: { teachers: true } });
+        return await (await this.repository()).find({ relations: { teachers: true } });
     }
     public async AddTeacher (student: Student, teacher: Teacher): Promise<Student | null> {
         if (teacher && student) {
@@ -43,7 +43,7 @@ export class StudentRepository extends RepositoryBase<Student> implements IStude
             let students: Student[] = await this.ListAll();
             students.forEach(async s => {
                 s.teachers = [];
-                await this._repository.save(s);
+                await (await this.repository()).save(s);
             }
             );
         } catch (error) {

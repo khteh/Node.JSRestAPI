@@ -8,10 +8,37 @@ import { Student, Teacher, type ILogger, LogLevels, LoggerTypes, EntityBase } fr
 export class Database {
 	private _logger: ILogger;
 	public static _dataSource: DataSource;
+	private static _initialized: Promise<DataSource> | undefined;
 	public constructor(@inject(LoggerTypes.ILogger) logger: ILogger) { this._logger = logger; }
+	/**
+	 * The returned repository can be created before the DataSource is initialized, but it must not be
+	 * queried until Ready() resolves: TypeORM builds the entity metadata during initialize(), and querying
+	 * earlier fails with "No metadata for <Entity> was found".
+	 */
 	public getRepository<T extends EntityBase> (repository: EntityTarget<T>): Repository<T> {
+		return this.dataSource().getRepository(repository);
+	}
+	/** Resolves once the DataSource is initialized. After a failed attempt, the next call retries. */
+	public async Ready (): Promise<DataSource> {
+		const dataSource = this.dataSource();
+		if (!Database._initialized) {
+			Database._initialized = dataSource.initialize()
+				.then(() => {
+					this._logger.Log(LogLevels.info, "TypeORM initialized successfully!");
+					return dataSource;
+				}, error => {
+					this._logger.Log(LogLevels.error, `TypeORM initialization failed! ${error}`);
+					Database._initialized = undefined;
+					throw error;
+				});
+			// Callers that never await Ready() must not turn a failed connection into an unhandled rejection.
+			Database._initialized.catch(() => { });
+		}
+		return Database._initialized;
+	}
+	private dataSource (): DataSource {
 		if (Database._dataSource instanceof DataSource)
-			return Database._dataSource.getRepository(repository);
+			return Database._dataSource;
 		try {
 			Database._dataSource = new DataSource({
 				type: "postgres",
@@ -24,16 +51,12 @@ export class Database {
 				synchronize: true,
 				logging: false,
 			});
-			Database._dataSource.initialize()
-				.then(() => {
-					// here you can start to work with your database
-					this._logger.Log(LogLevels.info, "TypeORM initialized successfully!")
-				})
-				.catch((error) => this._logger.Log(LogLevels.error, `TypeORM initialization failed! ${error}`))
 		} catch (error) {
 			this._logger.Log(LogLevels.error, `getRepository(): ${error}`);
 			throw new Error('failed to initialized pool');
 		}
-		return Database._dataSource.getRepository(repository);
+		// Start connecting right away, as before; queries wait for it through Ready().
+		void this.Ready();
+		return Database._dataSource;
 	}
 }

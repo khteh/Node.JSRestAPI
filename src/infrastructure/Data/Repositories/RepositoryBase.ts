@@ -14,6 +14,11 @@ export abstract class RepositoryBase<T extends EntityBase> implements IRepositor
         this._db = db;
         this._repository = this._db.getRepository(entity);
     }
+    /** The TypeORM repository, once the database is initialized. Use this instead of _repository directly. */
+    protected async repository (): Promise<Repository<T>> {
+        await this._db.Ready();
+        return this._repository;
+    }
     public async GetById (id: number): Promise<T | null> {
         throw new Error("Method not implemented.");
     }
@@ -21,20 +26,20 @@ export abstract class RepositoryBase<T extends EntityBase> implements IRepositor
         throw new Error("Method not implemented.");
     }
     public async ListAll (): Promise<T[]> {
-        return await this._repository.find();
+        return await (await this.repository()).find();
     }
     public async Add (entity: T): Promise<T | null> {
-        return await this._repository.save(entity)
+        return await (await this.repository()).save(entity)
     }
     public async Update (entity: T): Promise<T | null> {
-        return await this._repository.save(entity);
+        return await (await this.repository()).save(entity);
     }
     public async Delete (id: number): Promise<Number> {
-        let result = await this._repository.delete(id);
+        let result = await (await this.repository()).delete(id);
         return result.affected ?? 0;
     }
     public async Clear (): Promise<boolean> {
-        await this._repository.clear();
+        await (await this.repository()).clear();
         return true;
     }
 }
