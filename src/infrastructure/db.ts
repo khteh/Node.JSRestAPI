@@ -4,7 +4,7 @@ import { DataSource, type EntityTarget, Repository } from "typeorm"
 import { injectable, inject } from "inversify";
 import { Student, Teacher, type ILogger, LogLevels, LoggerTypes, EntityBase } from "webapi.core"
 
-// Required database settings. Their values come from config/: default.json, then local-{NODE_ENV}.json (not in git;
+// Required database settings. Their values come from config/: default.json, then local-{NODE_CONFIG_ENV}.json (not in git;
 // a ConfigMap in Kubernetes), then the environment variables mapped in custom-environment-variables.json.
 const dbSettings = ['db.host', 'db.port', 'db.database', 'db.username', 'db.password'] as const;
 const setting = <T> (key: string): T | undefined => config.has(key) ? config.get<T>(key) : undefined;
@@ -31,7 +31,7 @@ export class Database {
 			// so endpoints that don't use the database keep working.
 			const missing = dbSettings.filter(key => !config.has(key));
 			const initialize = missing.length
-				? Promise.reject(new Error(`Missing database configuration: ${missing.join(', ')}. Set them in config/local-${config.util.getEnv('NODE_ENV')}.json or with the environment variables in config/custom-environment-variables.json.`))
+				? Promise.reject(new Error(`Missing database configuration: ${missing.join(', ')}. Set them in config/local-${config.util.getEnv('NODE_CONFIG_ENV')}.json or with the environment variables in config/custom-environment-variables.json.`))
 				: dataSource.initialize();
 			Database._initialized = initialize
 				.then(() => {
