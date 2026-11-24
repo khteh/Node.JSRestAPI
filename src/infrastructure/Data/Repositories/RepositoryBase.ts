@@ -39,7 +39,10 @@ export abstract class RepositoryBase<T extends EntityBase> implements IRepositor
         return result.affected ?? 0;
     }
     public async Clear (): Promise<boolean> {
-        await (await this.repository()).clear();
+        // Not repository.clear(): that issues TRUNCATE, which PostgreSQL rejects for any table referenced by a
+        // foreign key (here the student_teachers_teacher join table), even an empty one. DELETE is allowed, and
+        // the join-table rows go with it because TypeORM creates those foreign keys with ON DELETE CASCADE.
+        await (await this.repository()).createQueryBuilder().delete().execute();
         return true;
     }
 }

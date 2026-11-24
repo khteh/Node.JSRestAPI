@@ -41,11 +41,11 @@ export class StudentRepository extends RepositoryBase<Student> implements IStude
     public async DeleteAllRelations (): Promise<boolean> {
         try {
             let students: Student[] = await this.ListAll();
-            students.forEach(async s => {
+            // A for...of loop, not forEach(async ...): forEach doesn't wait, so this returned before the saves finished.
+            for (const s of students) {
                 s.teachers = [];
                 await (await this.repository()).save(s);
             }
-            );
         } catch (error) {
             console.error(error);
             this._logger.Log(LogLevels.error, `DeleteAllRelations(): ${error}`);
