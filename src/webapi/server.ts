@@ -10,7 +10,8 @@ import http2 from 'http2';
 import d from 'debug';
 import * as winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
-import grpc from '@grpc/grpc-js';
+import config from 'config';
+import { ServerCredentials } from '@grpc/grpc-js';
 import { getServer } from './Services/SchoolService.js';
 
 var debug = d('teachersapi:server');
@@ -28,14 +29,23 @@ app.set('port', port);
 var server = http2.createSecureServer(options, app);
 server.on('error', onError);
 server.listen(port);
-var grpcServer = getServer();
-let credentials = grpc.ServerCredentials.createSsl(fs.readFileSync('server.crt'), [{
+/*
+The gRPC server needs its own port: two servers can't listen on the same one. grpc.port in config/
+(GRPC_PORT), default 50051. With grpc.requireClientCertificate (the default), clients must present a
+certificate signed by server.crt (mutual TLS).
+*/
+const grpcPort: number = config.get<number>('grpc.port');
+const credentials = ServerCredentials.createSsl(fs.readFileSync('server.crt'), [{
   cert_chain: fs.readFileSync('server.crt'),
   private_key: fs.readFileSync('server.key')
-}], true);
-grpcServer.bindAsync(`0.0.0.0:${port}`, credentials, () => {
-  console.log(`Server running on port ${port}`);
-  grpcServer.start();
+}], config.get<boolean>('grpc.requireClientCertificate'));
+/** Resolves with the gRPC server's port once it is listening; rejects if it can't bind. */
+export const grpcReady: Promise<number> = getServer().then(grpcServer => new Promise<number>((resolve, reject) =>
+  // bindAsync starts serving once bound; Server.start() is deprecated.
+  grpcServer.bindAsync(`0.0.0.0:${grpcPort}`, credentials, (error, boundPort) => error ? reject(error) : resolve(boundPort))));
+grpcReady.then(boundPort => debug(`gRPC listening on port ${boundPort}`), error => {
+  console.error(`gRPC server failed to listen on port ${grpcPort}: ${error.message}`);
+  process.exit(1);
 });
 
 /**

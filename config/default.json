@@ -3,5 +3,9 @@
 		"port": 5432,
 		"database": "school",
 		"connectTimeoutMS": 5000
+	},
+	"grpc": {
+		"port": 50051,
+		"requireClientCertificate": true
 	}
 }

@@ -30,7 +30,6 @@
   "dependencies": {
     "@google/genai": "^3.6.1",
     "@grpc/grpc-js": "^1.14.7",
-    "@grpc/proto-loader": "^0.8.1",
     "ansi-regex": "^6.6.0",
     "async": "^3.2.6",
     "compression": "^1.8.2",
@@ -42,7 +41,6 @@
     "email-validator": "^2.0.4",
     "express": "^5.3.0",
     "express-winston": "^4.2.0",
-    "grpc-tools": "^1.13.0",
     "form-data": "^4.0.6",
     "http-errors": "^2.0.1",
     "morgan": "^1.12.1",
@@ -80,7 +78,6 @@
     "shelljs": "^0.10.0",
     "sonarqube-scanner": "^5.1.0",
     "ts-node": "^10.9.2",
-    "ts-protoc-gen": "^0.15.0",
     "tslib": "^2.9.1",
     "typescript": "^7.0.2",
     "unplugin-swc": "^2.0.0",

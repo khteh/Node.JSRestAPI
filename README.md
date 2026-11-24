@@ -38,7 +38,7 @@ Configuration is loaded with [node-config](https://github.com/node-config/node-c
 1. `config/default.json` (committed): defaults such as the database port and name.
    `config/{NODE_ENV}.json` (committed, e.g. `test.json`): optional non-secret defaults for one environment; empty by default.
 2. `config/local-{NODE_ENV}.json` (git-ignored): the values for one environment, e.g. `local-development.json`, `local-test.json` or `local-production.json`.
-3. Environment variables, mapped to settings in `config/custom-environment-variables.json` (committed): `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, `DB_CONNECT_TIMEOUT_MS`, `GEMINI_API_KEY`. Unset or empty variables are ignored. A `.env` file is not read: put local values in `config/local-{NODE_ENV}.json` instead.
+3. Environment variables, mapped to settings in `config/custom-environment-variables.json` (committed): `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, `DB_CONNECT_TIMEOUT_MS`, `GEMINI_API_KEY`, `GRPC_PORT`, `GRPC_REQUIRE_CLIENT_CERTIFICATE`. Unset or empty variables are ignored. A `.env` file is not read: put local values in `config/local-{NODE_ENV}.json` instead.
 
 The database settings are `db.host`, `db.port`, `db.database`, `db.username` and `db.password`, plus `db.connectTimeoutMS` (default 5000; 0 waits forever). A missing setting fails with its name when the application first connects, and a connection failure is logged with the host, port, database and user it tried. The Gemini API key is `gemini.apiKey`; without it, `/api/gemini` returns 503.
 
@@ -57,7 +57,6 @@ The database settings are `db.host`, `db.port`, `db.database`, `db.username` and
   }
   ```
 
-- **Kubernetes (staging / production):** run with `NODE_ENV=production`. Supply `config/local-production.json` from a ConfigMap, mounted as a single file with `subPath`, and passwords and API keys as environment variables from a Secret. See `kubernetes/configmap.example.yml`.
 - **CircleCI:** the "Write test configuration" step writes `config/local-test.json` from the `POSTGRESQL_USER` and `POSTGRESQL_PASSWORD` project environment variables.
 
 # Start the application:
@@ -256,6 +255,18 @@ Image: ![Shoe to sell](./GeminiPromptWithImage.png?raw=true "Shoe to sell")
     ]
   }
   ```
+
+# gRPC
+
+Besides the HTTPS API, the application serves the `school.School` gRPC service (`grpc/proto/school.proto`: `Register`, `AddStudentsToTeacher`, `CommonStudents`) on its own port: `grpc.port` in `config/` (`GRPC_PORT`), default 50051. It uses TLS with `server.crt` / `server.key`. With `grpc.requireClientCertificate` (`GRPC_REQUIRE_CLIENT_CERTIFICATE`, default `true`), clients must also present a certificate signed by `server.crt` (mutual TLS).
+
+The TypeScript message and service code in `src/webapi/grpc/generated/` is generated from `src/webapi/grpc/proto/*.proto` by [ts-proto](https://github.com/stephenh/ts-proto) for `@grpc/grpc-js`, and committed. After changing a `.proto` file, regenerate it with:
+
+```
+$ npm run proto
+```
+
+Messages are plain objects. When calling the service, build requests with the generated `fromPartial()`, which fills in the fields you leave out, for example `AddStudentsToTeacherRequest.fromPartial({ teacher: { email }, students: [...] })`. See `tests/IntegrationTests/grpc.tests.ts` for a client.
 
 # Logs
 

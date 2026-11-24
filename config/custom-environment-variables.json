@@ -15,5 +15,15 @@
 	},
 	"gemini": {
 		"apiKey": "GEMINI_API_KEY"
+	},
+	"grpc": {
+		"port": {
+			"__name": "GRPC_PORT",
+			"__format": "number"
+		},
+		"requireClientCertificate": {
+			"__name": "GRPC_REQUIRE_CLIENT_CERTIFICATE",
+			"__format": "boolean"
+		}
 	}
 }
